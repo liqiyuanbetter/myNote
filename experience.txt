@@ -809,3 +809,11 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 
 	3. 版本冲突时
 		1. 强制用本地文件覆盖远程仓库git push -f origin master, 加上了一个-f表示强制
+
+	4. git撤销本地修改与回退版本
+		1. 撤销没有add的本地修改用git checkout fileName, 可以直接将文件还原到最近的一次add时状态
+		
+		2. 撤销没有commit的本地修改用git reset --hard，这个命令会将文件还原到最近的一次commit的状态, 注意，如果只
+	add了文件但是没有commit, 那么reset后那些add过的内容也会消失，也就是说reset只会保留commit的内容;那如果想找回add了但
+	是丢失了的文件怎么办，可以执行: git fsck --lost-found这个命令, 然后在.git/lost-found/other这个路径下可以找到所有add
+	过的文件。reset可以会滚到某一刻的commit，可以通过git reflog查看提交的日志;
