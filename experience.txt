@@ -806,3 +806,6 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 			5. 在执行commit命令之后, 我们所作的改动已经提交到了HEAD但是还没有提交到远端仓库。执行
 		git push origin master来推送这些改动到服务端。注意，不论是pull命令还是push命令，都必须通过origin banch-name来
 		指定是哪一个分支。我们当然也可以选择除master之外的其他分支;
+
+	3. 版本冲突时
+		1. 强制用本地文件覆盖远程仓库git push -f origin master, 加上了一个-f表示强制
