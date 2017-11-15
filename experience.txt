@@ -786,12 +786,23 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 
 		2. 配置git
 			1. 右键git bash(可以在任意位置), 然后输入ssh-keygen -t rsa -C "your_email@youremail.com", 这个邮箱
-		是自己注册用的邮箱账号。接下来会让我们确定生成的配置文件的路径和密码。在指定的路径下会生成git和git.pub两个
-		文件。右键编辑git.pub文件，复制里面的key，然后在自己的账户中选择settings-SSH and GPG keys，选择new SSH key,
-		添加刚才生成的ssh, 标题可以随便取
+		是自己注册用的邮箱账号。接下来会让我们确定生成的配置文件的路径和密码(这个密码在推送和拉取的时候都会用到)。
+		在指定的路径下会生成git和git.pub两个文件。右键编辑git.pub文件，复制里面的key，然后在自己的账户中选择
+		settings-SSH and GPG keys，选择new SSH key, 添加刚才生成的ssh, 标题可以随便取
 
 			2. 现在可以开始上传我们自己的项目文件，但是首先需要在项目所在文件夹中执行git init命令，让这个文件夹
 		成为一个git仓库。然后执行git remote add origin git@github.com:yourName/yourRepo.git 命令，这样添加了一个远程
-		地址yourName是用户名(如果其他用户把自己邀请问贡献者，也可以写其他人的), youRepo表示要同步的git上的仓库名。
+		地址yourName是用户名(如果其他用户把自己邀请为贡献者，也可以写其他人的), youRepo表示要同步的git上的仓库名。
 
-			3. 
+			3. 在推送内容到服务器之前，我们还应执行git pull origin master命令来更新我们的本地仓库以和服务器的版本
+		保持一致。因为我们在新建仓库的时候生成了一些其他的说明文件，这些文件是我们的本地仓库没有的。事实上我们每次提
+		交改动之前都应该先更新我们本地的仓库来确保它已经是最新的版本
+
+			4. 接下来依次执行以下命令, git add fileName 或git add *, git commit -m "本次提交注释"。这是git的基本
+		工作流程。本地仓库由git维护的三棵树组成，第一个是我们的工作目录，它持有实际文件。第二个是暂存区(index)，它的
+		作用类似缓存区域，临时保存我们所作的改动(即add后的文件)。最后是Head，它指向我们最终提交的结果, 即commit后的
+		文件;
+
+			5. 在执行commit命令之后, 我们所作的改动已经提交到了HEAD但是还没有提交到远端仓库。执行
+		git push origin master来推送这些改动到服务端。注意，不论是pull命令还是push命令，都必须通过origin banch-name来
+		指定是哪一个分支。我们当然也可以选择除master之外的其他分支;
