@@ -1,5 +1,5 @@
 2017.09.06
-关于字节流和字符流
+关于字节流和字符rrrr流
 Object
 	----InputStream，读图像之类的字节流
 		----FileInputStream
