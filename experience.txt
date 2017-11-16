@@ -777,9 +777,14 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 1. dns查询 http://tool.chinaz.com/dns
 
 2. git简明教程, http://www.runoob.com/w3cnote/git-guide.html
-	1. 如果想克隆别人的仓库，只需要在自己的文件夹内打开git bash，然后键入git clone url就可以将该项目克隆下来，不需要
-其他任何指令.例如 git clone https://github.com/liqiyuanbetter/myNote.git 其中liqiyuanbetter是这个用户的用户名, myNote是
-他的仓库名;
+	1. 克隆仓库
+		1. 如果想克隆别人的仓库，只需要在自己的文件夹内打开git bash，然后键入git clone url就可以将该项目克隆下来，不需要
+	其他任何指令.例如 git clone https://github.com/liqiyuanbetter/myNote.git 其中liqiyuanbetter是这个用户的用户名, myNote是
+	他的仓库名;
+
+		2. 也可以克隆自己的仓库, 在指定文件夹内输入git clone路径就行了，如git clone /C/Users/017548/Desktop/文档/mine，
+	但是要注意, 这个路径必须要是一个git仓库，也就是git init过。而且路径的分隔符都是/
+
 
 	2. 如何将自己的项目(或文件)上传到github上
 		1. 首先在github上创建一个账号, 然后新建一个仓库。
@@ -812,8 +817,11 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 
 	4. git撤销本地修改与回退版本
 		1. 撤销没有add的本地修改用git checkout fileName, 可以直接将文件还原到最近的一次add时状态
+
+		2. 从本地仓库中被删除的文件，不管是shift + delete还是执行命令rm fileName删除的文件都可以通过
+	git checkout filename来恢复
 		
-		2. 撤销没有commit的本地修改用git reset --hard，这个命令会将文件还原到最近的一次commit的状态, 注意，如果只
+		3. 撤销没有commit的本地修改用git reset --hard，这个命令会将文件还原到最近的一次commit的状态, 注意，如果只
 	add了文件但是没有commit, 那么reset后那些add过的内容也会消失，也就是说reset只会保留commit的内容;那如果想找回add了但
 	是丢失了的文件怎么办，可以执行: git fsck --lost-found这个命令, 然后在.git/lost-found/other这个路径下可以找到所有add
 	过的文件。reset可以会滚到某一刻的commit，可以通过git reflog查看提交的日志, 日志里面是有提交时写的注释的，所有写好注释
