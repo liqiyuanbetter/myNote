@@ -785,7 +785,6 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 		2. 也可以克隆自己的仓库, 在指定文件夹内输入git clone路径就行了，如git clone /C/Users/017548/Desktop/文档/mine，
 	但是要注意, 这个路径必须要是一个git仓库，也就是git init过。而且路径的分隔符都是/
 
-
 	2. 如何将自己的项目(或文件)上传到github上
 		1. 首先在github上创建一个账号, 然后新建一个仓库。
 
@@ -827,3 +826,15 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	过的文件。reset可以会滚到某一刻的commit，可以通过git reflog查看提交的日志, 日志里面是有提交时写的注释的，所有写好注释
 	很有必要。如git reset --hard 90e79f8, 这会恢复到90e79f8这次commit后的样子;注意如果既没有commit也没有add, 则那些修改
 	永远也找不回来，所以随时commit是好习惯;
+
+	5. 分支 https://blog.zengrong.net/post/1746.html
+		1. git checkout -b branch_name可以创建分支，git checkout branch_name可以切换分支, git branch -d branch_name
+	可以删除本地分支, git push origin branch_name将分支推送到远程仓库，否则分支不可见, 它只是一个本地分支;
+
+		2. 可以通过git branch -a 来查看所有本地的和远程分支, 白色的是本地的，绿色的是当前使用的本地分支，红色的是远程
+	分支, 本地好像只能看到的自己推送的远程分支。但是仍可以在github网页上看到所有的分支，然后在本地用命令删除分支
+		
+		3. 删除远程分支有两种方法: git push origin :branch_name和 git push origin --delete branch_name
+
+2017.11.16
+1. java lanmda
