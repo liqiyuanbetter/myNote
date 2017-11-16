@@ -836,5 +836,9 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 		
 		3. 删除远程分支有两种方法: git push origin :branch_name和 git push origin --delete branch_name
 
+	6. 删除远程仓库文件
+		1. git rm -r --cached fileName
+		2. git commmit -m "删除fileName"
+		3. 将修改提交到远程仓库 git push origin master
 2017.11.16
 1. java lanmda
