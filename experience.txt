@@ -842,6 +842,8 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 		3. 将修改提交到远程仓库 git push origin master
 
 	7. git用户名和账号
-		1. 可通过git config user.email来修改当前用户
+		1. 可通过git config user.email来修改当前用户，如果这个email对应着github上的一个账号则，user.name的修改是无效
+	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name
+
 2017.11.16
 1. java lanmda
