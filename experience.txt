@@ -817,3 +817,5 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	add了文件但是没有commit, 那么reset后那些add过的内容也会消失，也就是说reset只会保留commit的内容;那如果想找回add了但
 	是丢失了的文件怎么办，可以执行: git fsck --lost-found这个命令, 然后在.git/lost-found/other这个路径下可以找到所有add
 	过的文件。reset可以会滚到某一刻的commit，可以通过git reflog查看提交的日志;
+		
+		3. ffffff
