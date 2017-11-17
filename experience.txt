@@ -847,3 +847,7 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 
 2017.11.16
 1. java lanmda
+
+2. 火狐早期版本下载 https://ftp.mozilla.org/pub/firefox/releases/56.0/win64/zh-CN/ 
+
+3. 怎么把eclipse项目上传到git; 向未授权仓库提交代码是否只需要仓库拥有者提供权限？将ssh删除还能提交代码吗?
