@@ -727,6 +727,8 @@ ws连接;
 	Class<?> superclass = this.getClass().getSuperclass();
 	然后要获取哪一个父类的属性时，即调用Field的get(Object)方法时直接传this进去即可, 即可以用子类对象代替父类的对象
 
+3. 类图各种术语解释: https://www.cnblogs.com/olvo/archive/2012/05/03/2481014.html
+
 2017.11.14
 1. 关于继承和函数重写重载等基本概念
 	1. 抽象类在implement一个接口后可以不用实现任何方法。接口中的default方法也可以不需要任何类去实现它;
@@ -773,6 +775,8 @@ ws连接;
 	1. 一个线程在sleep中被打断时，这个线程不会被终止，它会抛出异常然后继续执行catch块里面和后面的内容。一个线程如果没有
 start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	
+4. 通常都将包装类如HttpServletRequestWrapper的一个子类作为内部类放在过滤器中，然后在过滤器中将request用包装类包装后传递下去;
+
 2017.11.15
 1. dns查询 http://tool.chinaz.com/dns
 
