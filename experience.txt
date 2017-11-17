@@ -818,6 +818,15 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	3. 版本冲突时
 		1. 强制用本地文件覆盖远程仓库git push -f origin master, 加上了一个-f表示强制
 
+		2. pull时发生版本冲突时，执行以下命令
+			1. git stash(暂存本地修改), 可通过git stash list看到保存的信息;
+
+			2. 这时再执行git push origin ban_name就能成功执行了, 这时相当于用远端版本覆盖了本地版本。然后通过
+		git stash pop stash@{0} 来还原暂存的内容这时系统会提示有冲突
+
+			3. 打开冲突文件，手动去修改。Updated upstream 和=====之间的内容就是pull下来的内容，
+		====和stashed changes之间的内容就是本地修改的内容。修改完毕后就可以正常的提交了
+
 	4. git撤销本地修改与回退版本
 		1. 撤销没有add的本地修改用git checkout fileName, 可以直接将文件还原到最近的一次add时状态
 
