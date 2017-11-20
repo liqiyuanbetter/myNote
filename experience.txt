@@ -412,6 +412,7 @@ addHeader方法可以设置cookie为httponly的，例如
 		}
 	}
 	xmlHttp.open("请求方式(POST)", "请求地址(http:..)", 是否为异步(true));
+	注意以POST方式发起请求时，也可以在请求地址后面跟上?参数=值，后台也能获取到
 
 	当请求方式为POST，想向HTML表单那样提交数据时，可以对请求头作如下设置
 	xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
