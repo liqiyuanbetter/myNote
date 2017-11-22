@@ -932,4 +932,3 @@ accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法
 	filter(list, str -> str.length() <= 4)
 
 4. 方法引用
-	1. 究竟是哪一个remote呢
