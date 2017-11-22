@@ -805,7 +805,21 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 
 			2. 现在可以开始上传我们自己的项目文件，但是首先需要在项目所在文件夹中执行git init命令，让这个文件夹
 		成为一个git仓库。然后执行git remote add origin git@github.com:yourName/yourRepo.git 命令，这样添加了一个远程
-		地址yourName是用户名(如果其他用户把自己邀请为贡献者，也可以写其他人的), youRepo表示要同步的git上的仓库名。
+		连接。yourName是用户名(如果其他用户把自己邀请为贡献者，也可以写其他人的), youRepo表示要同步的git上的仓库名。
+
+			需要注意的是：
+				1. origin这个名字是可以随便取的，每增加一远程连接，在config文件中就会多一个remote 连接名。
+			所以实际上每一个连接名对应的是相应的仓库的名字。而我们在push代码的时候，实际上是指定了push到仓库里
+			的哪个分支上面。
+		
+				2. git切换连接所指向的远程仓库
+					1. 使用命令 git remote set-url origin yourUrl
+
+					2. 直接修改config文件中的url地址
+
+				做了这种修改后要重新输入git的账号名和密码才能push;
+
+				3. 如果在添加远程连接的时候显示已存在，可以通过命令git remote rm origin(连接名)来删除连接;
 
 			3. 在推送内容到服务器之前，我们还应执行git pull origin master命令来更新我们的本地仓库以和服务器的版本
 		保持一致。因为我们在git上新建仓库的时候生成了一些其他的说明文件，这些文件是我们的本地仓库没有的。事实上我们每
@@ -863,12 +877,6 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 		1. 可通过git config user.email来修改当前用户，如果这个email对应着github上的一个账号则，user.name的修改是无效
 	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name
 
-	8. git切换连接的远程仓库
-		1. 使用命令 git remote set-url origin yourUrl
-
-		2. 直接修改config文件中的url地址
-
-	做了这种修改后要重新输入git的账号名和密码才能push
 
 2017.11.16
 1. 火狐早期版本下载 https://ftp.mozilla.org/pub/firefox/releases/56.0/win64/zh-CN/ 
