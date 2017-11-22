@@ -922,6 +922,9 @@ a -> // code
 	2. 直接声明一个实现函数接口的匿名类, MyInterface i = (prarmas..) -> // code; 例如
 Predicate<String> condition = str -> str.length() <= 4;
 
+	3. lambda表达式只能引用final修饰的变量，也就是说不能在lambda内部修改定义在外部的变量，如: int a = 3; 
+list.forEach(x -> {a += 1}); 这是无法编译通过的, 这个特性类似于匿名内部类;
+
 3. function包
 	1. Consumer接口，这个接口有一个抽象方法 void accept(T t) 和一个默认方法 Consumer<T> andThen(Consumer<? super T> after)
 。它通常用在如List接口的forEach(Consumer<T> action)中, 这个forEach方法会将list中的每一个元素传入action中的accept方法并调用
@@ -940,4 +943,27 @@ accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法
 	}
 	filter(list, str -> str.length() <= 4)
 
+	3. Function接口中有一个抽象方法apply, 这个接口常用语list.stream().map()中，用于对list进行改造
+
+	4. stream()
+		1. list.stream().map的意思是将list中的每个元素都放到map中的Function接口中的apply中改变一次形态, 比如
+	map(x -> x * 2), 那么得到的list中的每个元素都扩大了一倍。map只是对list中的元素的一种加工, 不会改变流中元素的数量;
+			1. 不仅可以得到map, 我们还可以通过mapToInt方法来得到一个IntStream, IntStream中的.summaryStatistics
+		方法可以得到一个IntSummaryStatitics对象，这个对象中封装了很多比如求平均值，最大最小值等方法;
+
+		2. list.stream().filter字面意思是过滤器，它的参数是一个Predicate，这个接口中有一个返回布尔型变量的函数
+	accept(T t)，list中的每一个元素也都会经过它的检验，只有返回ture的才被保留在stream中。也就是说filter之后元素的
+	个数可能会减少;
+
+		3. 无论是map还是filter，我们最后都可以调用forEach来遍历所有的stream中的值，也可以通过.collect方法来转换
+	这个流，比如.collect(Collectors.toList())方法来得到一个我们改造过的List
+
 4. 方法引用
+	1. 方法引用用于简写lambda表达式中已经存在的方法，注意方法引用只能用在lambda表达式中;
+
+	2. 它的引用形式是: 类名::静态方法名, 或者对象::实例方法名, 注意方法名不能写括号, 也不能再写参数在里面;
+
+5. 贪心算法 https://baike.baidu.com/item/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/5411800
+
+2017.11.22
+1. 断言
