@@ -931,4 +931,4 @@ accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法
 	}
 	filter(list, str -> str.length() <= 4)
 
-4. 方法引用aaabbb
+4. 方法引用
