@@ -867,6 +867,7 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 		1. 使用命令 git remote set-url origin yourUrl
 
 		2. 直接修改config文件中的url地址
+
 	做了这种修改后要重新输入git的账号名和密码才能push
 
 2017.11.16
@@ -930,4 +931,4 @@ accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法
 	}
 	filter(list, str -> str.length() <= 4)
 
-4. 方法引用
+4. 方法引用aaa
