@@ -815,9 +815,9 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 				2. git切换连接所指向的远程仓库
 					1. 使用命令 git remote set-url origin yourUrl
 
-					2. 直接修改config文件中的url地址rrr
+					2. 直接修改config文件中的url地址
 
-				做了这种修改后要重新输入git的账号名和密码才能push;
+				做了这种修改后会使得ssh秘钥失效, 每次都要重新输入git的账号名和密码才能push;
 
 				3. 如果在添加远程连接的时候显示已存在，可以通过命令git remote rm origin(连接名)来删除连接;
 
