@@ -863,14 +863,17 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 		1. 可通过git config user.email来修改当前用户，如果这个email对应着github上的一个账号则，user.name的修改是无效
 	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name
 
+	8. git切换连接的远程仓库
+		1. 使用命令 git remote set-url origin yourUrl
+
+		2. 直接修改config文件中的url地址
+
 2017.11.16
-1. java lambda
+1. 火狐早期版本下载 https://ftp.mozilla.org/pub/firefox/releases/56.0/win64/zh-CN/ 
 
-2. 火狐早期版本下载 https://ftp.mozilla.org/pub/firefox/releases/56.0/win64/zh-CN/ 
+2. 怎么把eclipse项目上传到git
 
-3. 怎么把eclipse项目上传到git
-
-4. list可以调用自己的list.sort(Comparator<T>)方法来排序，也可以使用Collections.sort(list, Comparator<T>)方法排序, Collections
+3. list可以调用自己的list.sort(Comparator<T>)方法来排序，也可以使用Collections.sort(list, Comparator<T>)方法排序, Collections
 默认自带一个排序器，Collections.sort(list);
 
 2017.11.20
@@ -898,15 +901,32 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	1. java的函数接口是指只包含一个抽象方法的接口，在jdk1.8中，可以使用 @FunctionalInterface来给接口添加注解。注意，函数接口
 可以包含多个默认方法, 也可以包含多个静态方法，因为他们都不是抽象方法。静态方法和默认方法都必须在接口中给出实现;
 
-2. function包
-
-3. lambdab表达式基本用法
+2. lambdab表达式基本用法
 	1. 当某个函数的参数中含有"函数接口"时，传统做法是调用该函数时传入一个实现接口的匿名类，现在可以用lambda表达式替换。例如
 函数foo(MyInterface i) 的参数类型是一个函数接口，那么在调用的时候可以这样写foo( (Params...) -> {// code} ) );MyInterface
 中的方法有几个参数, params就有几个参数，code中返回类型也要和接口中方法一致。如果实现代码只有一行可以不加大括号，最后也不用加分
 号甚至也不用写return, 如(a, b) -> a + b。用了return则一定要加大括号和分号;另外如果只有一个参数左边也不用加括号，例如: 
 a -> // code
 
-	2. 直接声明一个实现函数接口的匿名类, MyInterface i = (prarmas..) -> // code;
+	2. 直接声明一个实现函数接口的匿名类, MyInterface i = (prarmas..) -> // code; 例如
+Predicate<String> condition = str -> str.length() <= 4;
+
+3. function包
+	1. Consumer接口，这个接口有一个抽象方法 void accept(T t) 和一个默认方法 Consumer<T> andThen(Consumer<? super T> after)
+。它通常用在如List接口的forEach(Consumer<T> action)中, 这个forEach方法会将list中的每一个元素传入action中的accept方法并调用
+accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法会连续执行当前Consumer对象的accept方法和after
+对象的accept方法;
+	
+	2. Predicate接口非常适合用于做过滤器, 它只有一个抽象方法test(T t), 和若干默认方法and(), or(), negate(), isEqual(),
+他们的作用和名字一样，例如可以这样使用。list.stream().filter(con1.and(con2)).forEach(t -> // do some code 这类型是Consumer)，
+或者list.stream().filter(n -> str.length() <= 4)。也可以自己写一个filter方法如:
+	public void filter(List<String> list, Predicate condition) {
+		for (String s : list) {
+			if (condition.test(s)) {
+				sysout(s);
+			}
+		}
+	}
+	filter(list, str -> str.length() <= 4)
 
 4. 方法引用
