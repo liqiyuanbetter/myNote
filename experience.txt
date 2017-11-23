@@ -925,6 +925,8 @@ Predicate<String> condition = str -> str.length() <= 4;
 	3. lambda表达式只能引用final修饰的变量，也就是说不能在lambda内部修改定义在外部的变量，如: int a = 3; 
 list.forEach(x -> {a += 1}); 这是无法编译通过的, 这个特性类似于匿名内部类;
 
+	4. 如果想为lambda表达式的参数声明类型，那么要么为所有的参数声明，要么去掉所有参数的类型声明;
+
 3. function包
 	1. Consumer接口，这个接口有一个抽象方法 void accept(T t) 和一个默认方法 Consumer<T> andThen(Consumer<? super T> after)
 。它通常用在如List接口的forEach(Consumer<T> action)中, 这个forEach方法会将list中的每一个元素传入action中的accept方法并调用
@@ -943,27 +945,70 @@ accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法
 	}
 	filter(list, str -> str.length() <= 4)
 
-	3. Function接口中有一个抽象方法apply, 这个接口常用语list.stream().map()中，用于对list进行改造
+	3. Function接口中有一个抽象方法apply, 这个接口常用语list.stream().map()中，用于对list进行改造;Function的定义是
+Function<T, R>, apply的定义方式是R apply(T t)
 
-	4. stream()
+	4. stream()中相关接口方法使用
 		1. list.stream().map的意思是将list中的每个元素都放到map中的Function接口中的apply中改变一次形态, 比如
 	map(x -> x * 2), 那么得到的list中的每个元素都扩大了一倍。map只是对list中的元素的一种加工, 不会改变流中元素的数量;
 			1. 不仅可以得到map, 我们还可以通过mapToInt方法来得到一个IntStream, IntStream中的.summaryStatistics
 		方法可以得到一个IntSummaryStatitics对象，这个对象中封装了很多比如求平均值，最大最小值等方法;
+			
+			2. list.stream()的返回类型是一个stream流，这个stream的泛型类型是由list的泛型类型
+		决定的, 例如List<String> list, list.stream()返回的是Stream<String>
+
+			3. .map对这个流的改造可能是巨大的。map的返回类型是一个stream流，但是这个stream的泛型类型是
+		由Function接口中的R决定的(Function中的T，也就是apply中的T都是由Stream的泛型决定, 根本就是list的泛型类型)。
+		即.map返回的是Stream<R>, 而不再是Stream<T>。而这个R我们可以指定成任意的类型。比如我们可以这样写:
+
+			List<String> list = Arrays.asList("Java", "Phython");
+			Stream<List<String>> stream 
+				= list.stream().map(s -> Arrays.asList(s));// list.stream().map(Arrays::asList)
+			这里相当于将Stream<String>转化成了Stream<List<String>>
 
 		2. list.stream().filter字面意思是过滤器，它的参数是一个Predicate，这个接口中有一个返回布尔型变量的函数
 	accept(T t)，list中的每一个元素也都会经过它的检验，只有返回ture的才被保留在stream中。也就是说filter之后元素的
 	个数可能会减少;
 
-		3. 无论是map还是filter，我们最后都可以调用forEach来遍历所有的stream中的值，也可以通过.collect方法来转换
-	这个流，比如.collect(Collectors.toList())方法来得到一个我们改造过的List
+		3. 无论是map还是filter，返回类型都是Stream。因此都可以用forEach我们最后都可以调用forEach来遍历所有的
+	stream中的值，forEach是Stream接口中的方法。list中也有一个forEach函数。这两个forEach的参数类型都是Consumer接口，
+	而且这个Consumer接口的泛型都是由他们自己的泛型<T>决定的;
+		
+		4. Stream类型也可以通过.collect方法来转换这个流，比如.collect(Collectors.toList())方法来将这个Stream转换
+	成一个list。返回的这个List中的<T>就是Stream中的这个<T>;
+
+		5. Stream中的reduce方法具有将Stream中的元素两两迭代的功能。reduce方法中的参数是一个BinaryOperator<T>接口，
+	reduce方法的返回类型是是Optional<T>，<T>的类型和Stream中的<T>一致。BinaryOperator接口中有一个方法apply，它的返回
+	类型是<T>，形式参数有两个，类型都是<T>; 在这个T apply(T t, T u)方法中，将Stream中的元素两个为一组进行操作，如果
+	只有两个元素，则直接返回结果。如果有三个元素，则它将前两个元素apply的结果与第三个元素一起传入apply中。例如有e1,
+	e2, e3三个元素，则最后结果为apply(apply(e1, e2), e3)。apply的执行结果被保存在Optional的value值中，可以通过Optional
+	的get()方法获取这个value的值。这个方法可以用在计算一个列表的所有元素的和等;
 
 4. 方法引用
 	1. 方法引用用于简写lambda表达式中已经存在的方法，注意方法引用只能用在lambda表达式中;
 
 	2. 它的引用形式是: 类名::静态方法名, 或者对象::实例方法名, 注意方法名不能写括号, 也不能再写参数在里面;
 
+	3. 被引用的方法的参数的类型一定要和接口中方法的参数类型顺序一致
+
 5. 贪心算法 https://baike.baidu.com/item/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/5411800
 
 2017.11.22
 1. 断言
+
+2017.11.23
+1. 三元运算符需要返回值，x = a ? b : c, b和c不能是void类型
+
+2. 序列化
+
+3. Comparator接口和Comparable接口的区别
+	1. Comparator接口中的比较方法名称是compare(T o1, T o2), 他的返回类型为int，这个方法有两个参数, List或Collections中
+的sort方法里的参数是Comparator类型的;
+
+	2. Comparable接口中的比较方法是compareTo(T o)，返回类型也是int，但是只有一个参数
+
+4. lambda反编译
+	1. http://blog.csdn.net/wwwsssaaaddd/article/details/24212693
+	2. Eclipse反编译插件 http://blog.csdn.net/silentmuh/article/details/46787625
+
+5. accumulator: 累加器
