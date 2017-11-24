@@ -933,9 +933,10 @@ list.forEach(x -> {a += 1}); 这是无法编译通过的, 这个特性类似于匿名内部类;
 accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法会连续执行当前Consumer对象的accept方法和after
 对象的accept方法;
 	
-	2. Predicate接口非常适合用于做过滤器, 它只有一个抽象方法test(T t), 和若干默认方法and(), or(), negate(), isEqual(),
-他们的作用和名字一样，例如可以这样使用。list.stream().filter(con1.and(con2)).forEach(t -> // do some code 这类型是Consumer)，
-或者list.stream().filter(n -> str.length() <= 4)。也可以自己写一个filter方法如:
+	2. Predicate接口非常适合用于做过滤器, 它只有一个抽象方法boolean test(T t), 和若干默认方法and(), or(), negate(), 
+isEqual(), 他们的作用和名字一样，例如可以这样使用, 
+	list.stream().filter(con1.and(con2)).forEach(t -> // do some code 这类型是Consumer)，
+	或者list.stream().filter(n -> str.length() <= 4)。也可以自己写一个filter方法如:
 	public void filter(List<String> list, Predicate condition) {
 		for (String s : list) {
 			if (condition.test(s)) {
@@ -946,18 +947,20 @@ accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法
 	filter(list, str -> str.length() <= 4)
 
 	3. Function接口中有一个抽象方法apply, 这个接口常用语list.stream().map()中，用于对list进行改造;Function的定义是
-Function<T, R>, apply的定义方式是R apply(T t)
+Function<T, R>, apply的定义方式是R apply(T t);
+	
+	4. Supplier<T>接口中有一个抽象方法get, 它没有参数，返回一个T型结果;
 
-	4. stream()中相关接口方法使用
-		1. list.stream().map的意思是将list中的每个元素都放到map中的Function接口中的apply中改变一次形态, 比如
+	5. stream()中相关接口方法使用
+		1. list.stream()的返回类型是一个stream流，这个stream的泛型类型是由list的泛型类型决定的, 
+	例如List<String> list, list.stream()返回的是Stream<String>。对这个流所做的任何修改都不会影响到原来的list对象;
+
+		2. list.stream().map的意思是将list中的每个元素都放到map中的Function接口中的apply中改变一次形态, 比如
 	map(x -> x * 2), 那么得到的list中的每个元素都扩大了一倍。map只是对list中的元素的一种加工, 不会改变流中元素的数量;
 			1. 不仅可以得到map, 我们还可以通过mapToInt方法来得到一个IntStream, IntStream中的.summaryStatistics
 		方法可以得到一个IntSummaryStatitics对象，这个对象中封装了很多比如求平均值，最大最小值等方法;
 			
-			2. list.stream()的返回类型是一个stream流，这个stream的泛型类型是由list的泛型类型
-		决定的, 例如List<String> list, list.stream()返回的是Stream<String>
-
-			3. .map对这个流的改造可能是巨大的。map的返回类型是一个stream流，但是这个stream的泛型类型是
+			2. .map对这个流的改造可能是巨大的。map的返回类型是一个stream流，但是这个stream的泛型类型是
 		由Function接口中的R决定的(Function中的T，也就是apply中的T都是由Stream的泛型决定, 根本就是list的泛型类型)。
 		即.map返回的是Stream<R>, 而不再是Stream<T>。而这个R我们可以指定成任意的类型。比如我们可以这样写:
 
@@ -966,18 +969,18 @@ Function<T, R>, apply的定义方式是R apply(T t)
 				= list.stream().map(s -> Arrays.asList(s));// list.stream().map(Arrays::asList)
 			这里相当于将Stream<String>转化成了Stream<List<String>>
 
-		2. list.stream().filter字面意思是过滤器，它的参数是一个Predicate，这个接口中有一个返回布尔型变量的函数
+		3. list.stream().filter字面意思是过滤器，它的参数是一个Predicate，这个接口中有一个返回布尔型变量的函数
 	accept(T t)，list中的每一个元素也都会经过它的检验，只有返回ture的才被保留在stream中。也就是说filter之后元素的
 	个数可能会减少;
 
-		3. 无论是map还是filter，返回类型都是Stream。因此都可以用forEach我们最后都可以调用forEach来遍历所有的
+		4. 无论是map还是filter，返回类型都是Stream。因此都可以用forEach我们最后都可以调用forEach来遍历所有的
 	stream中的值，forEach是Stream接口中的方法。list中也有一个forEach函数。这两个forEach的参数类型都是Consumer接口，
 	而且这个Consumer接口的泛型都是由他们自己的泛型<T>决定的;
 		
-		4. Stream类型也可以通过.collect方法来转换这个流，比如.collect(Collectors.toList())方法来将这个Stream转换
+		5. Stream类型也可以通过.collect方法来转换这个流，比如.collect(Collectors.toList())方法来将这个Stream转换
 	成一个list。返回的这个List中的<T>就是Stream中的这个<T>;
 
-		5. Stream中的reduce方法具有将Stream中的元素两两迭代的功能。reduce方法中的参数是一个BinaryOperator<T>接口，
+		6. Stream中的reduce方法具有将Stream中的元素两两迭代的功能。reduce方法中的参数是一个BinaryOperator<T>接口，
 	reduce方法的返回类型是是Optional<T>，<T>的类型和Stream中的<T>一致。BinaryOperator接口中有一个方法apply，它的返回
 	类型是<T>，形式参数有两个，类型都是<T>; 在这个T apply(T t, T u)方法中，将Stream中的元素两个为一组进行操作，如果
 	只有两个元素，则直接返回结果。如果有三个元素，则它将前两个元素apply的结果与第三个元素一起传入apply中。例如有e1,
@@ -1012,3 +1015,29 @@ Function<T, R>, apply的定义方式是R apply(T t)
 	2. Eclipse反编译插件 http://blog.csdn.net/silentmuh/article/details/46787625
 
 5. accumulator: 累加器
+
+2017.11.24
+1. 什么是回调函数
+	1. 回调函数的不由它所属的类A的对象直接调用，而是由A的某个成员B调用。B的某个方法有一个参数的类型是A，然后利用这个方法
+来使用这个回调函数。例如:
+	interface I {
+		void fun();
+	}
+	class A implements I {
+		B b;
+		A (B b) {this.b = b;}
+		// 这个方法就是回调方法
+		fun() {}
+		work(Para para) {
+			b.doWork(this, para);
+		}
+	}
+	class B {
+		void doWork(I i, Para para) {
+			i.work();
+		}
+	}
+	main() {
+		A a = new A();
+		a.work();
+	}
