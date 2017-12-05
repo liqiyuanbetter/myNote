@@ -425,9 +425,9 @@ addHeader方法可以设置cookie为httponly的，例如
 传输过来的数据;而且设置charset=UTF-8可以避免后台接收到的数据是乱码;
 
 	相对应的，在使用java的HttpURLConnection类时，不用调用connection的setRequestProperty("Content-type", 
-"application/x-www-form-urlencoded;charset=utf-8")。无论有没有给connection设置这个请求参数，在servlet中都可以通过
-getParameter方法来获取参数，跟在url地址后面的参数也可以通过getParameter来获取。但是传给服务器中的参数有中文时如果
-不设置这个属性，服务器收到的就是乱码。
+"application/x-www-form-urlencoded;charset=utf-8")[XHR的方法是setRequestHeader]。无论有没有给connection设置这个请求参数，
+在servlet中都可以通过getParameter方法来获取参数，跟在url地址后面的参数也可以通过getParameter来获取。但是传给服务器中的参
+数有中文时, 如果不设置这个属性，服务器收到的就是乱码。
 	
 	设置这个有点像提交form表单时，设置表单的enctype属性。它用于规定发送到服务器之前如何对表单数据进行编码;
 
@@ -1116,3 +1116,26 @@ Function<T, R>, apply的定义方式是R apply(T t);
 	6. 游标
 		1. https://www.cnblogs.com/mqxs/p/6018766.html
 		2. https://www.cnblogs.com/trying/p/3296793.html
+
+2017.12.04
+1. H5事件
+	1. 文本框的onchange事件在失去焦点且文本内容发生变化时触发，onblur只要失去焦点就会触发，oninput在内容改变时触发, 
+具有即时性;
+
+2017.12.05
+1. 拖动
+	1. https://code.ziqiangxuetang.com/jsref/event-ondrag.html
+	2. http://www.runoob.com/html/html5-draganddrop.html
+	3. http://www.runoob.com/try/try.php?filename=tryjsref_ondrag
+	4. http://www.runoob.com/jsref/event-ondrag.html
+
+2. 文件上传
+	1. https://www.zhihu.com/question/54553750
+	2. http://www.ruanyifeng.com/blog/2012/08/file_upload.html
+	3. https://www.zhuwenlong.com/blog/article/52d6769f93dcae3050000003
+	4. https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest
+	5. http://www.zhangxinxu.com/wordpress/2011/09/%E5%9F%BA%E4%BA%8Ehtml5%E7%9A%84%E5%8F%AF%E9%A2%84%E8%A7%88%E5%A4%9A%E5%9B%BE%E7%89%87ajax%E4%B8%8A%E4%BC%A0/
+
+3. content-range
+	1. http://blog.sina.com.cn/s/blog_ec8c9eae0102x3uu.html
+	2. https://www.cnblogs.com/syfwhu/p/6116323.html
