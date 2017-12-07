@@ -58,13 +58,8 @@ Object
 		<param-value>mvelocity.properties</param-value>
 	</init-param>
 
-3. 周末: 
-	1. Ajax
-	2. Spring mVC
-
 2017.09.11
-1. 买笔记本和笔
-2. 学习spring不错地址:
+1. 学习spring不错地址:
 	http://snowolf.iteye.com/blog/1628861
 	http://blog.csdn.net/qq_31138523/article/details/60584333
 
@@ -885,7 +880,7 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 2. 怎么把eclipse项目上传到git
 
 3. list可以调用自己的list.sort(Comparator<T>)方法来排序，也可以使用Collections.sort(list, Comparator<T>)方法排序, Collections
-默认自带一个排序器，Collections.sort(list);
+默认自带一个排序器，Collections.sort(list)，注意Comparator接口中只有一个抽象方法compare(T, T)
 
 2017.11.20
 1. 关于getResource("")
@@ -909,8 +904,8 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 
 2017.11.21
 1. 函数接口，又叫SAM, single abstract method interfaces
-	1. java的函数接口是指只包含一个抽象方法的接口，在jdk1.8中，可以使用 @FunctionalInterface来给接口添加注解。注意，函数接口
-可以包含多个默认方法, 也可以包含多个静态方法，因为他们都不是抽象方法。静态方法和默认方法都必须在接口中给出实现;
+	1. java的函数接口是指只包含一个抽象方法的接口，在jdk1.8中，可以使用 @FunctionalInterface来给接口添加注解。注意，
+函数接口可以包含多个默认方法, 也可以包含多个静态方法，因为他们都不是抽象方法。静态方法和默认方法都必须在接口中给出实现;
 
 2. lambdab表达式基本用法
 	1. 当某个函数的参数中含有"函数接口"时，传统做法是调用该函数时传入一个实现接口的匿名类，现在可以用lambda表达式替换。例如
@@ -936,7 +931,7 @@ accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法
 	2. Predicate接口非常适合用于做过滤器, 它只有一个抽象方法boolean test(T t), 和若干默认方法and(), or(), negate(), 
 isEqual(), 他们的作用和名字一样，例如可以这样使用, 
 	list.stream().filter(con1.and(con2)).forEach(t -> // do some code 这类型是Consumer)，
-	或者list.stream().filter(n -> str.length() <= 4)。也可以自己写一个filter方法如:
+	或者list.stream().filter(str -> str.length() <= 4)。也可以在自己的工具类中定义一个filter方法如:
 	public void filter(List<String> list, Predicate condition) {
 		for (String s : list) {
 			if (condition.test(s)) {
@@ -946,8 +941,8 @@ isEqual(), 他们的作用和名字一样，例如可以这样使用,
 	}
 	filter(list, str -> str.length() <= 4)
 
-	3. Function接口中有一个抽象方法apply, 这个接口常用语list.stream().map()中，用于对list进行改造;Function的定义是
-Function<T, R>, apply的定义方式是R apply(T t);
+	3. Function接口中有一个抽象方法apply, 这个接口常用于list.stream().map()中，用于对list进行改造;Function的定义是
+Function<T, R>, apply的定义方式是R apply(T t)。这里面的T由list.stream()得到的Stream<T>决定，但是这个R是可以自己任意指定的;
 	
 	4. Supplier<T>接口中有一个抽象方法get, 它没有参数，返回一个T型结果;
 
@@ -961,13 +956,15 @@ Function<T, R>, apply的定义方式是R apply(T t);
 		方法可以得到一个IntSummaryStatitics对象，这个对象中封装了很多比如求平均值，最大最小值等方法;
 			
 			2. .map对这个流的改造可能是巨大的。map的返回类型是一个stream流，但是这个stream的泛型类型是
-		由Function接口中的R决定的(Function中的T，也就是apply中的T都是由Stream的泛型决定, 根本就是list的泛型类型)。
-		即.map返回的是Stream<R>, 而不再是Stream<T>。而这个R我们可以指定成任意的类型。比如我们可以这样写:
+		由Function接口中的R决定的(Function中的T，也就是apply中的T都是由list.stream()的泛型决定, 根本就是list的
+		泛型类型)。即.map返回的是Stream<R>, 而不再是Stream<T>。而这个R我们可以指定成任意的类型。比如我们可以这样写:
 
-			List<String> list = Arrays.asList("Java", "Phython");
+			List<String> list = Arrays.asList("Java", "Python");
 			Stream<List<String>> stream 
 				= list.stream().map(s -> Arrays.asList(s));// list.stream().map(Arrays::asList)
-			这里相当于将Stream<String>转化成了Stream<List<String>>
+		
+		在这个lambda表达式中，没有显式使用匿名类Function的对象，因此这里的Function<T, R>中的R实际上由lambda表达式
+	中的返回类型来决定了，也就是R为list。这里相当于将Stream<String>转化成了Stream<List<String>>。
 
 		3. list.stream().filter字面意思是过滤器，它的参数是一个Predicate，这个接口中有一个返回布尔型变量的函数
 	accept(T t)，list中的每一个元素也都会经过它的检验，只有返回ture的才被保留在stream中。也就是说filter之后元素的
@@ -978,7 +975,8 @@ Function<T, R>, apply的定义方式是R apply(T t);
 	而且这个Consumer接口的泛型都是由他们自己的泛型<T>决定的;
 		
 		5. Stream类型也可以通过.collect方法来转换这个流，比如.collect(Collectors.toList())方法来将这个Stream转换
-	成一个list。返回的这个List中的<T>就是Stream中的这个<T>;
+	成一个list。返回的这个List中的<T>就是Stream中的这个<T>。前面说了对stream的操作不会影响启本身，而使用collect可以
+	得到我们改变过后的list;
 
 		6. Stream中的reduce方法具有将Stream中的元素两两迭代的功能。reduce方法中的参数是一个BinaryOperator<T>接口，
 	reduce方法的返回类型是是Optional<T>，<T>的类型和Stream中的<T>一致。BinaryOperator接口中有一个方法apply，它的返回
@@ -990,7 +988,8 @@ Function<T, R>, apply的定义方式是R apply(T t);
 4. 方法引用
 	1. 方法引用用于简写lambda表达式中已经存在的方法，注意方法引用只能用在lambda表达式中;
 
-	2. 它的引用形式是: 类名::静态方法名, 或者对象::实例方法名, 注意方法名不能写括号, 也不能再写参数在里面;
+	2. 它的引用形式是: 类名::静态方法名, 或者对象::实例方法名, 注意方法名不能写括号, 也不能再写参数在里面，例如
+list.forEach(System.out::println)，也不能写s ->等;
 
 	3. 被引用的方法的参数的类型一定要和接口中方法的参数类型顺序一致
 
@@ -1013,7 +1012,13 @@ Function<T, R>, apply的定义方式是R apply(T t);
 	1. Comparator接口中的比较方法名称是compare(T o1, T o2), 他的返回类型为int，这个方法有两个参数, List或Collections中
 的sort方法里的参数是Comparator类型的;
 
-	2. Comparable接口中的比较方法是compareTo(T o)，返回类型也是int，但是只有一个参数
+	2. Comparable接口中的比较方法是compareTo(T o)，返回类型也是int，但是只有一个参数;
+
+	3. Comparator常用于数组或集合的排序，例如Arrays和Collections都有一个默认的sort方法，我们也可以重载自己的sort方法。
+Collection对象如list也可以调用sort方法并传入一个自己的排序器。Comparable中只有一个方法compareTo, 它主要用于单个对象之间的
+比较，例如String对象就实现了这个接口，String对象的compareTo方法可以比较两个字符串的字典顺序。结合lambda表达式我们可以这样
+写: list.sort((s1, s2) -> s1.compareTo(s2)); 这里list的实例化类型是String，因此s1和s2的类型也是String, list的compare方法
+实际上是去调用了String对象自己的compareTo方法来为这个list排序;
 
 4. lambda反编译
 	1. http://blog.csdn.net/wwwsssaaaddd/article/details/24212693
@@ -1139,3 +1144,105 @@ Function<T, R>, apply的定义方式是R apply(T t);
 3. content-range
 	1. http://blog.sina.com.cn/s/blog_ec8c9eae0102x3uu.html
 	2. https://www.cnblogs.com/syfwhu/p/6116323.html
+
+2017.12.27
+1. 关于java中的进制问题
+	1. 在java中，0xff和一般的数字型常量一样，例如0xff就是十进制的255，都是表示字面常量，只不过0xff是用十六进制表示的，
+而255使用十进制表示的，字面常量是没有符号的。有时我们在进行位运算时，这种用十六进制表示的常量会让我们的代码更容易理解。比如
+byte a = 34; a & 0xf0很明显就是要取a的高4位的值;
+
+	2. 为什么byte型数据的数值范围是-128~127。因为java中byte型数据占8位，且最高位表示符号位。计算机中用补码保存数值，
+整数的补码是其本身，显然byte型数据最大值为0111 1111，这个值是127。负数的补码是它的绝对值取反加1，因此负数的最大值应该将
+符号位意外的位都写成0，即1000 0000，对后面部分000 0000取反加1得到1000 0000，注意这是一个数值，所以最高位不是符号位，这个
+数值是128，所以1000 000表示的是-128;
+
+	3. 为什么byte型数据在转换成16进制字符串时，要与上0xff。byte是8位2进制，0xff转换为8位2进制就是1111 1111。对于byte型
+数据来说, 与上0xff之后还是它本身。但是java中转换16进制字符串的方法在Integer类中，这个类的toHexString方法接收一个int型参数。
+在将byte b = - 10直接转换为int i = b时，因为int型数据有32位，因此剩余的24位会全部用1来补全，此时i和b在java中的十进制数值虽
+然一样，但是他们的二进制表示就不一样了。b的二进制表示为1111 0110, 而i却是1111 1111 1111 1111 1111 1111 1111 0110。在调用
+toHexString方法时，该方法会先将参数转化成一个int型数据，那么直接写toHexString(b)的结果就是ffff fff6。而将byte型数据与上0xff
+后保留了原本的byte的8位，而高位由0补全，即b & 0xff表示为二进制为0000 0000 0000 0000 0000 0000 1111 0110, 这个数转化成16进制
+为f6, 这才是正确的结果。即& 0xff保证了byte型数据转换成int型时，它的二进制数值不变;
+
+	4. 另外转换成16进制字符串时，一个byte型数据最多需要一个两位16进制数表示。小于16时要在前面补0来保持两位一组，即15应写
+为0f。很显然byte转换成的16进制字符串，凡是大于7f(即127)的都表示这个byte是负数;
+
+	5. 在java中调用getBytes()方法时，java将字符串中的汉字等特殊符号转换后的byte数组的长度是不确定的，这跟编码方式有关;
+但是一个英文字母转换成的byte数组长度一定只有1, 例如"d".getBytes() 或 "d".getBytes("UTF-8")的结果都是[100];
+
+3. 字符串和十六进制字符串之间的相互转换
+	1. 将任意字符串转换为十六进制字符串
+		// 用Integer的方法
+		1. String string2HexString1(String str) {
+			// 这里一定要指定编码类型, 反向转换时也要指定类型
+			Byte[] b = str.getBytes("UTF-8");
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 0; i < b.length; i++) {
+				// 为了保证低8位的一致，这里必须要& 0xff
+				int t = b[i] & 0xff;
+				String s = Integer.toHexString(t);
+				if (t <= 0x0f) {
+					s = "0" + s;
+				}
+				sb.append(s);
+			}
+
+			return sb.toString();
+		}
+
+		// 自己手动转换
+		2. String string2HexString2(String str) {
+			// 这个数组具有这样的特点hexDights[i] == i
+			char[] hexDigits = {'0', '1', '2', '3', '4', '5', ... ,'a', 'b', ... , 'f'};
+			byte[] b = str.getBytes("UTF-8");
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 0; i < b.length; i++) {
+				// 任何一个b[i]都可以表示为 xxxx xxxx
+				// 得到高4位的值
+				int high = (b[i] & 0xf0) >> 4;
+				// 得到低4位的值
+				int low = b[i] & 0x0f;
+				
+				sb.append(String.valueOf(hexDigits[high]) + String.valueOf(hexDigits[low]));
+			}
+			
+			return sb.toString();
+		}
+	
+	2. 将十六进制字符串转换为字符串
+		String hexStringToString(String hex) {
+			byte[] b = new byte[hex.length / 2];
+
+			for (int i = 0; i < b.length; i++) {
+				// 以16进制解析字符串。直接将得到的int型数据转化成byte即可
+				b[i] = (byte) Integer.parseInt(hex.subString(i * 2, i * 2 + 2), 16);
+			}
+			return new String(b, "UTF-8");
+		}
+		
+	3. 进制与字符串 http://www.jb51.net/article/18146.htm
+
+4. java中的编码 https://www.cnblogs.com/lslk89/p/6898526.html
+
+5. editplus换行
+	1. Document->Word-wrap;
+
+	2. 可以设置为定格换行还是自定义换行的列数: tool->preferences->setting&syntax->word wrap, 该界面选择边缘换行还是
+自定义换行的行数;
+
+6. >>与>>>的区别
+	1. 注意任何位运算包括&，|，>>, >>>等都会先将数转换成int型数据再操作, 得到的也是int型数据。
+例如byte a = -5; int b = a >> 2 或 byte b = (byte)(a >> 2);
+	
+	2. 对于正数>>和>>>是一样的，都是将二进制数向右移，空位用0补全
+
+	3. 对于负数，>>操作都是补1。而>>>操作符是补0。换句话说>>>会将负数转正。但是1中已经提到过这些操作都是针对int型数据的，
+例如
+	byte a = -5; // 1111 1011 
+	int b = a >>> 2; 
+
+	则b的值为1073741822。这是因为1111 1011先被转化为
+1111 1111 1111 1111 1111 1111 1111 1011然后右移补0得到0011 1111 1111 1111 1111 1111 1111 1110, 这个数的大小为2^30 - 2。
+如果令byte c = (byte) b，则c相当于是b这个int型取后8位即1111 1110，这个值为-2
