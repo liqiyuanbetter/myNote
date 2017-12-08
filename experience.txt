@@ -1216,7 +1216,7 @@ toHexString方法时，该方法会先将参数转化成一个int型数据，那么直接写toHexString(b)
 			byte[] b = new byte[hex.length / 2];
 
 			for (int i = 0; i < b.length; i++) {
-				// 以16进制解析字符串。直接将得到的int型数据转化成byte即可
+				// 以16进制解析字符串。直接将得到的int型数据转化成byte即可, 该为负的自然为负
 				b[i] = (byte) Integer.parseInt(hex.subString(i * 2, i * 2 + 2), 16);
 			}
 			return new String(b, "UTF-8");
@@ -1243,6 +1243,72 @@ toHexString方法时，该方法会先将参数转化成一个int型数据，那么直接写toHexString(b)
 	byte a = -5; // 1111 1011 
 	int b = a >>> 2; 
 
-	则b的值为1073741822。这是因为1111 1011先被转化为
+	则b的值为1073741822。这是因为1111 1011先被转化为int型数据，占32位，即
 1111 1111 1111 1111 1111 1111 1111 1011然后右移补0得到0011 1111 1111 1111 1111 1111 1111 1110, 这个数的大小为2^30 - 2。
-如果令byte c = (byte) b，则c相当于是b这个int型取后8位即1111 1110，这个值为-2
+如果强制转型byte c = (byte) b，则c相当于是b这个int型取低8位即1111 1110，这个值为-2
+
+2017.12.08
+1. 查看端口被哪个进程占用: https://jingyan.baidu.com/article/3c48dd34491d47e10be358b8.html
+
+2. 关于bat批处理文件
+	1. 通常在批处理文件的第一行加上echo off, 设置命令不回显，这样执行批处理文件时，文件里的所有命令包括路径如
+C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不显示，在echo off前面加上 @。另外如果只想
+让某一条命令不回显，可以在这条命令前加@ 。另外echo的功能就是在屏幕上打印信息，这些信息会换行。
+
+	2. 注释
+		1. :: 双冒号后的都是注释
+
+		2. rem rem后的都是注释
+
+		3. 利用语法规则
+			goto comment
+			***
+			***
+			:comment
+		程序执行时直接跳到comment，显然这之间的不管对错都不执行，可以起到注释的功能
+	
+	3. 设置批处理文件的标题, 在第一行写title title_name 即可
+
+	4. goto命令和call命令
+		1. 给bat文件添加标签的方法是:label_name, 注意是冒号在前面，标签名在后面; 
+
+		2. goto label_name 命令让程序从某一个标签处开始执行;
+		
+		3. call命令可以开始执行另一个bat文件，如call another.bat, 也可以向goto命令那样开始执行某一个标签后的内容，
+	注意call命令在执行某一标签后面内容时，标签前面要加冒号, 如 call :label_name。另外，call和goto的重要区别在于call在
+	执行完毕之后会继续执行之后的内容，goto是直接跳到标签处;
+
+		4. 此外call命令执行时可以传参数过去, 如call :label_name1 "value", 那么在label_name1里可以通过echo %1来打印
+	"value"的值, 另外这里如果打印%~1那么打印的是value，即去掉了冒号。如果前面有冒号则都去掉，如果只有后面有则不去;
+
+		5. 打印系统时间利用系统变量，%date%表示日期，显示为2017/12/08 周五，%time%表示时间，显示为11:46:56.56。
+	我们可以自定义时间格式，方法为%date:~ 0, 4%这条语句的结果是2017, 它表示截取date字符串0开始的包括0在内的一共4个字符。
+	注意是变量名:~。%date%和%time%是系统变量，查看其它系统变量 http://www.jb51.net/article/49196.htm ;
+
+	5. 设置变量用set, 如set number=9, 然后可用echo %number%来查看number的值。
+		1. 直接写set可以看到所有的可用变量，包括所有的系统变量如path, classpath等。set X可以查看所有
+	以X开头的系统变量，相当于一个模糊查询;
+
+		2. 在set中使用表达式如set /a b = 1 + 3, echo %b%, 结果为4;
+
+		3. 利用set来接收用户输入的值，如set /p in="XXX"这条语句的显示结果为:XXX:，此时我们可以输入一个值，然后
+	echo %in%就能看到我们刚才输入的值;
+
+		4. 还可以用set来声明一个类似数组的东西，然后用for循环遍历，如:
+			set array = a, b, c
+			for %%i in (%array%) do (
+				echo %%i
+			)
+		%%i名字随便取, 被遍历的变量一定要加()
+
+		5. 用set来替换字符串中的值: set new = %old:cc=11%，将变量old中的第一个cc替换为11，注意只会替换第一次匹配到
+	的位置不会替换所有;
+
+	批处理设置系统变量 http://blog.csdn.net/peng790/article/details/52503489
+	批处理计算器 http://www.jb51.net/article/30074.htm
+	比较数值大小 https://wenku.baidu.com/view/ac147286ec3a87c24028c419.html
+	http://www.jb51.net/article/49196.htm
+	批处理设置服务启动类型 https://zhidao.baidu.com/question/1886262090305732908.html
+	set详解 http://www.jb51.net/article/18973_all.htm http://blog.csdn.net/fw0124/article/details/39996265
+	热点 http://www.jb51.net/os/windows/266775.html
+	计算器 http://www.jb51.net/article/30074.htm
