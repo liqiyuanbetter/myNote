@@ -1162,7 +1162,8 @@ byte a = 34; a & 0xf0很明显就是要取a的高4位的值;
 然一样，但是他们的二进制表示就不一样了。b的二进制表示为1111 0110, 而i却是1111 1111 1111 1111 1111 1111 1111 0110。在调用
 toHexString方法时，该方法会先将参数转化成一个int型数据，那么直接写toHexString(b)的结果就是ffff fff6。而将byte型数据与上0xff
 后保留了原本的byte的8位，而高位由0补全，即b & 0xff表示为二进制为0000 0000 0000 0000 0000 0000 1111 0110, 这个数转化成16进制
-为f6, 这才是正确的结果。即& 0xff保证了byte型数据转换成int型时，它的二进制数值不变;
+为f6, 这才是正确的结果。即& 0xff保证了byte型数据转换成int型时，它的二进制数值不变。另外，当我们用一个int型数据去和0xff作与
+运算时，0xff会将其他位置全部补为0来补齐32位，因此负的int型数据会被转化成正数;
 
 	4. 另外转换成16进制字符串时，一个byte型数据最多需要一个两位16进制数表示。小于16时要在前面补0来保持两位一组，即15应写
 为0f。很显然byte转换成的16进制字符串，凡是大于7f(即127)的都表示这个byte是负数;
@@ -1289,7 +1290,7 @@ C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不
 		1. 直接写set可以看到所有的可用变量，包括所有的系统变量如path, classpath等。set X可以查看所有
 	以X开头的系统变量，相当于一个模糊查询;
 
-		2. 在set中使用表达式如set /a b = 1 + 3, echo %b%, 结果为4;
+		2. 在set中使用表达式如set /a b = 1 + 3, echo %b%, 结果为。注意尽量不要写多余的空格。
 
 		3. 利用set来接收用户输入的值，如set /p in="XXX"这条语句的显示结果为:XXX:，此时我们可以输入一个值，然后
 	echo %in%就能看到我们刚才输入的值;
@@ -1299,10 +1300,23 @@ C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不
 			for %%i in (%array%) do (
 				echo %%i
 			)
-		%%i名字随便取, 被遍历的变量一定要加()
+		%%i名字随便取, 被遍历的变量一定要加(), 注意for循环后面要跟一个do关键字，后面也有括号，if判断不用跟do
 
 		5. 用set来替换字符串中的值: set new = %old:cc=11%，将变量old中的第一个cc替换为11，注意只会替换第一次匹配到
 	的位置不会替换所有;
+	
+	6. if命令
+		1. 判断数值大小有以下几个关键字EQU - 等于，NEQ - 不等于，LSS - 小于，LEQ - 小于或等于，GTR - 大于，
+	GEQ - 大于或等于, 写成
+		set a=3
+		if %a% gtr 3 (
+			echo 大于3
+		) else (
+			echo 小于3
+		)
+		注意else一定要跟在if语句的括号后面，不能不写括号就写else
+
+		2. 可以用if defined var 来判断var是否被定义过
 
 	批处理设置系统变量 http://blog.csdn.net/peng790/article/details/52503489
 	批处理计算器 http://www.jb51.net/article/30074.htm
@@ -1312,3 +1326,8 @@ C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不
 	set详解 http://www.jb51.net/article/18973_all.htm http://blog.csdn.net/fw0124/article/details/39996265
 	热点 http://www.jb51.net/os/windows/266775.html
 	计算器 http://www.jb51.net/article/30074.htm
+	if http://www.jb51.net/article/14986.htm
+	choice http://blog.sina.com.cn/s/blog_67d923ed0100ivxh.html
+	7. pause和pause>nul的却别在于前者会显示按任意键继续，后者不会显示任何东西
+2017.12.11
+1. php基础教程 http://www.php.cn/code/39.html
