@@ -1316,7 +1316,16 @@ C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不
 		)
 		注意else一定要跟在if语句的括号后面，不能不写括号就写else
 
-		2. 可以用if defined var 来判断var是否被定义过
+		2. 可以用if defined var 来判断var是否被定义过。注意判断字符串的大小还是用==。
+	
+	7. choice命令可以用于指定选项并接收用户的选择
+		1. 基本用法为choice /c:xyz /m "word comment"，这个会在控制台打印word comment [X,Y,Z]?这里的xyz选项是被作为
+	单个字符来显示的，每一个字符对应一个选项;
+
+		2. 用if errorlevel 3(2, 1) goto tag来接收输入并作出相应处理，数字代表着参数的顺序，从1开始。一定要倒序进行
+	处理且通常都要搭配goto语句，否则会执行多个选项;
+
+	8. pause和pause>nul的却别在于前者会显示按任意键继续，后者不会显示任何东西
 
 	批处理设置系统变量 http://blog.csdn.net/peng790/article/details/52503489
 	批处理计算器 http://www.jb51.net/article/30074.htm
@@ -1328,6 +1337,15 @@ C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不
 	计算器 http://www.jb51.net/article/30074.htm
 	if http://www.jb51.net/article/14986.htm
 	choice http://blog.sina.com.cn/s/blog_67d923ed0100ivxh.html
-	7. pause和pause>nul的却别在于前者会显示按任意键继续，后者不会显示任何东西
+
 2017.12.11
 1. php基础教程 http://www.php.cn/code/39.html
+
+2017.12.13
+1. discuz数据字典 http://discuzt.cr180.com/discuzcode-db.html
+
+2. ucenter单点登录 http://blog.csdn.net/doegoo/article/details/50748182
+
+3. mybatis学习：
+	1. http://www.cnblogs.com/xdp-gacl/p/4262895.html
+	2. http://www.mybatis.org/mybatis-3/zh/getting-started.html
