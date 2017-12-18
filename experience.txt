@@ -872,7 +872,10 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	7. git用户名和账号
 		1. 可通过git config user.email来修改当前用户，如果这个email对应着github上的一个账号则，user.name的修改是无效
 	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name
-
+	
+	8. 使用eclipse实现上传与下载
+		1. 用eclipse上传项目到git http://blog.csdn.net/ymfwj/article/details/52491194
+		2. 用eclipse来pull代码 https://www.cnblogs.com/qlong8807/p/6098406.html
 
 2017.11.16
 1. 火狐早期版本下载 https://ftp.mozilla.org/pub/firefox/releases/56.0/win64/zh-CN/ 
@@ -1254,7 +1257,8 @@ toHexString方法时，该方法会先将参数转化成一个int型数据，那么直接写toHexString(b)
 2. 关于bat批处理文件
 	1. 通常在批处理文件的第一行加上echo off, 设置命令不回显，这样执行批处理文件时，文件里的所有命令包括路径如
 C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不显示，在echo off前面加上 @。另外如果只想
-让某一条命令不回显，可以在这条命令前加@ 。另外echo的功能就是在屏幕上打印信息，这些信息会换行。
+让某一条命令不回显，可以在这条命令前加@ 。另外echo的功能就是在屏幕上打印信息，这些信息会换行。常常用echo.在echo off模式下
+输出一个换行;
 
 	2. 注释
 		1. :: 双冒号后的都是注释
@@ -1306,26 +1310,44 @@ C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不
 	的位置不会替换所有;
 	
 	6. if命令
-		1. 判断数值大小有以下几个关键字EQU - 等于，NEQ - 不等于，LSS - 小于，LEQ - 小于或等于，GTR - 大于，
-	GEQ - 大于或等于, 写成
+		1. 判断数值大小有以下几个关键字EQU等于，NEQ不等于，LSS小于，LEQ小于或等于，GTR大于，GEQ大于或等于, 例如
 		set a=3
 		if %a% gtr 3 (
 			echo 大于3
 		) else (
 			echo 小于3
 		)
-		注意else一定要跟在if语句的括号后面，不能不写括号就写else
+		注意else一定要跟在if语句的括号后面，不能不写括号就写else。注意判断字符串的大小还是用==。
 
-		2. 可以用if defined var 来判断var是否被定义过。注意判断字符串的大小还是用==。
+		2. 可以用if defined var 来判断var是否被定义过, var两边不用再加%
 	
 	7. choice命令可以用于指定选项并接收用户的选择
 		1. 基本用法为choice /c:xyz /m "word comment"，这个会在控制台打印word comment [X,Y,Z]?这里的xyz选项是被作为
-	单个字符来显示的，每一个字符对应一个选项;
+	单个字符来显示的，每一个字符对应一个选项。它和set /p a=..的一个显著区别是choice不需要敲回车;
 
 		2. 用if errorlevel 3(2, 1) goto tag来接收输入并作出相应处理，数字代表着参数的顺序，从1开始。一定要倒序进行
 	处理且通常都要搭配goto语句，否则会执行多个选项;
 
-	8. pause和pause>nul的却别在于前者会显示按任意键继续，后者不会显示任何东西
+	8. pause和pause>nul的却别在于前者会显示按任意键继续，后者不会显示任何东西，>nul经常用于不显示命令输出的结果。例如
+echo a本来的结果是a, 但是加上echo a>nul 后就什么也不会显示。注意是nul不是null，如果写成>null则表示将输出结果输出到null这个
+文件;
+	
+	9. &, &&, |, ||解释
+		1. &用于分隔一个命令行中的多个命令，如echo a & echo b, 会先打印a在打印b, 即前后两个命令都会执行;
+
+		2. &&表示上一句执行成功才会执行下一句, 如，xcopy f:\t.txt d:\ && echo 复制成功。则复制成功后会打印复制成功;
+	xcopy用于复制文件, 基本命令为xcopy sourcedir targetdir。具体参数可以通过xcopy /?查看。
+
+		3. ||表示上一句执行失败才执行下一句，| 表示用上一句的输出作为下一句的输入，如
+	echo 123 | find "a" && echo find a || echo can't find a，这里执行find "a"命令失败后不会执行打印find a命令。
+	而如果不执行打印find a命令就会执行打印can't find a命令
+
+	10. 文件或文件夹的删除(都是永久删除)
+		1. 删除文件夹及其所有的子目录和文件用rd /s /q f:\s1 这将删除s1这个文件夹及其所有的子目录和文件。/s删除子目录,
+	加上/q后不需要按y确认就会删除;
+
+		2. 删除文件用del命令。例如通过del /s f:\s1\1.jpg会把s1及s1所有的子目录中的名为1.jpg的文件都删除，如果不加/s只
+	会删除s1这个文件夹下的文件。也可以通过通配符删除某一类型的文件, 如del /s f:\s1\*.jpg
 
 	批处理设置系统变量 http://blog.csdn.net/peng790/article/details/52503489
 	批处理计算器 http://www.jb51.net/article/30074.htm
@@ -1333,11 +1355,11 @@ C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不
 	http://www.jb51.net/article/49196.htm
 	批处理设置服务启动类型 https://zhidao.baidu.com/question/1886262090305732908.html
 	set详解 http://www.jb51.net/article/18973_all.htm http://blog.csdn.net/fw0124/article/details/39996265
-	热点 http://www.jb51.net/os/windows/266775.html
-	计算器 http://www.jb51.net/article/30074.htm
 	if http://www.jb51.net/article/14986.htm
 	choice http://blog.sina.com.cn/s/blog_67d923ed0100ivxh.html
-
+	批处理教程: http://www.jb51.net/article/7131_all.htm
+	https://zhidao.baidu.com/question/361936783428104452.html
+	https://jingyan.baidu.com/article/3c48dd34491d47e10be358b8.html
 2017.12.11
 1. php基础教程 http://www.php.cn/code/39.html
 
