@@ -66,18 +66,18 @@ Object
 2017.09.18
 1. ½«ÏîÄ¿²¿Êğµ½·şÎñÆ÷ÉÏµÄ²½Öè
 	1. ÔÚeclipseÖĞ½«ÏîÄ¿´ò°ü, ·½·¨ÎªÔÚmavenÖĞÖ´ĞĞÃüÁîclean package;
+
 	2. ÏîÄ¿²¿Êğµ½·şÎñÆ÷ÉÏºó¿ÉÒÔ²»ÓÃĞŞ¸Ä·şÎñÆ÷ÉÏµÄÓ¦ÓÃµÄÊı¾İ¿âµØÖ·£¬ÒòÎªÊı¾İ¿âÔÚ·şÎñÆ÷ÉÏ£¬Ó¦ÓÃÅäÖÃµÄÊı¾İ
 µØÖ·ÊÇ127.0.0.1£¬ÔËĞĞÔÚ·şÎñÆ÷µÄÓ¦ÓÃÊ¹ÓÃÕâ¸öµØÖ·Ê±¾ÍÊÇÁ¬½ÓµÄ·şÎñÆ÷ÉÏµÄÊı¾İ¿â;
+
 	3. ¶ÔÓ¦ÓÃµÄ·ÃÎÊÒ²ÀàËÆ£¬±¾µØ·ÃÎÊÊ±Í¨¹ılocalhost£¬·şÎñÆ÷ÉÏ½áºÏngixÖ»ĞèÒª½«µØÖ·»»Îª·şÎñÆ÷ip¡£ÀıÈç£¬ÔÚ·şÎñÆ÷±¾µØ·ÃÎÊ
 Ê±Ò²ÊÇÍ¨¹ılocalhost:port/proName£¬ÏÖÔÚÍ¨¹ıngixÓ³Éä·ÃÎÊ--·şÎñÆ÷ip(Ä¬ÈÏ¶Ë¿Ú80)/proNameÊ±Ö±½ÓÓ³Éäµ½localhost:port/proName£¬
 ÕâÑùÀ´ÊµÏÖÔÚ·şÎñÆ÷ÉÏÔËĞĞÔÚtomcatÖĞµÄÏîÄ¿¡£²»Ö±½ÓÊ¹ÓÃ·şÎñÆ÷µØÖ·:port/proNameµÄÔ­ÒòÊÇ·şÎñÆ÷Ö»¶ÔÍâ±©Â¶80¶Ë¿Ú£¬¶øÍâ²¿Í¨¹ı
 ÇëÇóµØÖ·µÄ²»Í¬Ó³Éäµ½·şÎñÆ÷±¾µØµÄ²»Í¬¶Ë¿ÚÉÏ£¬Òò´Ë·ÃÎÊ·şÎñÆ÷ÉÏµÄÓ¦ÓÃÊ±¿ÉÒÔ²»¼Ó¶Ë¿ÚºÅ£¬¶øÊÇÍ¨¹ıngix×Ô¶¯Ó³ÉäÁË;
+
 	4. ½«war°ü·ÅÈëtomcatµÄwebapp¼´¿É£¬tomcat»á×Ô¶¯½âÊÍ·­ÒëÏîÄ¿;
 
 2. ÔÚtomcatµÄbin/catalina.batÖĞÍ¨¹ısetTitle¿ÉÒÔÖ¸¶¨·şÎñÆô¶¯µÄÃû³Æ£¬Ä¬ÈÏÎªtomcat¡£ÕâÑù¿ÉÒÔÇø·ÖÔËĞĞÔÚ²»Í¬°æ±¾tomcatÉÏµÄÓ¦ÓÃ¡£
-3. ½«tomcatµÄÏîÄ¿ÅäÖÃÔÚÆäËûÎÄ¼ş¼ĞµÄ·½·¨
-4. github½Ì³Ì
-	1. http://jingyan.baidu.com/article/f7ff0bfc7181492e27bb1360.html
 
 2017.09.19
 js±äÁ¿ÉùÃ÷ÌáÉı
@@ -106,42 +106,42 @@ js±äÁ¿ÉùÃ÷ÌáÉı
 2017.09.21
 
 <build>
-		<finalName>MyDemo</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<!-- <port>8088</port>
-					<url>http://localhost:8080/Demo</url>
-					<server>local_tomcat</server>
-					<ignorePackaging>true</ignorePackaging>
-					<contextReloadable>true</contextReloadable> -->
-					<!-- server¡¢username¡¢password¶ÔÓ¦mavenµÄsettingÏÂµÄÅäÖÃ -->
-					<!-- <server>
-						<id>tomcat</id>
-						<username>lqy</username>
-						<password>lqy</password>
-					</server> -->
-					<!-- <path>/${project.build.finalName}</path> -->
-					<!-- warÎÄ¼şÂ·¾¶È±Ê¡Çé¿öÏÂÖ¸Ïòtarget -->
-					<!--<warFile>${basedir}/target/${project.build.finalName}.war</warFile> -->
-				</configuration>
-			</plugin>
+	<finalName>MyDemo</finalName>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.tomcat.maven</groupId>
+			<artifactId>tomcat7-maven-plugin</artifactId>
+			<version>2.2</version>
+			<configuration>
+				<!-- <port>8088</port>
+				<url>http://localhost:8080/Demo</url>
+				<server>local_tomcat</server>
+				<ignorePackaging>true</ignorePackaging>
+				<contextReloadable>true</contextReloadable> -->
+				<!-- server¡¢username¡¢password¶ÔÓ¦mavenµÄsettingÏÂµÄÅäÖÃ -->
+				<!-- <server>
+					<id>tomcat</id>
+					<username>lqy</username>
+					<password>lqy</password>
+				</server> -->
+				<!-- <path>/${project.build.finalName}</path> -->
+				<!-- warÎÄ¼şÂ·¾¶È±Ê¡Çé¿öÏÂÖ¸Ïòtarget -->
+				<!--<warFile>${basedir}/target/${project.build.finalName}.war</warFile> -->
+			</configuration>
+		</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.6.1</version>
+			<configuration>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+		</plugin>
 
-		</plugins>
-	</build>
+	</plugins>
+</build>
 1. °²×°mysql
 	1. 5.7µÄ¸ß°æ±¾
 		1. ½âÑ¹mysqlºóÔÚpathÖĞÌí¼ÓmysqlµÄbinÄ¿Â¼µÄÂ·¾¶£¬¿É²ÉÈ¡Ìí¼Ó±äÁ¿%MYSQL_HOME%µÄĞÎÊ½;
@@ -1417,8 +1417,7 @@ echo a±¾À´µÄ½á¹ûÊÇa, µ«ÊÇ¼ÓÉÏecho a>nul ºó¾ÍÊ²Ã´Ò²²»»áÏÔÊ¾¡£×¢ÒâÊÇnul²»ÊÇnull£¬È
 	if http://www.jb51.net/article/14986.htm
 	choice http://blog.sina.com.cn/s/blog_67d923ed0100ivxh.html
 	Åú´¦Àí½Ì³Ì: http://www.jb51.net/article/7131_all.htm
-	https://zhidao.baidu.com/question/361936783428104452.html
-	https://jingyan.baidu.com/article/3c48dd34491d47e10be358b8.html
+	
 2017.12.11
 1. php»ù´¡½Ì³Ì http://www.php.cn/code/39.html
 
@@ -1430,3 +1429,7 @@ echo a±¾À´µÄ½á¹ûÊÇa, µ«ÊÇ¼ÓÉÏecho a>nul ºó¾ÍÊ²Ã´Ò²²»»áÏÔÊ¾¡£×¢ÒâÊÇnul²»ÊÇnull£¬È
 3. mybatisÑ§Ï°£º
 	1. http://www.cnblogs.com/xdp-gacl/p/4262895.html
 	2. http://www.mybatis.org/mybatis-3/zh/getting-started.html
+
+2017.12.19
+1. ½«eclipseÉÏÏîÄ¿ÉÏ´«µ½gitÉÏ http://blog.csdn.net/ymfwj/article/details/52491194
+2. pullÊ§Ğ§°ì·¨ https://www.cnblogs.com/qlong8807/p/6098406.html
