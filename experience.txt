@@ -1456,3 +1456,65 @@ git clone是一样的，相当于只是通过eclipse将一个git项目拉到了本地，但是该项目和ecl
 	http://www.51test.net/show/8653714.html
 
 普通话报名时间 http://www.51test.net/pthsp/baoming/
+
+2017.12.21
+1. json转化
+	1. 后台常用fastjson包里的方法
+		1. 对象转json字符串--JSON.toJSONString(Object o)可以将对象o转换成一个json字符串，如果这个对象里面
+	有空的属性值，则直接略过该属性;
+
+		2. JSON.parseObject(String json)方法可以将一个json字符串转换成一个JSONObject对象，这个对象可以通过
+	getString("keyName")等方法来获取json字符串里的属性值。另一个重载方法JSON.parseObject(String json, class<T>)
+	可以将json字符串转化成相应的实体类对象
+
+	2. 前台直接用内置方法
+		1. 将json对象(js对象)转换成json字符串，用var str = JSON.stringify(obj), 注意如果要使用obj.toJSONString, 
+	必须要引入https://github.com/douglascrockford/JSON-js/blob/master/json.js包。该方法会忽略掉对象中的函数;
+		
+		2. 将json字符串转化为json对象用var obj = JSON.parse(str)。使用str.parseJson同样要引入json.js包;
+
+		3. stringify实际上有三个参数
+			1. 第二个参数用于过滤，可以是函数，也可以是数组
+				1. 当它是数组时，则只有在数组中的属性名参会被序列化到最终的JSON字符串中, 如:
+					var data = {k1: "v1", "k2", "v2"};
+					console.log(JSON.stringify(data, ["k1"])); // {"k1": "v1"}
+			
+				2. 第二个参数是函数时 
+			https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+
+			2. 第三个参数用于控制每一级别比上一级别多缩进几个空格，如JSON.stringify(data, 2)
+
+2. js的数据类型
+	1. js有7中数据类型, Undefined, Null, Boolean, String, Number, Object, ES6引入了一种新的原始数据Symbol;
+
+3. ==和===，后者会比较类型是否相同。如"55" == 55// true, "55" === 55 // false
+
+4. console.log("a", "b")相当于输出a b;
+
+5. json对象数据格式，当数据里有数组且数组的元素还是对象时，要先写[], 再写{}, 如
+	var data = {
+		name: "liqiyuan",
+		school: [
+			{id: "001", name: "lzgz"},
+			{id: "002", name: "nchu"}
+		]
+	}
+
+6. 使用$.ajax()在前后台传送数据时
+	1. 要将一个js对象转换成json字符串传送到服务端, 可以使用JSON.stringify。注意这里不用指定
+contentType: application/json也可以。不过此时必须指定type为POST且后台如果是一个servlet, 则只能通过流的方式读取数据，读取
+到的是一个json字符串;
+
+	2. 如果将type指定为GET, 则只能传js对象到后台，后台可以通过getParameter(keyName)的方式获取前台传过来的数据;
+
+	3. 在success中接收后台传过来的数据时，如果不添加dataType属性，则传过来的都是字符串。因此可以在前台通过
+var obj = JSON.parse(data)将数据转换成js对象，然后就可以通过obj.attrName来获取响应的属性值。如果添加了
+dataType: "json", 则当后台传送json数据过来时，前台接收到的data就会直接将该字符串转化成一个js对象，不用再作转换。此时
+如果后台传过来的数据不是一个json字符串，则会跳到error: function() {}里面;
+
+7. java在复杂情况下获取本机ip
+	1. https://www.cnblogs.com/xiaoBlog2016/p/7076230.html
+	2. http://www.jb51.net/article/93343.htm
+	3. http://blog.csdn.net/gjb724332682/article/details/52427032
+
+8. jquery元素选择器得到了多个元素时，不能像原生js那样写[0]等，要写成如.eq(0)等形式, 如$("img").eq(0).attr("src");
