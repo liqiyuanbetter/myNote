@@ -404,36 +404,46 @@ addHeader方法可以设置cookie为httponly的，例如
 	1. js向服务器发送数据一般步骤
 	
 	var xmlHttp = new XMLHttpRequest()
-	// 获取请求状态，当设置async为false时不用写这一段
+	// 状态改变时产生的事件，当设置async为false时不用写这一段
 	xmlHttp.onreadystatechange = function() {
 		if (xmlHttp.status == 200 && xmlHttp.readyState == 4) {
 			alert(xmlHttp.responseText..);
 		}
 	}
 	xmlHttp.open("请求方式(POST)", "请求地址(http:..)", 是否为异步(true));
-	注意以POST方式发起请求时，也可以在请求地址后面跟上?参数=值，后台也能获取到
-
-	当请求方式为POST，想向HTML表单那样提交数据时，可以对请求头作如下设置
-	xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
-	xml.send("数据内容(如: par1=va1&par2=va2)");
-	这样在后台就可以通过request.getParameter()的方式来获取数据。注意如果不设置请求头，后台就只能通过输入流来获取前台
-传输过来的数据;而且设置charset=UTF-8可以避免后台接收到的数据是乱码;
-
-	相对应的，在使用java的HttpURLConnection类时，不用调用connection的setRequestProperty("Content-type", 
-"application/x-www-form-urlencoded;charset=utf-8")[XHR的方法是setRequestHeader]。无论有没有给connection设置这个请求参数，
-在servlet中都可以通过getParameter方法来获取参数，跟在url地址后面的参数也可以通过getParameter来获取。但是传给服务器中的参
-数有中文时, 如果不设置这个属性，服务器收到的就是乱码。
+	xmlHttp.send() // 注意一定要写send方法，不然就没有发起请求
 	
-	设置这个有点像提交form表单时，设置表单的enctype属性。它用于规定发送到服务器之前如何对表单数据进行编码;
+	2. 后台获取数据方式
+		1. 以GET方式发起的请求，数据参数只能跟在url地址的后面，且后台只能通过request.getParameter的方式来获取数
+	据，不能通过request.getInputStream的方式来获取数据;
 
-	2.  注意在发送GET请求时，send()里面也可以写东西，但是后台是看不到的。控制台中也可以看到send里面的数据并没有被提交；
+		2. 以POST方式发起请求时，也可以在请求地址后面跟上?参数=值，后台也能够通过getParameter的方式获取到数据。
+	同时也能够通过getInputStream来获取到send(data)里面的数据，例如一个字符串。url中数据和send中数据互相不会干扰。
+	如果send中的data是一个js对象，那后台从输入流中获取到的只有一个字符串[Object object], 因此不能直接传js对象到后台;
+		
+		3. 请求地址后用&连接的参数总是能通过getParameter的方式获取。但当请求方式为POST时，可以通过设置请求头
+	xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+	的方式来让send中的数据也可以在后台通过getParameter的方式来获取，就好像是HTML表单提交数据一样。但此时send中的数据
+	格式必须是xml.send("par1=va1&par2=va2")的样式。且设置请求头后因为指定了编码方式还可以避免中文出现乱码。
+	application/x-www-form-urlencoded实际上也是form表单提交时enctype的默认属性;
 
-	3. 发送GET请求: xmlHttp.open("GET", "...?par1=v1&par2=v2", true);
+		4. 需要注意的是，一旦通过这种方式设置了请求头为表单提交的方式，且通过getParameter获取了send中的数据，则
+	不能再通过输入流来获取send中数据。但是如果先通过输入流获取了send中的数据，那么getParameter就只能获取到跟在url地址
+	中的参数。换句话说send中数据只能通过其中一种方式获取一次;
+	
+		5. 相对应的，在使用java的HttpURLConnection类时，不用调用connection的setRequestProperty("Content-type", 
+	"application/x-www-form-urlencoded;charset=utf-8")[XHR的方法是setRequestHeader]。无论有没有给connection设置这个
+	请求参数，在servlet中都可以通过getParameter方法来获取参数，跟在url地址后面的参数也可以通过getParameter来获取。
+	但是传给服务器中的参数有中文时, 如果不设置这个属性，服务器收到的就是乱码。
+	
+	3. 注意在发送GET请求时，send()里面也可以写东西，但是后台是看不到的。控制台中也可以看到send里面的数据并没有被提交
 
 	4. onreadystatechange并非一定要写在send()后面，因为是异步的。但是send必须写在open后面。添加http头必须
 写在send的前面(xmlHttp.setRequestHeader), open()的后面;
 
 	5. connection的是setRequestProperty，xhr的是setRequestHeader;
+
+	6. 如果指定xhr的访问方式为同步的，则直接将获取responseText语句放在send()后面即可而不用写onreadystatechange;
 
 2017.10.09
 1. 在ajax请求中，服务器无法设置cookie，即使在response header中有setcookie;
@@ -649,19 +659,21 @@ multipart/form-data
 的schedule方法可以定时循环执行某一个方法。schedule方法的第一个参数是一个继承了TimerTask这个抽象类的一个类;
 
 3. 关于普通轮询和长轮询
-	1. 普通轮询：客户端向服务器不断发送Ajax请求，无论服务器有没有响应，客户端都发起第二次请求。客户端不断的向服务器发送
-请求，显然是不合理的;
+	1. 普通轮询：客户端向服务器不断发送Ajax请求，无论服务器有没有响应，客户端都发起第二次请求。客户端不顾服务器的
+响应而不断发送请求，显然是不合理的;
 
 	2. 长轮询：客户端不断向服务器发送Ajax请求，服务器有数据更新时才响应，否则就hold住连接。而服务器未响应时，客户端不会
 发起下一次请求，如果第二次请求返回数据之后，第三次请求又会立刻发出;
 
-	3. 使用xhr向服务器发送请求有两种方式，一种是将xhr对象写作全局变量，一种是将其作为局部变量。
+	3. 通过普通轮询向服务器发送请求有两种方式，一种是将xhr对象写作全局变量，一种是将其作为局部变量。
 		1. 作为全局变量时客户端每次对服务器的请求都是基于同一个xhr对象，如果当前一个请求还没有得到服务器响
-	应时客户端马上发起第二次请求，则前一次请求就会被停止掉。
+	应时客户端马上发起第二次请求，则前一次请求就会被停止掉。在这种情况下，如果客户端发起请求的频率比服务器的响应速度
+	还要快，则会出现永远不会得到请求的结果。因为每发起新的请求时前一次请求还来不及响应就被中止了;
 
 		2. 将xhr作为局部变量写在函数中时, 每请求一次就创建一个xhr对象，每一个请求互不干扰。当前一个请求没有得到响应时，
 	第二个xhr已经开始发送请求，则第一个xhr会继续等待服务器的响应。程序中可以设计两个按钮，点一次发送一个请求来替换使用
-	setInterval不断发起请求的场景;
+	setInterval不断发起请求的场景。在这种方式下，如果服务器的响应时间是不一定的，有可能先发起的请求反而后得到响应，显
+	然不是很合理;
 
 		3. 注意如果使用jquery的ajax，它使用的不是同一个xhr对象，而是多个;
 	
@@ -1501,13 +1513,16 @@ git clone是一样的，相当于只是通过eclipse将一个git项目拉到了本地，但是该项目和ecl
 	}
 
 6. 使用$.ajax()在前后台传送数据时
-	1. 要将一个js对象转换成json字符串传送到服务端, 可以使用JSON.stringify。注意这里不用指定
+	1. 不能通过ajax直接传递一个普通字符串对象到后台，通常传递的是js对象或者json字符串。传递的是js对象时，不管是
+post还是get方式，后台都能够通过getParameter(keyName)的方式获取参数的值;
+
+	2. 要将一个js对象转换成json字符串传送到服务端, 可以使用JSON.stringify。注意这里不用指定
 contentType: application/json也可以。不过此时必须指定type为POST且后台如果是一个servlet, 则只能通过流的方式读取数据，读取
 到的是一个json字符串;
 
-	2. 如果将type指定为GET, 则只能传js对象到后台，后台可以通过getParameter(keyName)的方式获取前台传过来的数据;
+	3. 如果将type指定为GET, 则只能传js对象到后台，后台可以通过getParameter(keyName)的方式获取前台传过来的数据;
 
-	3. 在success中接收后台传过来的数据时，如果不添加dataType属性，则传过来的都是字符串。因此可以在前台通过
+	4. 在success中接收后台传过来的数据时，如果不添加dataType属性，则传过来的都是字符串。因此可以在前台通过
 var obj = JSON.parse(data)将数据转换成js对象，然后就可以通过obj.attrName来获取响应的属性值。如果添加了
 dataType: "json", 则当后台传送json数据过来时，前台接收到的data就会直接将该字符串转化成一个js对象，不用再作转换。此时
 如果后台传过来的数据不是一个json字符串，则会跳到error: function() {}里面;
@@ -1518,3 +1533,9 @@ dataType: "json", 则当后台传送json数据过来时，前台接收到的data就会直接将该字符串
 	3. http://blog.csdn.net/gjb724332682/article/details/52427032
 
 8. jquery元素选择器得到了多个元素时，不能像原生js那样写[0]等，要写成如.eq(0)等形式, 如$("img").eq(0).attr("src");
+
+2017.12.25
+1. js的concat用于连接数组或连接数组中的值，比如a = [1, 2, 3], 则a.concat(4, 5)结果是1, 2, 3, 4, 5。或者a = [1, 2, 3],
+b = [4, 5], a.concat(b)结果是1, 2, 3, 4, 5。也可以a.concat(a, a);
+
+2. 调用js的addEventListener事件时，可以.addEventListener("event", functionName())或functionName，不用写一个匿名函数;
