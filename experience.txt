@@ -1590,3 +1590,8 @@ b = [4, 5], a.concat(b)结果是1, 2, 3, 4, 5。也可以a.concat(a, a);
 2. 利用maven作为build工具时控制台如果打印警告信息[WARNING] Using platform encoding (GBK actually) to copy..只需要在
 pom.xml文件的project节点下添加属性
 	<properties><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>即可
+
+3. 如何定义一个泛型方法
+	1. 如果该方法不在泛型类中，那么需要在方法中加上<T>，比如public static <T> fun(T t){ // function body}
+
+	2. https://www.cnblogs.com/csyuan/p/6908303.html
