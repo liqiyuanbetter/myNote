@@ -603,9 +603,7 @@ eclipseµÄ¹¤×÷¿Õ¼äÖĞ£¬¹¤×÷¿Õ¼äÖĞµÄÏîÄ¿ÖĞÃ»ÓĞÕâ¸öĞÂ½¨µÄÎÄ¼ş¼Ğ¡£¶øÏîÄ¿´úÂë·¢Éú±ä»¯º
 	3. ÔõÃ´¿´³öÊÇ²»ÊÇÏß³Ì°²È«µÄÄØ£¬±ÈÈçÎÒÃÇ½«Ïû·ÑÕßºÍÉú²úÕßµÄ²Ù×÷ÊıÖµµ÷Õû³ÉÒ»ÑùµÄ£¬¿ÉÒÔ¿´µ½Ïß³Ì°²È«µÄÀı×ÓÖĞ£¬×îºóµÄ
 ½á¹û×ÜÊÇ0£¬¶øÏß³Ì·Ç°²È«µÄÀı×Ó×îºóµÄ½á¹ûÈ´ÊÇÔÚ±ä»¯µÄ£¬ÕâËµÃ÷¶Ô×ÊÔ´µÄ²Ù×÷²»ÊÇÔ­×Ó¼¶±ğµÄ;
 
-2. websocket
-	1. ²ËÄñ½Ì³Ì http://www.runoob.com/html/html5-websocket.html
-	2. ÍøÒ³ÁÄÌìÊÒ http://www.jb51.net/article/87659.htm
+
 
 2017.10.30
 1. ¹ØÓÚEventSource
@@ -668,24 +666,53 @@ eclipseµÄ¹¤×÷¿Õ¼äÖĞ£¬¹¤×÷¿Õ¼äÖĞµÄÏîÄ¿ÖĞÃ»ÓĞÕâ¸öĞÂ½¨µÄÎÄ¼ş¼Ğ¡£¶øÏîÄ¿´úÂë·¢Éú±ä»¯º
 multipart/form-data
 
 2. ¹ØÓÚWebSocket
-	1. Àí½âWebSocket http://www.cnblogs.com/tohxyblog/p/7112917.html
+	1. WebSocketÊÇh5ÍÆ³öµÄÒ»ÖÖ»ùÓÚTCPµÄÒ»ÖÖĞÂµÄÍøÂçĞ­Òé¡£ËüÊµÏÖÁËä¯ÀÀÆ÷Óë·şÎñÆ÷È«Ë«¹¤Í¨ĞÅ£¬ÔÊĞí·şÎñÆ÷Ö÷¶¯·¢ËÍĞÅÏ¢¸ø
+¿Í»§¶Ë¡£
+
+	2. h5 websocket api
+		1. ½¨Á¢Á¬½Óvar ws = new WebSocket("ws://localhost:...")£¬×¢ÒâÕâÀïµÄĞ­ÒéÃûÊÇws¡£Õâ¸ö¶ÔÏóÒ»µ©ÉùÃ÷£¬¿Í»§¶Ë¾Í
+	¿ªÊ¼Óë·şÎñÆ÷¶Ë½¨Á¢Á¬½Ó;
+		
+		2. Á¬½Ó½¨Á¢ºó´¥·¢openÊÂ¼ş¡£ÊÕµ½·şÎñÆ÷·¢ËÍ¹ıÀ´µÄĞÅÏ¢Ê±´¥·¢messageÊÂ¼ş¡£Á¬½Ó¹Ø±ÕÊ±´¥·¢oncloseÊÂ¼ş£¬Í¨ĞÅ
+	³ö´íÊ±´¥·¢errorÊÂ¼ş;
+
+		3. ws¶ÔÏóÓÃµ÷ÓÃsend()·½·¨Ïò·şÎñÆ÷·¢ËÍÊı¾İ£¬µ÷ÓÃclose()·½·¨¹Ø±ÕÁ¬½Ó¡£Èç¹ûÃ»ÓĞ¹Ø±ÕÁ¬½Ó¾ÍÖ±½Ó¹Ø±Õä¯ÀÀÆ÷£¬·şÎñ
+	Æ÷Õâ±ßÓĞÊ±»á±¨Òì³££¬Òò´Ë×îºÃÃ¿´Îµ÷ÓÃ½áÊøºó¶¼close¹Ø±ÕÁ¬½Ó
+
+	3. ·şÎñÆ÷
+		1. java 7ÒÔ¼°tomcat7Ö®ºó¶¼Ö§³ÖwebsocketĞ­Òé¡£¶ÔÀà¼ÓÉÏ×¢½â @ServerEndpoit("/path")¡£¼ÓÉÏ¸Ã×¢½âºó³ÌĞò»á×Ô
+	¶¯É¨Ãè¸ÃÀà¡£×¢Òâ¸ÃÀàÊÇ¶àÀıµÄ£¬Ã¿´Î·ÃÎÊ¶¼»á²úÉúÒ»¸öĞÂµÄÀà¡£
+
+		2. ÔÚServerEndpoint×¢½âµÄÀàÏÂ¸ø·½·¨Ìí¼ÓOnOpen, OnClose, OnMessage¿É·Ö±ğÓÃÓÚ´¦Àí¿ªÆôÁ¬½Ó£¬¹Ø±ÕÁ¬½Ó£¬ºÍ½ÓÊÕ
+	ÏûÏ¢ÊÂ¼ş¡£×¢Òâ±»OnMessage±ê×¢µÄº¯ÊıÖĞ±ØĞë°üº¬Session, String ÕâÁ½¸ö²ÎÊı¡£Ç°ÕßÓÃÓÚ¹ÜÀí»á»°£¬ºóÕß±íÊ¾¿Í»§¶Ë´«¹ıÀ´µÄ
+	ÏûÏ¢ĞÅÏ¢;
+
+		3. ÒòÎªwebsocketµÄ·şÎñÀàÊÇ¶àÀıµÄ£¬ËùÒÔÈç¹ûÒªÊµÏÖÒ»¸öÀàËÆÁÄÌìÊÒµÄ¹¦ÄÜÊ±£¬¿ÉÒÔÔÚ¸ÃÀàÖĞÉùÃ÷Ò»¸ö¾²Ì¬µÄ¼¯ºÏÀà¶Ô
+	ÏóÀ´±£´æ»Ø»°¡£·şÎñÆ÷Ïò¿Í»§¶Ë·¢ËÍÏûÏ¢²½ÖèÊÇ: session.getBasicRemote(»ògetAsyncRemote), È»ºóµ÷ÓÃremote¶ÔÏóµÄsendText
+	·½·¨À´·¢ËÍĞÅÏ¢;
+
+3. ²Î¿¼×ÊÁÏ
+	1. Àí½âWebSocket ±È½ÏºÃ: http://www.cnblogs.com/tohxyblog/p/7112917.html
+			 ÖØÒª: http://blog.csdn.net/qq_39809456/article/details/78219098?fps=1&locationNum=5
+			 ½Ï¸´ÔÓ: http://blog.csdn.net/leecho571/article/details/9707497
 			 ÖªºõµÄ»Ø´ğ: https://www.zhihu.com/question/20215561 (°üº¬Î¢ĞÅÉÏ²¿ÊğÒ»¸öĞ¡³ÌĞò)
 			 ÈîÒ»·å: http://www.ruanyifeng.com/blog/2017/05/websocket.html
-
-	1. WebSocket¼òµ¥demo 
+	2. ²ËÄñ½Ì³Ì http://www.runoob.com/html/html5-websocket.html
+	3. ÍøÒ³ÁÄÌìÊÒ http://www.jb51.net/article/87659.htm
+	4. WebSocket¼òµ¥demo 
 		1. java: http://blog.csdn.net/lipei1220/article/details/49098111
 		2. http://blog.csdn.net/huitoukest/article/details/51437982
-
-	2. WebSocket¶àÈËÊµÊ±ÁÄÌì http://blog.csdn.net/qq_23994787/article/details/77543277 (½áºÏÌ×½Ó×Ö)
-
-	3. WebSocketÕûºÏSpring MVC
+	5. WebSocket¶àÈËÊµÊ±ÁÄÌì http://blog.csdn.net/qq_23994787/article/details/77543277 (½áºÏÌ×½Ó×Ö)
+	6. WebSocketÕûºÏSpring MVC
 		1. ¼´Ê¹ÁÄÌì: http://blog.csdn.net/qq_33415017/article/details/53907115
 		2. µã¶Ôµã¼´Ê±ÁÄÌì http://blog.csdn.net/qq_35992956/article/details/77992410?skintest=skin3-template-test
+	7. WebSocket¼´Ê±ÁÄÌì http://blog.csdn.net/ihchenchen/article/details/71440760
+	8. wsÖĞÊ¹ÓÃ¶àÃ½Ìå https://www.cnblogs.com/shizhouyu/p/4975409.html
+	
+4. ajxa, comet,websocketÈıÕßµÄÇø±ğ http://www.cnblogs.com/tingshuo/archive/2013/02/26/2933408.html
 
-	4. WebSocket¼´Ê±ÁÄÌì http://blog.csdn.net/ihchenchen/article/details/71440760
-
-	5. ÖØÒª: http://blog.csdn.net/qq_39809456/article/details/78219098?fps=1&locationNum=5
-
+5. ¸÷ÖÖmapµÄÇø±ğ http://www.importnew.com/19685.html
+	
 2017.11.01
 1. javaÖĞÊ¹ÓÃServerEndPointÀ´±ê×¢websocket·şÎñ¶ËµÄÀà¡£Õâ¸öÀàÖĞÖ÷ÒªÓĞÈı¸ö·½·¨£¬·Ö±ğÓÃOnMessage, OnOpen, OnCloseÀ´±ê×¢¡£
 ±»OnMessage±ê×¢µÄ·½·¨±ØÑ¡°üº¬Session sessionºÍString messageÕâÁ½¸ö²ÎÊı£¬Ò»¸öÓÃÓÚÏò¿Í»§¶Ë·¢ËÍĞÅÏ¢£¬Ò»¸öÓÃÓÚ½ÓÊÕ¿Í»§¶Ë
@@ -1497,7 +1524,15 @@ git cloneÊÇÒ»ÑùµÄ£¬Ïàµ±ÓÚÖ»ÊÇÍ¨¹ıeclipse½«Ò»¸ögitÏîÄ¿À­µ½ÁË±¾µØ£¬µ«ÊÇ¸ÃÏîÄ¿ºÍecl
 	2. ÔÚeclipseÖĞÏñµ¼ÈëÆÕÍ¨ÏîÄ¿Ò»Ñùµ¼Èë¸Õ²ÅÀ­µ½±¾µØµÄÏîÄ¿£¬ĞèÒª×¢ÒâµÄÊÇÈç¹ûÊÇmavenÏîÄ¿¿ÉÄÜÒª×¢Òâ²Ö¿âµÄÅäÖÃ¡£´ËÊ±ÈÔÃ»ÓĞ
 ºÍgit²úÉúÁªÏµ£¬ĞèÒªÍ¨¹ıteam-share project½¨Á¢ÁªÏµ
 
-3. pullÊ§Ğ§°ì·¨ https://www.cnblogs.com/qlong8807/p/6098406.html
+3. pullÊ§Ğ§°ì·¨ ÔÚgitµÄÅäÖÃÎÄ¼şÖĞ¼ÓÉÏ: 
+		[branch "master"]
+			remote = origin
+			merge = refs/heads/master
+			rebase = false
+		[remote "origin"] 
+			url = https://github.com/liqiyuanbetter/²Ö¿âÃû.git
+			fetch = +refs/heads/*:refs/remotes/origin/*
+			push = +refs/heads/master:refs/heads/master
 
 2017.12.20
 1. ÆÕÍ¨»°¿¼ÊÔ 
