@@ -719,7 +719,10 @@ multipart/form-data
 发送过来的信息;
 
 2. Timer的构造函数new Timer(boolean)中，如果参数为true，则它是一个守护线程，如果没有其他线程执行它将终止。使用Timer类
-的schedule方法可以定时循环执行某一个方法。schedule方法的第一个参数是一个继承了TimerTask这个抽象类的一个类;
+的schedule方法可以定时循环执行某一个方法。schedule方法的第一个参数是一个继承了TimerTask这个抽象类的一个类。注意调用
+shedule方法时，若只有两个参数，则第二个参数表示delay时间后执行run方法。有三个参数时，第二个参数表示延后多长时间执行，
+第三个参数period表示每隔多长时间执行一次run函数里面的方法。第二个参数还可以是一个date型变量，表示在这个时间段之后多长时间
+执行;
 
 3. 关于普通轮询和长轮询
 	1. 普通轮询：客户端向服务器不断发送Ajax请求，无论服务器有没有响应，客户端都发起第二次请求。客户端不顾服务器的
@@ -1630,3 +1633,22 @@ pom.xml文件的project节点下添加属性
 	1. 如果该方法不在泛型类中，那么需要在方法中加上<T>，比如public static <T> fun(T t){ // function body}
 
 	2. https://www.cnblogs.com/csyuan/p/6908303.html
+
+2017.12.29
+1. webxml中的一些标签解释
+	1. serlvet标签的下load-on-startup标签
+		1. 它的作用是标记容器是否在启动的时候就加载这个servlet，即实例化并调用其init方法;
+
+		2. 它的值必须是一个整数，小于0或没有指定时容器只在该servlet被选择时才会去加载。大于等于0时在应用启动时就会
+	加载并初始化这个servlet。整数的值越小，启动的优先级就越高。<load-on-startup>中的数值表示优先级而不是启动延迟时间。
+
+	2. error-page标签用于在访问出错时返回指定的页面。例如
+		<error-page>
+			<error-code>404</error-code>
+			<location>/error.html</location>
+		</error-page>
+	发生异常的情况也能捕获，如发生空指针异常时
+	<error-page>
+	   <exception-type>java.lang.NullPointerException</exception-type>
+	   <location>/WEB-INF/jsp/errors/error.jsp</location>
+	</error-page>
