@@ -603,8 +603,6 @@ eclipseµÄ¹¤×÷¿Õ¼äÖĞ£¬¹¤×÷¿Õ¼äÖĞµÄÏîÄ¿ÖĞÃ»ÓĞÕâ¸öĞÂ½¨µÄÎÄ¼ş¼Ğ¡£¶øÏîÄ¿´úÂë·¢Éú±ä»¯º
 	3. ÔõÃ´¿´³öÊÇ²»ÊÇÏß³Ì°²È«µÄÄØ£¬±ÈÈçÎÒÃÇ½«Ïû·ÑÕßºÍÉú²úÕßµÄ²Ù×÷ÊıÖµµ÷Õû³ÉÒ»ÑùµÄ£¬¿ÉÒÔ¿´µ½Ïß³Ì°²È«µÄÀı×ÓÖĞ£¬×îºóµÄ
 ½á¹û×ÜÊÇ0£¬¶øÏß³Ì·Ç°²È«µÄÀı×Ó×îºóµÄ½á¹ûÈ´ÊÇÔÚ±ä»¯µÄ£¬ÕâËµÃ÷¶Ô×ÊÔ´µÄ²Ù×÷²»ÊÇÔ­×Ó¼¶±ğµÄ;
 
-
-
 2017.10.30
 1. ¹ØÓÚEventSource
 	1. EventSource¶ÔÏóÓÃÓÚÔÚÊ¹ÓÃ·şÎñÆ÷·¢ËÍÊÂ¼şµÄWebÓ¦ÓÃ³ÌĞò½ÓÊÕÊÂ¼şÁ÷£¬³õÊ¼»¯Ò»¸öÊÂ¼şÔ´¶ÔÏóºó£¬¾Í¿ÉÒÔ¿ªÊ¼¼àÌıËüµÄ
@@ -655,11 +653,49 @@ eclipseµÄ¹¤×÷¿Õ¼äÖĞ£¬¹¤×÷¿Õ¼äÖĞµÄÏîÄ¿ÖĞÃ»ÓĞÕâ¸öĞÂ½¨µÄÎÄ¼ş¼Ğ¡£¶øÏîÄ¿´úÂë·¢Éú±ä»¯º
 		4. HTML5 ·şÎñÆ÷ÍÆËÍÊÂ¼ş£¨Server-sent Events£©ÊµÕ½¿ª·¢ ¸Ã½Ì³ÌÄªÃûÆäÃî
 		https://www.ibm.com/developerworks/cn/web/1307_chengfu_serversentevent/
 
-2. pushserver
-	1. pushlet¿ò¼Ü: http://cuisuqiang.iteye.com/blog/1416771
-	2. http://blog.csdn.net/houpengfei111/article/details/7498481
-	3. http://blog.csdn.net/p793049488/article/details/20688573
-	4. https://www.cnblogs.com/linjiqin/archive/2011/12/30/2307788.html
+2. pushserverÊ¹ÓÃ·½·¨
+	1. ¿ì½İÊ¹ÓÃ
+		1. ¿½±´pushlet¿ò¼ÜÖĞµÄpushlet.jar, log4j.jar(web-inf/libÀïÃæ)°üµ½×Ô¼ºµÄlibÖĞ¡£ĞÂ½¨Ô´ÎÄ¼ş¼Ğconfig£¬½«
+	pushlet.properties, sources.properties(web-inf/classesÎÄ¼ş¼ĞÀïÃæ)ÎÄ¼ş¿½±´µ½ÆäÖĞ¡£½«ajax-pushlet-client.js(libÖĞ)
+	ÎÄ¼ş¿½±´µ½webappÏÂ´ıÓÃ;
+
+		2. ÅäÖÃxmlÎÄ¼ş£¬ÔÚÆäÖĞÌí¼ÓÒ»¸öservlet¡£¾ßÌåµÄÅäÖÃ·½·¨²Î¼ûpushlet¿ò¼ÜÏÂµÄweb.xmlÎÄ¼ş¡£
+
+		3. ÅäÖÃ×Ô¼ºµÄpushletÀà£¬Ö»ĞèÈÃÆäÊµÏÖEventPullSourceÀà¡£ÊµÏÖÕâ¸öÀàĞèÒªÊµÏÖÁ½¸ö·½·¨
+			1. getSleepTime()·½·¨£¬·µ»ØÒ»¸ölong²ÎÊı¡£±íÊ¾Ã¿¸ô¶àÉÙÃëÏò¿Í»§¶Ë·¢ËÍÊı¾İ;
+
+			2. pullEvent()·½·¨£¬·µ»ØÒ»¸öEvent¶ÔÏó¡£Event event = Event.createDataEvent("/test");±íÊ¾ÊÂ¼ş±êÊ¶£¬
+		¶ÔÓ¦¿Í»§¶ËÖĞPL.joinListener("/test")²ÎÊı¡£event.setField(String, String(int, long))·â×°²ÎÊı£¬Èç
+		event.setField("msg", "hello")¡£
+
+		4. ÅäÖÃsources.propertiesÎÄ¼ş¡£È¥µôÆäËûµÄsource£¬Ìí¼Ó×Ô¼ºµÄpushletÀàµÄÈ«ÏŞ¶¨Ãûµ½source¡£Èç
+	source=com.oldbutcher.mypushlet¡£sourceºóÃæÊı×Ö¿ÉÒÔËæ±ãĞ´£¬Èçsource7=....;
+
+		5. ÔÚÇ°¶ËÒ³ÃæÖĞµ÷ÓÃ
+				PL._init(); 
+				PL.joinListen('/test');  //ÊÂ¼ş±êÊ¶ ÔÚÊı¾İÔ´ÖĞÒıÓÃ
+			        function onData(event) { 
+					// ¾ßÌåµÄÒµÎñ´úÂë
+					alert(event.get("msg"));
+				}
+		
+		6. ÔËĞĞÏîÄ¿£¬»á·¢ÏÖ¿Í»§¶Ë»á¶¨ÆÚÏò·şÎñÆ÷·¢ËÍÒ»¸öajaxÇëÇó¡£Ã¿´Î·¢ÆğÇëÇóµÄ¼ä¸ôÓëgetSleepTime()·½·¨
+	·µ»ØµÄÊıÖµ´óĞ¡ÕıÏà¹Ø;
+
+	2. ÉîÈëÀí½â
+		1. ÈÃ×Ô¼ºµÄpushletÀàÊµÏÖRunnableºÍEventSource½Ó¿Ú¡£¸ÃÀàÖĞµÄ½Ó¿ÚÊµÏÖ¿ÉÒÔÍêÈ«·ÂÔìEventPullSourceÀàµÄĞ´·¨£¬
+	³ıÁËpullEvent·½·¨ĞèÒªÊµÏÖ×Ô¼ºµÄÒµÎñÂß¼­;
+
+		2. È»ºóÎÒÃÇ¿ÉÒÔÔÚĞ´Ò»¸öPushmanagerÀàÀ´¹ÜÀíÎÒÃÇ×Ô¼ºµÄpushlet£¬±ÈÈç¿ªÊ¼ÍÆËÍ»òÍ£Ö¹ÍÆËÍ¡£PushmanagerÖĞ¿ÉÒÔĞ´Èç
+	ÏÂ¼¸¸ö·½·¨£¬Èçstart() {myPush.activate();} stop() {myPush.stop()}; pause() {myPush.passivate();}¡£È»ºóµ÷ÓÃ
+	pushmanagerÖĞµÄÏìÓ¦·½·¨¾ÍÄÜ¿ØÖÆpushlet¡£
+		
+	3. ²Î¿¼×ÊÁÏ
+		1. pushlet¿ò¼ÜÏÂÔØµØÖ·: https://sourceforge.net/projects/pushlets/files/
+		2. pushlet¿ò¼Ü¼òµ¥Ê¹ÓÃËµÃ÷: http://cuisuqiang.iteye.com/blog/1416771
+		3. pushlet×Ô¶¨ÒåÊ¹ÓÃ http://blog.csdn.net/houpengfei111/article/details/7498481
+		4. http://blog.csdn.net/p793049488/article/details/20688573
+		5. https://www.cnblogs.com/linjiqin/archive/2011/12/30/2307788.html
 
 2017.10.31
 1. ºÎÎªMIME(Multipurpose Internet Mail Extensions), ¶àÓÃÍ¾»¥ÁªÍøÓÊ¼şÀ©Õ¹ÀàĞÍ, ±ÈÈçtext/html, text/event-stream,
@@ -785,9 +821,9 @@ wsÁ¬½Ó;
 1. ¼ÓÇ¿¶ÔÏß³ÌÍ¬²½µÄÒ»Ğ©Àí½â, À´Ô´: http://www.cnblogs.com/skywang12345/p/3479202.html
 
 	1. µ±Ò»¸öÏß³Ì·ÃÎÊÄ³¸ö¶ÔÏóµÄsynchronized·½·¨»òsynchronized´úÂë¿éÊ±:
-		1. ÆäËûÏß³Ì¶Ô¸Ã¶ÔÏóµÄsynchronized·½·¨»ò´úÂë¿éµÄ·ÃÎÊ½«±»×èÈû;
-		2. ÆäËûÏß³Ì¶Ô¸Ã¶ÔÏóµÄ·Çsynchronized·½·¨»ò´úÂë¿éµÄ·ÃÎÊ²»»á±»×èÈû;
-		3. ÆäËûÏß³Ì¶Ô¸Ã¶ÔÏóµÄÆäËûsynchronized·½·¨»ò´úÂë¿éµÄ·ÃÎÊ½«±»×èÈû;
+		1. ÆäËûÏß³Ì¶Ô¸Ã¶ÔÏóµÄ--synchronized·½·¨»ò´úÂë¿é--µÄ·ÃÎÊ--»á±»--×èÈû;
+		2. ÆäËûÏß³Ì¶Ô¸Ã¶ÔÏóµÄ--·Çsynchronized·½·¨»ò´úÂë¿é--µÄ·ÃÎÊ--²»»á--±»×èÈû;
+		3. ÆäËûÏß³Ì¶Ô¸Ã¶ÔÏóµÄ--ÆäËûsynchronized·½·¨»ò´úÂë¿é--µÄ·ÃÎÊ--»á±»--×èÈû;
 
 	2. ¶ÔÒÔÉÏ¼¸µãµÄ²¹³äËµÃ÷:
 		1. Í¬²½ËøÖ»ÄÜÓ°ÏìÍ¬²½ËøÄÚµÄ²¿·Ö£¬Í¬²½ËøÍâµÄ×ÊÔ´ÈÔÓĞ¿ÉÄÜ±»ÇÀÕ¼;
@@ -816,37 +852,37 @@ wsÁ¬½Ó;
 		protected void name() {// do some work}
 	}
 	Son {
-	public void useParentMethod() {
-		// µ±nameº¯ÊıÖ»´æÔÚÓÚ¸¸ÀàÖĞÊ±
-		// super.nameºÍthis.name¶¼ÊÇµ÷ÓÃµÄÍ¬Ò»¸öº¯Êı
+		public void useParentMethod() {
+			// µ±nameº¯ÊıÖ»´æÔÚÓÚ¸¸ÀàÖĞÊ±
+			// super.nameºÍthis.name¶¼ÊÇµ÷ÓÃµÄÍ¬Ò»¸öº¯Êı
+			
+			// µ±×ÓÀàÖĞÓĞÒ»¸öºÍ¸¸Ààº¯ÊıÇ©ÃûÍêÈ«Ò»ÑùµÄnameº¯ÊıÊ±£¬super.µ÷ÓÃ¸¸ÀàµÄ£¬this.µ÷ÓÃ×ÓÀàµÄ
+			super.name();
+			this.name();
+		}
 		
-		// µ±×ÓÀàÖĞÓĞÒ»¸öºÍ¸¸Ààº¯ÊıÇ©ÃûÍêÈ«Ò»ÑùµÄnameº¯ÊıÊ±£¬super.µ÷ÓÃ¸¸ÀàµÄ£¬this.µ÷ÓÃ×ÓÀàµÄ
-		super.name();
-		this.name();
-	}
-	
-	// "ÖØĞ´"¸¸ÀàµÄ³ÉÔ±Ê±£¬Ö»ÄÜÓÃĞŞÊÎ·¶Î§´óÓÚµÈÓÚ¸¸ÀàµÄĞŞÊÎ´ÊÀ´ĞŞÊÎ
-	// ¸¸ÀàÊÇprotected£¬×ÓÀà¾ÍÖ»ÄÜÊ¹ÓÃprotected»òpublicÀ´ĞŞÊÎ
-	/*@Override
-	protected void name() {
-		System.out.println("×ÓÀàµÄnameº¯Êı");
-	}*/
-	
-	// ×ÓÀà¿ÉÒÔ"ÖØÔØ"¸¸ÀàµÄÍ¬Ãûº¯Êı£¬Õâ¸öÖØÔØµÄº¯Êı¿ÉÒÔÈÎÒâÖ¸¶¨ĞŞÊÎ´Ê
-	private void name(String s) {
-	
-	}
-	public void name(String s, String s1) {
+		// "ÖØĞ´"¸¸ÀàµÄ³ÉÔ±Ê±£¬Ö»ÄÜÓÃĞŞÊÎ·¶Î§´óÓÚµÈÓÚ¸¸ÀàµÄĞŞÊÎ´ÊÀ´ĞŞÊÎ
+		// ¸¸ÀàÊÇprotected£¬×ÓÀà¾ÍÖ»ÄÜÊ¹ÓÃprotected»òpublicÀ´ĞŞÊÎ
+		/*@Override
+		protected void name() {
+			System.out.println("×ÓÀàµÄnameº¯Êı");
+		}*/
 		
+		// ×ÓÀà¿ÉÒÔ"ÖØÔØ"¸¸ÀàµÄÍ¬Ãûº¯Êı£¬Õâ¸öÖØÔØµÄº¯Êı¿ÉÒÔÈÎÒâÖ¸¶¨ĞŞÊÎ´Ê
+		private void name(String s) {
+		
+		}
+		public void name(String s, String s1) {
+			
+		}
+		
+		// ²»¿ÉÒÔÊÔÍ¼Í¨¹ıÖ»¸Ä±äº¯Êı·µ»ØÖµµÄÀàĞÍµÄÀ´ÖØÔØ¸¸ÀàµÄÍ¬Ãûº¯Êı
+		// º¯ÊıµÄ·µ»ØÖµ²»ÊôÓÚº¯ÊıµÄ·½·¨Ç©Ãû
+		// Òò´ËÕâÑùĞ´¸úÔÚÍ¬Ò»¸öÀàµ±ÖĞĞ´ÁËÁ½¸öÍ¬Ãûµ«·µ»ØÖµ²»Ò»ÑùµÄ·½·¨ÊÇÒ»ÑùµÄ£¬ÊÇ·Ç·¨µÄ
+		/*public int name() {
+			return 1;
+		}*/
 	}
-	
-	// ²»¿ÉÒÔÊÔÍ¼Í¨¹ıÖ»¸Ä±äº¯Êı·µ»ØÖµµÄÀàĞÍµÄÀ´ÖØÔØ¸¸ÀàµÄÍ¬Ãûº¯Êı
-	// º¯ÊıµÄ·µ»ØÖµ²»ÊôÓÚº¯ÊıµÄ·½·¨Ç©Ãû
-	// Òò´ËÕâÑùĞ´¸úÔÚÍ¬Ò»¸öÀàµ±ÖĞĞ´ÁËÁ½¸öÍ¬Ãûµ«·µ»ØÖµ²»Ò»ÑùµÄ·½·¨ÊÇÒ»ÑùµÄ£¬ÊÇ·Ç·¨µÄ
-	/*public int name() {
-		return 1;
-	}*/
-
 2. java¼¯ºÏÔ´Âë·ÖÎö: http://blog.csdn.net/column/details/collection.html
    Ïß³ÌÏê½â: http://blog.csdn.net/ns_code/article/details/17539599
 
@@ -1652,3 +1688,26 @@ pom.xmlÎÄ¼şµÄproject½ÚµãÏÂÌí¼ÓÊôĞÔ
 	   <exception-type>java.lang.NullPointerException</exception-type>
 	   <location>/WEB-INF/jsp/errors/error.jsp</location>
 	</error-page>
+
+2018.01.02
+1. mysql½¨±íºÍ½¨¿âµÄ¼¸¸öĞ¡ÎÊÌâ
+	1. ¸øÁĞÔö¼Ó×¢ÊÍÓÃcomment '×¢ÊÍ'¡£Òª²é¿´±íÖĞÁĞµÄ×¢ÊÍ¿ÉÒÔÓÃshow full columns from tb_rightmanage_user;
+
+	2. ½¨Êı¾İ¿âÊ±Ö¸¶¨±àÂë·½Ê½ºÍÅÅĞò¹æÔòÓÃCREATE DATABASE db_name CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+Òª²é¿´Êı¾İ¿âµÄ±àÂë·½Ê½ÓÃuse db_name; show variables like 'character_set_database';
+
+2018.01.03
+1. ì³²¨ÄÇÆõÊıÁĞ×î¼ÑËã·¨:
+	// aÎªµÚÒ»Ïî£¬bÎªµÚ¶şÏî£¬nÎªµÚnÏî£¬¼ÆËãµÚnÏî
+	int fibonacci(a, b, n) {
+		if (n == 1) {
+			return a;
+		}
+		if (n == 2) {
+			return b;
+		}
+		return fibonacci(b, a + b, n - 1);
+	}
+
+2. ×¢ÒâÔÚÏß³ÌÖĞthis.currentThread().getName()ºÍthis.getName()µÄÖµÊÇ²»Ò»ÑùµÄ£¬Ç°Õß±íÊ¾µ÷ÓÃÕıÔÚÖ´ĞĞµÄ´úÂëµÄÏß³ÌÃû£¬ºóÕß
+ÊÇThreadµÄÒ»¸ö·½·¨£¬±íÊ¾Õâ¸öÏß³ÌµÄÃû×Ö¡£Èç¹ûÃ»ÓĞ¸úÏß³ÌÖ¸¶¨Ãû×Ö£¬ÔòÏß³ÌµÄÃû×ÖÓĞ¿ÉÄÜÊÇThread-0
