@@ -1688,7 +1688,23 @@ pom.xml文件的project节点下添加属性
 	<properties><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>即可
 
 3. 如何定义一个泛型方法
-	1. 如果该方法不在泛型类中，那么需要在方法中加上<T>，比如public static <T> fun(T t){ // function body}
+	1. 如果该方法不在泛型类中，那么需要在方法的返回类型和修饰符之间加上<T>，表明在这个方法作用域中谁才是泛型类参数，
+即public static <T> returnType fun(T t){}, 如定义一个将传入参数全部封装在一个ArrayList中返回的函数
+
+	public static <U> ArrayList<U> asArrayList(U... item) {}
+
+	<U>表明了我要使用这个泛型，然后在后面的返回类型和参数中就都可以使用U，U的作用域就是整个方法asArrayList
+	
+	2. 如果一个类是一个定义了泛型的类，如
+		public class MyClass<T> {
+			
+			// 可以直接在方法中写泛型
+			public T foo1() {} 或 public void foo2(T t) {}
+
+			// 但是一定注意不能在静态成员中使用类定义的泛型
+			// public static T foo3() {} Cannot make a static reference to the non-static type T
+			// public static T t; Cannot make a static reference to the non-static type T
+		}
 
 	2. https://www.cnblogs.com/csyuan/p/6908303.html
 
