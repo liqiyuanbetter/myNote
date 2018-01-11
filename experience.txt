@@ -581,21 +581,30 @@ eclipseµÄ¹¤×÷¿Õ¼äÖĞ£¬¹¤×÷¿Õ¼äÖĞµÄÏîÄ¿ÖĞÃ»ÓĞÕâ¸öĞÂ½¨µÄÎÄ¼ş¼Ğ¡£¶øÏîÄ¿´úÂë·¢Éú±ä»¯º
 		ÔÚÈÎºÎÒ»¸öÎ»ÖÃ;
 
 			3. ËùÒÔÊµ¼ÊÉÏappBaseÕâ¸ö½ÚµãµÄÒâÒåÔÚÓÚ£¬ÎÒÃÇ¿ÉÒÔÈÎÒâÈÓÒ»¸öÏîÄ¿(war°ü)µ½Õâ¸öÂ·¾¶ÏÂ£¬tomcat»á×Ô¶¯µÄÈ¥
-		±àÒëËüÈ»ºó¹©ÎÒÃÇ·ÃÎÊ¡£¿ÉÒÔ¿´µ½ÎÒÃÇÖ±½ÓÈÓ½øÈ¥µÄÏîÄ¿ÊÇ²»»áÔçhost½ÚµãÏÂÉú³ÉContext¡£ËùÒÔwebappsÊÇ¸øÎÒÃÇÌá¹©ÁË
+		±àÒëËüÈ»ºó¹©ÎÒÃÇ·ÃÎÊ¡£¿ÉÒÔ¿´µ½ÎÒÃÇÖ±½ÓÈÓ½øÈ¥µÄÏîÄ¿ÊÇ²»»áÔÚhost½ÚµãÏÂÉú³ÉContext¡£ËùÒÔwebappsÊÇ¸øÎÒÃÇÌá¹©ÁË
 		Ò»¸ö±ã½İµÄ²¿ÊğÏîÄ¿µÄ·½·¨£¬Èç¹ûÏîÄ¿ÔÚÆäËûÎÄ¼ş¼Ğ£¬Ôò¿ÉÒÔÍ¨¹ıcontextÀ´²¿ÊğËü;
 
 	3. ³ıÁËĞŞ¸Äserver.xmlÎÄ¼şµÄhost½ÚµãÏÂµÄappBaseÊôĞÔºÍÔÚhost½ÚµãÏÂÌí¼Ó<Context>½ÚµãÍâ»¹¿ÉÒÔÍ¨¹ıÔÚCatalinaÎÄ¼ş¼ĞÖĞÌí¼Ó
-ÅäÖÃÎÄ¼şµÄ·½Ê½À´·ÃÎÊÎÒÃÇµÄÏîÄ¿£»
+ÅäÖÃÎÄ¼şµÄ·½Ê½À´·ÃÎÊÎÒÃÇµÄÏîÄ¿: 
 
 		1. ÏÖÔÚÎÒÃÇÖªµÀ£¬ÎÒÃÇÍ¨¹ılocalhost·ÃÎÊ×Ô¼ºµÄÏîÄ¿½ö½öÊÇÓÉserver.xmlÖĞµÄhost½ÚµãµÄappBaseÊôĞÔºÍhost½ÚµãÏÂÃæµÄ
-	Context½ÚµãµÄdocBaseÒÔ¼°pathÀ´¾ö¶¨µÄ£»
+	Context½ÚµãµÄdocBaseÒÔ¼°pathÀ´¾ö¶¨µÄ;
 
 		2. ÔÚcatalinaÎÄ¼ş¼ĞÖĞÌí¼ÓxmlÎÄ¼şÀ´ÅäÖÃÎÒÃÇÔÚÆäËûÎ»ÖÃµÄÏîÄ¿, Õâ¸öÎÄ¼şÃû±ØĞëºÍÎÒÃÇµÄÏîÄ¿ÎÄ¼şÃûÒ»ÖÂ£¬Õâ¸öxmlÎÄ¼ş
-	ÖĞÖ»ÓĞContextÒ»¸ö½Úµã, ¸Ã½ÚµãÖ»ĞèÒªÅäÖÃdocBaseÒ»¸öÊôĞÔ;
+	ÖĞÖ»ÓĞContextÒ»¸ö½Úµã, ¸Ã½ÚµãÖ»ĞèÒªÅäÖÃdocBaseÒ»¸öÊôĞÔ, Ã»ÓĞpathÊôĞÔ¡£Èç¹ûÒª¸ø¸ÃÏîÄ¿Ö¸¶¨·ÃÎÊÂ·¾¶£¬Ö±½ÓĞŞ¸ÄÏìÓ¦µÄ.xml
+	ÎÄ¼şÃû¾ÍĞĞ¡£Èç¹û½«¸ÃxmlÎÄ¼şÃüÃûÎªROOT.xml£¬ÔòÖ±½Ó·ÃÎÊlocalhost:8088¾Í»á·ÃÎÊ¸ÃÏîÄ¿;
 
 		3. ÅäÖÃserver.xmlºÍÅäÖÃcatalina/.xmlµÄÇø±ğÓĞ£º
 			1. server.xmlµÄhost½ÚµãÏÂ¿ÉÒÔÒ»´ÎÅäÖÃ¶à¸öÏîÄ¿, ¶øcatalinaÖĞÅäÖÃÎÄ¼şºÍÏîÄ¿Ò»Ò»¶ÔÓ¦;
 			2. catalinaÏÂµÄÅäÖÃ²»ÊÜeclipseÅäÖÃµÄÈÎºÎÓ°Ïì;
+	
+	4. <Context>±êÇ©ÖĞÆäËûÊôĞÔµÄ½âÊÍ
+		1. reloadable=true Catalina¼àÊÓ/WEB-INF/classes/ºÍ/WEB-INF/libÏÂÃæµÄÀàÊÇ·ñ·¢Éú±ä»¯£¬ÔÚ·¢Éú±ä»¯µÄÊ±ºò×Ô¶¯
+	ÖØÔØweb application, ÖØÔØĞÅÏ¢¿ÉÒÔÔÚtomcat·şÎñÆ÷ÀïÃæ¿´µ½¡£Õâ¸öÌØÕ÷ÔÚ¿ª·¢½×¶ÎºÜÓĞÓÃ£¬µ«Ò²´ó´óÔö¼ÓÁË·şÎñÆ÷µÄ¿ªÏú¡£
+	Òò´Ë£¬ÔÚ·¢²¼ÒÔºó£¬²»ÍÆ¼öÊ¹ÓÃ¡£
+
+	5. ²»¹ÜÊÇÄÄÖÖ·½Ê½£¬ĞéÄâÂ·¾¶ÀïµÄÏîÄ¿²¢²»Ò»¶¨ÒªÊÇÒ»¸öwebÏîÄ¿£¬Ö»ÒªÓĞindex.htmlÎÄ¼ş¾ÍÄÜ·ÃÎÊ¡£µ«ÊÇÒª×¢Òâ²»ÄÜÖ±½ÓÍ¨¹ıurlµØÖ·
+·ÃÎÊWEB-INFÎÄ¼şÀïµÄÎÄ¼ş
 
 2017.10.23
 1. Ñ¹Ëõ´úÂë: http://tool.lu/html/index.html
@@ -1834,10 +1843,25 @@ pom.xmlÎÄ¼şµÄproject½ÚµãÏÂÌí¼ÓÊôĞÔ
 	3. ĞÂ½¨»·¾³±äÁ¿CLASSPATHÖµÎª: .;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar
 
 2018.01.09
-
 1. ideaĞÂ½¨Ò»¸ömavenÏîÄ¿²¢²¿Êğµ½tomcatÉÏ 
-	1. ×ÜÀÀ: https://www.cnblogs.com/wql025/p/5215570.html
+	1. ×ÜÀÀ: https://www.cnblogs.com/wql025/p/5215570.html ×¢ÒâideaÔÚ²¿ÊğÁËÒ»¸ömavenÏîÄ¿Ö®ºó¿ÉÄÜ»áĞŞ¸Ä¸ùÄ¿
 	2. ¾²Ì¬Ò³ÃæÎŞ·¨¼°Ê±Ë¢ĞÂ http://blog.csdn.net/yuxxz/article/details/51318908
 				https://www.cnblogs.com/jeffen/p/6184299.html
-	3. ideaÔËĞĞwebÏîÄ¿Ê±µÄ²¿ÊğÎ»ÖÃ http://blog.csdn.net/joenqc/article/details/58044953
+	4. ideaÔËĞĞwebÏîÄ¿Ê±µÄ²¿ÊğÎ»ÖÃ http://blog.csdn.net/joenqc/article/details/58044953
 				       http://blog.csdn.net/yangcheng33/article/details/53016764
+
+2. idea¸øÆÕÍ¨javaÏîÄ¿Ìí¼Ójar°üµÄ·½·¨ http://blog.csdn.net/a153375250/article/details/50851049
+
+3. idea°²×°²å¼ş: file-settings-plugins-browse repositories
+
+2018.01.11
+1. jetty¼òµ¥Ê¹ÓÃ
+	1. ÔÚjetty¹ÙÍøÉÏÏÂÔØjettyÑ¹Ëõ°üºó½âÑ¹£¬½«jetty¸ùÄ¿Â¼Â·¾¶Ìí¼Óµ½»·¾³±äÁ¿JETTY_HOMEÖĞ;
+
+	2. jetty²»ÏñtomcatÄÇÑùÓĞÒ»¸östartup.batÅú´¦ÀíÎÄ¼ş¿ÉÒÔÖ±½ÓÆô¶¯£¬ĞèÒª×Ô¼ºÀûÓÃcmdÃüÁîÆô¶¯¡£
+cd %JETTY_HOME% java -jar start.jar¾Í¿ÉÒÔÆô¶¯jetty·şÎñÆ÷¡£ÕâÊ±ä¯ÀÀÆ÷µØÖ·À¸ÊäÈëlocalhost:8080£¬ÒòÎªwebappsÏÂÃ»ÓĞÈÎºÎÓ¦ÓÃ£¬Òò´Ë
+»áÏÔÊ¾404¡£½«ÈÎºÎÒ»¸öwebÓ¦ÓÃ»òÕßwar°ü·ÅÈëwebapps°üÏÂ¾ÍÄÜ·ÃÎÊ¸ÃÓ¦ÓÃ;
+
+	3. jettyĞŞ¸Ä¶Ë¿ÚºÅÔÚstart.iniÖĞ£¬Ä¬ÈÏ8080¡£Ìí¼Ójetty.http.port=¶Ë¿ÚºÅ¼´¿É¡£
+
+ . jettyÊ¹ÓÃ½Ì³Ì https://www.cnblogs.com/yiwangzhibujian/p/5832597.html
