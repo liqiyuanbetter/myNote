@@ -1865,3 +1865,76 @@ cd %JETTY_HOME% java -jar start.jar就可以启动jetty服务器。这时浏览器地址栏输入lo
 	3. jetty修改端口号在start.ini中，默认8080。添加jetty.http.port=端口号即可。
 
  . jetty使用教程 https://www.cnblogs.com/yiwangzhibujian/p/5832597.html
+
+2018.01.15
+1. intellij idea怎么打开outline，即像Eclipse中的在右边显示某个类的所有方法 
+	http://blog.csdn.net/ideality_hunter/article/details/53331700
+
+2. mybatis
+	1. 关于dao层, manager层
+		在mapper层中写各种基础的调用数据库的接口，如AMapper, 这些接口中的方法名称和AMapper.xml文件中定义的每一个操作
+	数据库的标签的id一一对应。
+
+		manager层相当于service层，manager层中也存放接口，命名为BManager。这些接口的方法是我们实际的业务逻辑需要调用的
+	方法，可能会调用多个mapper中的多个方法。BManager的实现类存放在manager.impl这个包中，命名为BManagerImpl。在这个实现类
+	中，它可能通过 @Resource的方法自动注入一个mapper借口的实现类, 如 @Resource AMapper aMapper。然后在它实现的BManager的
+	接口中调用这个mapper实现类的方法, 如aMapper.getEntityById()
+
+	2. 关于配置文件主要配置两个
+		1. AMapper.xml文件中配置了具体的操作数据库的语句，该文件和mapper包中的接口一一对应。并且该文件中
+	<mapper namespace="">, namespace属性的值必须是对应的mapper接口的类名，如mapper.AMapper;
+
+		2. spring-mybatis-context.xml文件中配置了springmvc需要扫描的mapper配置文件的位置和mapper接口所在的包的名字, 即 
+			<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+				<property name="dataSource" ref="defaultDataSource" />
+				<property name="mapperLocations" value="classpath*:mybatis/*.xml" />
+			</bean>
+
+			<!-- Auto scan mappers -->
+			<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+				<property name="basePackage" value="im.qingtui.sa.attendance.schedule.dao.mapper" />
+			</bean>
+	
+3. mysql语法
+	1. 添加删除修改列 http://blog.csdn.net/ws84643557/article/details/6939846
+
+	2. limit关键字 select * from table limit 5, 10 表示的是查询6到15行，因为是从0行开始算的, 参考资料
+http://blog.csdn.net/zhqingyun163/article/details/5053579/
+
+2018.01.16
+1. 枚举
+	1. 枚举下面可以直接写枚举的名称，枚举名必须是枚举的第一部分，枚举前面不可以有其他的声明。这些枚举中也可以带有参数，
+但是需要注意的是一旦指定了参数，就必须给枚举声明构造函数。注意枚举中的构造函数默认都是私有的，因为枚举对象不是通过构造函数生成
+的而是直接 EnumName e1 = EnumName.enum1("可能带有的一些参数")
+
+	2. 枚举中也可以有类似类中属性的声明通常我们给枚举声明了带参数的构造函数时，需要为构造函数中的每一个参数都指定一个属性
+成员并指定public getter, 否则这些构造函数中的属性外部获取不到就没有意义;
+
+	3. 枚举中也可以有其他的一些静态或者非静态的函数，这些和类是一样的
+
+	public enum WeekConstants {
+
+		SUNDAY("Sunday", 0), MONDAY("Monday", 1);
+		
+		// 为属性指定公有的getter方法
+		private @Getter String weekdayName;
+		private @Getter String weekdayNumber;
+
+		// 构造函数, 如果在枚举，即SUNDAY中指定了参数，则一定需要构造函数
+		WeekConstants(String weekdayName, int weekdayNumber) {this.weekdayName = weekdayName;// ...}
+
+		// 枚举可以有自己的静态或者非静态的方法
+		public static getWeekDayNumber(String weekdayName) {
+			// WeekConstants.values()返回的是所有枚举的数组
+			for (WeekConstants week : WeekConstants.values()) {
+				if (week.getWeekdayName.equals(weekdayName)) {
+					return week.getWeekdayNumber;
+				}
+			}
+
+			return -1;
+		}
+	}
+
+	4. 注意即使该枚举的属性跟该枚举自己的枚举名是两回事，如WeekConstants week = WeekConstants.SUNDAY;
+	sysout(week.getWeekdayName);// 结果为Sunday sysout(week); // 结果为SUNDAY
