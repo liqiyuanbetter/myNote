@@ -1021,7 +1021,11 @@ start()£¬Ôò²»¹ÜÊÇ·ñµ÷ÓÃt.interrupt(), Ôòt.isInterrupted()µÄ½á¹û¶¼Îªfalse;
 		3. ½«ĞŞ¸ÄÌá½»µ½Ô¶³Ì²Ö¿â git push origin master
 
 	7. gitÓÃ»§ÃûºÍÕËºÅ
-		1. ¿ÉÍ¨¹ıgit config user.emailÀ´ĞŞ¸Äµ±Ç°ÓÃ»§£¬Èç¹ûÕâ¸öemail¶ÔÓ¦×ÅgithubÉÏµÄÒ»¸öÕËºÅÔò£¬user.nameµÄĞŞ¸ÄÊÇÎŞĞ§
+		1. git config user.name ºÍ git config user.email·Ö±ğ¿ÉÒÔ¿´µ½µ±Ç°²Ö¿âÏÂµÄgitÕË»§µÄÓÃ»§ÃûºÍÓÊÏä¡£×¢ÒâÊÂÊµÉÏ²»Í¬µÄ²Ö¿â£¬
+	»òÕßËµ²»Í¬µÄÏîÄ¿¿ÉÒÔ¶ÔÓ¦²»Í¬µÄÕË»§¡£¿ÉÒÔÍ¨¹ıgit config --global user.name/emailÀ´²é¿´È«¾ÖµÄÅäÖÃ£¬Ä¬ÈÏÊÇÊ¹ÓÃµÄÈ«¾ÖÅäÖÃ¡£
+	Í¨¹ıgitÃüÁîĞŞ¸ÄÕâĞ©ÅäÖÃÊ±, Ö»Ğègit config --global user.name "ÒıºÅÀïÃæĞ´ĞÂµÄgitÕË»§Ãû"
+
+		2. Í¨¹ıgit config user.emailÀ´ĞŞ¸Äµ±Ç°ÓÃ»§Ê±£¬Èç¹ûÕâ¸öemail¶ÔÓ¦×ÅgithubÉÏµÄÒ»¸öÕËºÅÔò user.nameµÄĞŞ¸ÄÊÇÎŞĞ§
 	µÄ£¬¹±Ï×ÕßµÄĞÕÃûÊ¼ÖÕÏÔÊ¾ÎªÕâ¸öemail¶ÔÓ¦µÄÓÃ»§Ãû¡£Èç¹ûÕâ¸öÓÊÏäÊÇÒ»¸öÎ´×¢²áµÄÓÊÏä£¬Ôò¹±Ï×Õß»áÏÔÊ¾user.name
 	
 	8. Ê¹ÓÃeclipseÊµÏÖÉÏ´«ÓëÏÂÔØ
@@ -1154,7 +1158,7 @@ list.forEach(System.out::println)£¬Ò²²»ÄÜĞ´s ->µÈ;
 	1. ¶ÏÑÔÓÃÓÚÈí¼şµÄ¿ª·¢ºÍ²âÊÔ£¬É¾³ı¶ÏÑÔ²¿·ÖÓï¾äºó£¬³ÌĞò²»Ó¦µ±ÓĞÈÎºÎ±ä»¯¡£²»ÄÜ½«¶ÏÑÔµ±×ö³ÌĞòÖĞµÄÒ»¸ö¹¦ÄÜÀ´Ê¹ÓÃ;
 
 	2. ¶ÏÑÔÓĞÁ½ÖÖÓÃ·¨
-		1. assert boolExpre£¬boolExpreÊÇÒ»¸ö²¼¶û±í´ïÊ½£¬Èç¹û±í´ïÊ½ÎªfalseÔò³ÌĞòÅ×³öÒì³£²¢ÇÒ³ÌĞò»áÖ±½ÓÍË³ö£»
+		1. assert boolExpre; boolExpreÊÇÒ»¸ö²¼¶û±í´ïÊ½£¬Èç¹û±í´ïÊ½ÎªfalseÔò³ÌĞòÅ×³öÒì³£²¢ÇÒ³ÌĞò»áÖ±½ÓÍË³ö£»
 		2. assert boolExpre : expression; Èç¹û±í´ïÊ½Îªfalse£¬Ôò³ÌĞòÅ×³öµÄÒì³£ĞÅÏ¢Îªexpression£»
 	
 2017.11.23
@@ -1585,10 +1589,6 @@ echo a±¾À´µÄ½á¹ûÊÇa, µ«ÊÇ¼ÓÉÏecho a>nul ºó¾ÍÊ²Ã´Ò²²»»áÏÔÊ¾¡£×¢ÒâÊÇnul²»ÊÇnull£¬È
 
 2. ucenterµ¥µãµÇÂ¼ http://blog.csdn.net/doegoo/article/details/50748182
 
-3. mybatisÑ§Ï°£º
-	1. http://www.cnblogs.com/xdp-gacl/p/4262895.html
-	2. http://www.mybatis.org/mybatis-3/zh/getting-started.html
-
 2017.12.19
 1. ½«eclipseÉÏÏîÄ¿ÉÏ´«µ½gitÉÏ http://blog.csdn.net/ymfwj/article/details/52491194
 
@@ -1854,6 +1854,10 @@ pom.xmlÎÄ¼şµÄproject½ÚµãÏÂÌí¼ÓÊôĞÔ
 
 3. idea°²×°²å¼ş: file-settings-plugins-browse repositories
 
+4. idea ¿ì½İ¼ü
+	1. ²éÕÒÌæ»» contrl + r
+	2. Çå³ı¶àÓà°ü c + a + l
+
 2018.01.11
 1. jetty¼òµ¥Ê¹ÓÃ
 	1. ÔÚjetty¹ÙÍøÉÏÏÂÔØjettyÑ¹Ëõ°üºó½âÑ¹£¬½«jetty¸ùÄ¿Â¼Â·¾¶Ìí¼Óµ½»·¾³±äÁ¿JETTY_HOMEÖĞ;
@@ -1870,7 +1874,7 @@ cd %JETTY_HOME% java -jar start.jar¾Í¿ÉÒÔÆô¶¯jetty·şÎñÆ÷¡£ÕâÊ±ä¯ÀÀÆ÷µØÖ·À¸ÊäÈëlo
 1. intellij ideaÔõÃ´´ò¿ªoutline£¬¼´ÏñEclipseÖĞµÄÔÚÓÒ±ßÏÔÊ¾Ä³¸öÀàµÄËùÓĞ·½·¨ 
 	http://blog.csdn.net/ideality_hunter/article/details/53331700
 
-2. mybatis
+2. mybatisÕûºÏspringMVCÅäÖÃ
 	1. ¹ØÓÚdao²ã, manager²ã
 		ÔÚmapper²ãÖĞĞ´¸÷ÖÖ»ù´¡µÄµ÷ÓÃÊı¾İ¿âµÄ½Ó¿Ú£¬ÈçAMapper, ÕâĞ©½Ó¿ÚÖĞµÄ·½·¨Ãû³ÆºÍAMapper.xmlÎÄ¼şÖĞ¶¨ÒåµÄÃ¿Ò»¸ö²Ù×÷
 	Êı¾İ¿âµÄ±êÇ©µÄidÒ»Ò»¶ÔÓ¦¡£
@@ -1900,6 +1904,9 @@ cd %JETTY_HOME% java -jar start.jar¾Í¿ÉÒÔÆô¶¯jetty·şÎñÆ÷¡£ÕâÊ±ä¯ÀÀÆ÷µØÖ·À¸ÊäÈëlo
 
 	2. limit¹Ø¼ü×Ö select * from table limit 5, 10 ±íÊ¾µÄÊÇ²éÑ¯6µ½15ĞĞ£¬ÒòÎªÊÇ´Ó0ĞĞ¿ªÊ¼ËãµÄ, ²Î¿¼×ÊÁÏ
 http://blog.csdn.net/zhqingyun163/article/details/5053579/
+
+	3. IFNULLµÄ¿Ó ×¢Òâselect IFNULL(id, 0) from..£¬ÕâÀïµÄifnullÖ»ÄÜÅĞ¶Ï²éÑ¯³öµÄ½á¹ûÖĞÕâÒ»ĞĞÊÇ·ñidÁĞÎª¿Õ£¬¶ø²»ÄÜÅĞ¶Ï
+½á¹û¼¯Ò²Îª¿ÕµÄÇé¿ö;
 
 2018.01.16
 1. Ã¶¾Ù
@@ -1938,3 +1945,18 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 
 	4. ×¢Òâ¼´Ê¹¸ÃÃ¶¾ÙµÄÊôĞÔ¸ú¸ÃÃ¶¾Ù×Ô¼ºµÄÃ¶¾ÙÃûÊÇÁ½»ØÊÂ£¬ÈçWeekConstants week = WeekConstants.SUNDAY;
 	sysout(week.getWeekdayName);// ½á¹ûÎªSunday sysout(week); // ½á¹ûÎªSUNDAY
+
+2018.01.22
+1. list²»ÄÜÔÚforeachÑ­»·ÖĞ½øĞĞadd»òremove²Ù×÷Ô­Òò https://www.cnblogs.com/luyu1993/p/7148765.html
+
+2018.01.24
+1. mybatisÓÃ·¨
+	1. mybatis jdbcTypeºÍjava type ¶ÔÓ¦¹ØÏµ http://blog.csdn.net/jljf_hh/article/details/49535097
+
+	2. Óï·¨
+		1. ×¢ÒâÔÚmybatisµÄÓ³ÉäÎÄ¼şµÄselectÓï¾äÖĞ²»ÄÜĞ´×¢ÊÍ--£¬·ñÔòÒª±¨´í
+	
+	mybatisÑ§Ï°£º
+		1. http://www.cnblogs.com/xdp-gacl/p/4262895.html
+		2. http://www.mybatis.org/mybatis-3/zh/getting-started.html
+
