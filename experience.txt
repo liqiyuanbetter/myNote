@@ -1027,8 +1027,19 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 
 		2. 通过git config user.email来修改当前用户时，如果这个email对应着github上的一个账号则 user.name的修改是无效
 	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name
+
+	8. 忽略指定的文件
+		1. 在仓库中根目录下加入.gitignore文件可以指定忽略哪些文件, 注意这个gitignore文件是没有文件名的。windows下无法创建没有
+	名字的文件，创建方法是在git命令行输入 touch .gitignore;
+		
+		2. 开放模式负责过滤哪些文件和文件夹
+			1. 忽略指定类型文件 *.zip, *.txt
+			2. 过滤文件夹 /directoryName
+			3. 过滤指定文件 /directoryName/fileName.fileType
+
+		3. 保守模式负责不过滤哪些文件夹, 只需在前面加上一个!, 如!*.zip
 	
-	8. 使用eclipse实现上传与下载
+	9. 使用eclipse实现上传与下载
 		1. 用eclipse上传项目到git http://blog.csdn.net/ymfwj/article/details/52491194
 		2. 用eclipse来pull代码 https://www.cnblogs.com/qlong8807/p/6098406.html
 
