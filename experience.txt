@@ -142,7 +142,7 @@ js变量声明提升
 
 	</plugins>
 </build>
-1. 安装mysql
+1. mysql安装
 	1. 5.7的高版本
 		1. 解压mysql后在path中添加mysql的bin目录的路径，可采取添加变量%MYSQL_HOME%的形式;
 
@@ -1023,10 +1023,17 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	7. git用户名和账号
 		1. git config user.name 和 git config user.email分别可以看到当前仓库下的git账户的用户名和邮箱。注意事实上不同的仓库，
 	或者说不同的项目可以对应不同的账户。可以通过git config --global user.name/email来查看全局的配置，默认是使用的全局配置。
-	通过git命令修改这些配置时, 只需git config --global user.name "引号里面写新的git账户名"
+	通过git命令修改这些配置时, 只需git config --global user.name "引号里面写新的git账户名"。在使用sourceTree时需要注意这点，因
+	为有可能发现上传者账户不对;
 
 		2. 通过git config user.email来修改当前用户时，如果这个email对应着github上的一个账号则 user.name的修改是无效
-	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name
+	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name;
+
+		3. 全局账号的默认配置文件在C:\Users\当前用户名这个文件夹下，这也是linux根目录~。可以直接在这个文件夹中修改用户配置，
+	即
+		[user]
+			name = liqiyuan
+			email = dota2fordota2@163.com
 
 	8. 忽略指定的文件
 		1. 在仓库中根目录下加入.gitignore文件可以指定忽略哪些文件, 注意这个gitignore文件是没有文件名的。windows下无法创建没有
@@ -1037,7 +1044,7 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 			2. 过滤文件夹 /directoryName
 			3. 过滤指定文件 /directoryName/fileName.fileType
 
-		3. 保守模式负责不过滤哪些文件夹, 只需在前面加上一个!, 如!*.zip
+		3. 保守模式负责不过滤哪些文件夹, 即跟踪那些文件, 只需在前面加上一个!, 如!*.zip
 	
 	9. 使用eclipse实现上传与下载
 		1. 用eclipse上传项目到git http://blog.csdn.net/ymfwj/article/details/52491194
@@ -1971,3 +1978,76 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 		1. http://www.cnblogs.com/xdp-gacl/p/4262895.html
 		2. http://www.mybatis.org/mybatis-3/zh/getting-started.html
 
+
+2018.02.01
+1. java sdk
+	1. System.arraycopy和Arrays.copyOf
+		1. System.arraycopy(src, srcPos, dest, destPos, length)。它的意义是将src数组从srcPos(从0开始, 且包括该位置)开始的length
+	个元素复制到destPos从destPos(包括destPos)开始的length元素，该函数可以用于自我复制，即System.arraycopy(a1, 0, a1, 1, 3)。注意
+	这个函数的结果是destPos被改变了，而不是src被改变了;
+
+		2. Arrays.copyOf(arr, length)该方法返回一个新的数组。前者需要已经存在两个指定了长度的数组，该方法则可以直接返回一个
+	新的数组，如int[] a = {1, 2, 3, 4}; int[] b = Arrays.copyOf(a, 10); 则b的值为{1, 2, 3, 4, 0...0};
+
+2. 为什么不能在遍历list的同时做删除或者添加元素的操作
+	1. 现象1
+		ArrayList<String> list = new ArrayList<String>();
+        list.add("1");
+        list.add("2");
+
+        for (String s : list) {
+            System.out.println(s);
+            if ("1".equals(s)) {
+                list.remove(s);
+            }
+        }
+	输出结果是1且不会报错，但是如果将if条件改为"2".equals(s), 则程序会先打印1, 2然后抛出ConcurrentModificationException异常
+	如果将remove改为add，则打印1后马上抛出ConcurrentModificationException异常
+
+	现象2
+		ArrayList<String> list = new ArrayList();
+			list.add("1");
+			list.add("2");
+			Iterator var2 = list.iterator();
+
+			while(var2.hasNext()) {
+				String s = (String)var2.next();
+				System.out.println(s);
+				if ("2".equals(s)) {
+					// add和remove位置可以互换
+					list.add("3");
+					list.remove(s);
+				}
+			}
+	输出结果是1, 2 且不会报错
+
+	2. 原因
+		1. 对于foreach循环，jdk总是将其编译为以下代码执行(可通过反编译.class文件查看)
+			ArrayList<String> list = new ArrayList();
+			list.add("1");
+			list.add("2");
+			Iterator var2 = list.iterator();
+
+			while(var2.hasNext()) {
+				String s = (String)var2.next();
+				System.out.println(s);
+				if ("2".equals(s)) {
+					list.add("3");
+					list.remove(s);
+				}
+			}
+		这个.iterator()返回的是ArrayList<E>内部的一个实现了Iterator<E>接口的名为Itr的类(可查看源码)。该类中有一个叫做
+	expectedModCount的变量在Itr初始化(也就是执行list.iterator())时已经被固定下来，它的值等于ArrayList<E>中的model这个变量。
+	这个变量记录了对ArrayList的remove或add等操作。每次在执行.next方法时, Itr都会通过checkForComodification方法检测这两个
+	modelCount的值是否相同，换句话说遍历操作不允许在遍历结束前对list表又进行了修改，这有点类似于数据库读操作的for update。
+	事实上抛出的异常ConcurrentModificationException也是一个线程安全相关的异常。而hasNext方法返回的是当前指针cursor指向的位置
+	是否等于整个链表的长度size。每执行一次next方法同样也会让cursor的值加一;
+		回到代码上，在现象1中, 如果是"1".equals(s), 执行remove时, cursor = 1，size = 1, model - expModel = 1。
+	但是此时循环就已经终止了，所以不会去执行next方法从而不会抛出异常。但是如果改为"2".equals(s), 那么在执行完remove之后,
+	cursor=2, 此时size的值因为remove变为了1，hasNext方法依然返回的是true, 所以会继续执行next方法。在next方法中检测到两个
+	model值不一样抛出异常。同样的如果在"1".equals(s)情况下执行了list.add("3"), 那么此时cursor=1, size=3, hasNext肯定返回的是
+	true。继续执行next方法抛出异常;
+		在现象2中，if之前cursor已经是2, if过后size先变为3然后再变为, 所以hasNext返回false同样不会执行next方法不会抛出异常
+
+2018.02.02
+1. @JobEvent joda
