@@ -1876,6 +1876,8 @@ pom.xml文件的project节点下添加属性
 	1. 查找替换 contrl + r
 	2. 清除多余包 c + a + l
 
+5. 关闭重复代码提示 http://blog.csdn.net/ck4438707/article/details/52233968
+
 2018.01.11
 1. jetty简单使用
 	1. 在jetty官网上下载jetty压缩包后解压，将jetty根目录路径添加到环境变量JETTY_HOME中;
@@ -1968,11 +1970,29 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 1. list不能在foreach循环中进行add或remove操作原因 https://www.cnblogs.com/luyu1993/p/7148765.html
 
 2018.01.24
-1. mybatis用法
+1. mybatis语法
 	1. mybatis jdbcType和java type 对应关系 http://blog.csdn.net/jljf_hh/article/details/49535097
 
-	2. 语法
-		1. 注意在mybatis的映射文件的select语句中不能写注释--，否则要报错
+	2. 注意事项
+		1. 在mybatis的映射文件的select语句中不能写注释--，否则要报错;
+
+		2. insert, update, delete的返回值 
+			1. 对于mybatis的update语句，它的返回值是匹配到的行数，而不是修改的行数。例如update set c=1 where c=1。如果这个表有
+		10行的c等于1, 那么在mysql中直接运行这个语句时会显示受影响的行数为0。也就是说mysql不会对前后值一样的列进行修改。但是这
+		条语句在mybatis中返回的是10。当然在实际中我们不会做这样的修改，所以也可以认为匹配到的行数就是实际修改的行数。insert和
+		delete返回的都是插入或修改的行数
+			
+			2. insert通过批量插入时会返回一个大于1的值。foreach和trim, if联用
+			<insert id="testBatchInsert" parameterType="java.util.List">
+				INSERT INTO attendance_statistic(account_id) VALUES
+				<foreach collection="list" item="item" index="index" separator=",">
+				  <trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="item.accountId != null">
+					  #{item.accountId, jdbcType=VARCHAR},
+					</if>
+				  </trim>
+				</foreach>
+			 </insert>
 	
 	mybatis学习：
 		1. http://www.cnblogs.com/xdp-gacl/p/4262895.html
