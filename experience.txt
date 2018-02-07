@@ -2126,3 +2126,8 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 
 2018.02.02
 1. @JobEvent joda
+
+2018.02.07
+1. java -c 命令 https://www.cnblogs.com/beautiful-code/p/6424977.html
+
+2. java不支持泛型数组 https://www.cnblogs.com/scutwang/articles/3735219.html
