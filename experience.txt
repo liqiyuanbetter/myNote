@@ -313,36 +313,70 @@ addHeader方法可以设置cookie为httponly的，例如
 		5. 总之某个类或对象的类类型对象中存有关于这个类的各种信息，但是这个类类型对象的类类型对象中存放的是类类型
 	对象的各种信息，这些信息是没有任何作用的。可见ReflectFrame得MyServletProcessor类。
 
-	4. 如果获取泛型的实例化参数
-		1. 现在假设有一个操作数据库的基本dao类
-		class BaseDao<T> {
+	4. 泛型详解
+		1. 获取泛型的实例化参数
+			1. 现在假设有一个操作数据库的基本dao类
+				class BaseDao<T> {
 
-			// 存储实体类数据
-			public void saveEntity(T t) {}
+					// 存储实体类数据
+					public void saveEntity(T t) {}
 
-			// 根据id得到实体类
-			public void findEntityById(Serializable id) {
+					// 根据id得到实体类
+					public void findEntityById(Serializable id) {
+						
+					}
+				}	
 				
-			}
-		}	
-		
-		class UserDao extends BaseDao<User> {}
+				class UserDao extends BaseDao<User> {}
 
-		当我们要存储数据时很容易操作，因为在saveEntity(T t)方法中就传入了一个实例化对象，我们可以直接根据这个实例化
-	对象t(可能T上还有很多注解)来构造出我们要得查询语句。如t.getAnnotation(Table.class).name(假设注解Table有name属性)。
-		但是当我们要根据id查询某条数据却很困难，因为我们此时只有一个id参数，并不知道T这个泛型会被实例化为哪个类，
-	它是由BaseDao类的子类来具体指定的，也就是在子类调用这个方法时才知道实例化对象是什么。这时就需要再函数体里面这样写
-		// this就是子类对象, getGenericSuperClass返回类型是type
-		ParamerizedType type = (ParameterizedType) this.getClass().getGenericSuperClass();
-		/* 
-		   返回此类型实际的实例化参数, 返回类型是Type[]
-		   之所以能将Type型参数直接转化成Class<T>是因为Class类实现了Type接口
-		 */
-		Class<T> class = (Class<T>) type.getActualTypeArguments()[0]
-		然后就可以对这个class进行各种操作，它代表的就是实例化参数，比如上面的User
+			当我们要存储数据时很容易操作，因为在saveEntity(T t)方法中就传入了一个实例化对象，我们可以直接根据这个实例化
+		对象t(可能T上还有很多注解)来构造出我们要得查询语句。如t.getAnnotation(Table.class).name(假设注解Table有name属性)。
+			但是当我们要根据id查询某条数据却很困难，因为我们此时只有一个id参数，并不知道T这个泛型会被实例化为哪个类，
+		它是由BaseDao类的子类来具体指定的，也就是在子类调用这个方法时才知道实例化对象是什么。这时就需要在BaseDao的findEntityById
+		里这样写
+			// this就是子类对象, getGenericSuperClass返回类型是type
+			ParamerizedType type = (ParameterizedType) this.getClass().getGenericSuperClass();
+			/* 
+			   返回此类型实际的实例化参数, 返回类型是Type[]
+			   之所以能将Type型参数直接转化成Class<T>是因为Class类实现了Type接口
+			 */
+			Class<T> class = (Class<T>) type.getActualTypeArguments()[0]
+			然后就可以对这个class进行各种操作，它代表的就是实例化参数，比如上面的User
+		
+			2. 注意这里返回的是一个Type数组，之所以是数组是因为可能有多个实际参数类型。比如BaseDao<T, U>, Type数组里的顺序对应
+		这里的T, U。此时可以写Class<U> class = (Class<U>) type.getActualTypeArguments()[1]
+
+		2. <? extends T> 和 <? super T> 是java泛型中的通配符和边界(上界和下界)的概念
+			1. List<? extends T> 和 List<? super T>的区别
+				1. <? extends T>接受的T以及T的子类, 如List<? extends Number> list可以=ArrayList<Number>或ArrayList<Integer>. 
+			List<? super T>接受T以及T的父类，如List<? super Integer>可以=ArrayList<Integer>或ArrayList<Number>, 
+			ArrayList<Object>;
+
+				2. <? extends T> list只能读。因为你不知道list实际指向的是什么对象，T的子类是两个完全没有关系的类，显然你不能
+			将他们插入到同一个list中。例如List<Integer>和List<Double>。但是<? extends T>可以读取，但是你只能保证读取到的对象
+			就是T类型的。因为只要是T的子类那么一定都具有T的所有行为，因此可以读取出来后调用T中的某些方法;
+				
+				3. <? super T> list只能写。显然T的父类也具有不同的行为。你不能试图去调用T中的方法，因为这个方法可能是一个独有
+			的方法, 所以不允许读取某个T的对象t。但是你总可以向list中添加T以及T的子类的对象。注意你不能添加T的父类的对象，因为
+			你并不知道list的实际参数类型是T的哪一个父类。当然可以读取成Object o = list.get(0)。但是这样丧失所有子类的特性，这
+			样的读取没有意义;
+
+				4. PECS原则。生产者，即那些我们只想从中读取某些元素的对象用extends。消费者即我们要向其中添加某些元素的对象用
+			super。例如jdk1.7中java.util.Collections类的copy(List<? super T> dest, List<? extends T> src)方法就很好的遵循了这
+			一原则，保护了参数不被修改
+
+			2. 声明自己的泛型类时, 如
+				@Data
+				public class Clazz<T> {
+					T t
+				}
+			在Clazz<? extends Number> clazz = new ..中，将不在能调用setT()方法，但是可以调用getT()方法，且返回类型永远是Number
+			在Clazz<? super Integer> clazz = new Clazz<Number>中，在调用setT方法是只能传入整型数据。可以调用getT()方法，但是
+		得到的都是Object型对象
 
 	5. 参考资料
 		1. 泛型type体系与反射 http://blog.csdn.net/qbg19881206/article/details/22757061
+		2. <? extends C> https://www.cnblogs.com/drizzlewithwind/p/6100164.html
 		
 2017.09.27
 1. FileFilter接口用于过滤抽象路径名，它只有accept一个方法，该方法规定了那些路径名可以listFile(..)接收;
@@ -1993,6 +2027,27 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 				  </trim>
 				</foreach>
 			 </insert>
+		
+		3. 对于自增的主键，如何在插入一条数据后获得最新插入的数据的自增id。这样写：
+		<insert id="testInsert" parameterType="im.qingtui.sa.attendance.schedule.model.AttendanceStatistic">
+			<selectKey resultType="int" order="AFTER" keyProperty="id">
+			  SELECT last_insert_id() as id
+			</selectKey>
+			INSERT INTO attendance_statistic
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+			  <if test="accountId != null">
+				account_id,
+			  </if>
+			</trim>
+			<trim prefix="values (" suffix=")" suffixOverrides=",">
+			  <if test="accountId != null">
+				#{accountId, jdbcType=VARCHAR},
+			  </if>
+			</trim>
+		</insert>
+			这里的keyProperty是对应的实体类的属性名，本来保存数据的实体类中肯定是没有id的值的，因为是自增的不需要认为指定。
+		这样在java程序中，clazz.getId()就能够得到本次插入后得到的自增主键的值。selectKey标签写在insert插入语句前面，插入语句
+		还是照样写
 	
 	mybatis学习：
 		1. http://www.cnblogs.com/xdp-gacl/p/4262895.html
