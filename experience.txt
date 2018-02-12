@@ -791,11 +791,13 @@ multipart/form-data
 
 	3. 服务器
 		1. java 7以及tomcat7之后都支持websocket协议。对类加上注解 @ServerEndpoit("/path")。加上该注解后程序会自
-	动扫描该类。注意该类是多例的，每次访问都会产生一个新的类。
+	动扫描该类。注意该类是多例的，每次访问都会产生一个新的类;
 
-		2. 在ServerEndpoint注解的类下给方法添加OnOpen, OnClose, OnMessage可分别用于处理开启连接，关闭连接，和接收
+		2. 在ServerEndpoint注解的类下给方法添加 @OnOpen, @OnClose, @OnMessage可分别用于处理开启连接，关闭连接，和接收
 	消息事件。注意被OnMessage标注的函数中必须包含Session, String 这两个参数。前者用于管理会话，后者表示客户端传过来的
-	消息信息;
+	消息信息。 @Open方法中的参数为Session，每产生一个连接就会多个一个Session。 @OnMessage的参数有Session和String。OnClose
+	参数有Session。如果方法中参数类型不正确，有可能服务无法正常启动。 @OnMessage方法可以用于发送和接收消息。调用
+	session.getAsyncRemote()方法得到一Async对象，调用该对象的sendText方法可以发送数据;
 
 		3. 因为websocket的服务类是多例的，所以如果要实现一个类似聊天室的功能时，可以在该类中声明一个静态的集合类对
 	象来保存回话。服务器向客户端发送消息步骤是: session.getBasicRemote(或getAsyncRemote), 然后调用remote对象的sendText
@@ -2027,7 +2029,7 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 				  </trim>
 				</foreach>
 			 </insert>
-		
+			
 		3. 对于自增的主键，如何在插入一条数据后获得最新插入的数据的自增id。这样写：
 		<insert id="testInsert" parameterType="im.qingtui.sa.attendance.schedule.model.AttendanceStatistic">
 			<selectKey resultType="int" order="AFTER" keyProperty="id">
@@ -2131,3 +2133,32 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 1. java -c 命令 https://www.cnblogs.com/beautiful-code/p/6424977.html
 
 2. java不支持泛型数组 https://www.cnblogs.com/scutwang/articles/3735219.html
+
+2018.02.08
+1. SpringMVC
+	1. 验证框架
+		1. 基本用法
+			在实体类的属性上加上注解，如 @NotNull, @Max(value = 3, message = "info"), @Range等。controller的方法中，在需要检验
+	的参数前面加上 @Valid注解，同时方法中还需要一个类型为BindingResult bindingResult的参数用于接收错误信息。如果前台传过来的参
+	数不符合校验规则，那么bindingResult.hasErrors()返回值为true。bindingResult.getAllErrors()返回一个List<ObjectError>, 里面有
+	所有的错误信息。list.get(0).getDefaultMessage()可以得到具体的错误信息
+
+2018.02.09
+1. javap命令
+	1. javap是JDK自带的反汇编器，可以查看java编译器生成的字节码。通过它可以了解编译器内部是怎么工作的。它的基本用法是在.class
+所在目录运行命令行: javap -c ClassName, 注意不加.class
+
+	2. 常见字节码解释
+		1. iconst_2 将int型常量2压入操作数栈(operand stack)的栈顶
+		2. iload_1 将局部变量表(local variables)中位置1的元素压入操作数栈栈顶
+		3. istore_1 将操作数栈栈顶元素弹出，然后保存到局部变量表中的位置1，也就是变量1。注意总是从操作数栈中弹出最顶端的元素，
+	只不过弹出的元素保存到局部变量表中的不同位置
+		4. iinc 1, 1 将局部变量表中位置1的元素加1
+		5. if_icmpge 弹出操作数栈栈顶的两个元素，比较他们的大小
+	注意，局部变量表中的变量值增加并不代表它实际的值增加了，因为程序总是从操作数栈栈顶中取出数据。例如当我们要输出变量2的值，
+则程序会先iload_2, 将局部变量的值压入操作数栈，然后再读取。操作数栈中的值并不直接对应某个变量
+		
+	局部变量表和操作数栈 http://wangwengcn.iteye.com/blog/1622195
+
+2018.02.12
+1. leetcode, 牛客网
