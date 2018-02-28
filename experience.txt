@@ -313,6 +313,9 @@ addHeader方法可以设置cookie为httponly的，例如
 		5. 总之某个类或对象的类类型对象中存有关于这个类的各种信息，但是这个类类型对象的类类型对象中存放的是类类型
 	对象的各种信息，这些信息是没有任何作用的。可见ReflectFrame得MyServletProcessor类。
 
+	4. getDeclaredMethod和getMethod区别: 前者能获取到所有访问修饰符的方法，但不能获取到继承的方法。后者能获取到所有公有的
+方法，包括从父类和接口中继承的
+
 	4. 泛型详解
 		1. 获取泛型的实例化参数
 			1. 现在假设有一个操作数据库的基本dao类
@@ -1706,7 +1709,28 @@ git clone是一样的，相当于只是通过eclipse将一个git项目拉到了本地，但是该项目和ecl
 3. ==和===，后者会比较类型是否相同。如"55" == 55// true, "55" === 55 // false
 
 4. console.log("a", "b")相当于输出a b;
-
+result		array<object>	
+    area		object	
+        id		string	
+        name		string	
+    data		object	
+        early		number	
+        empty		number	
+        late		number	
+        normal		number	
+        offTimeEmpty		number	
+        onTimeEmpty	
+var data = {
+	result: [
+		{
+			area: {id: "1", name: "1"},
+			data: {early: "", empty: ""}
+		},
+		{
+			
+		}
+	]
+}
 5. json对象数据格式，当数据里有数组且数组的元素还是对象时，要先写[], 再写{}, 如
 	var data = {
 		name: "liqiyuan",
@@ -2029,6 +2053,29 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 				  </trim>
 				</foreach>
 			 </insert>
+
+			3. 关于foreach标签
+				1. foreach元素的属性主要有 item，index，collection，open，separator，close
+					item表示集合中每一个元素进行迭代时的别名，
+					index指 定一个名字，用于表示在迭代过程中，每次迭代到的位置，
+					open表示该语句以什么开始，
+					separator表示在每次进行迭代之间以什么符号作为分隔 符，
+					close表示以什么结束。
+					collection属性是必须指定的，它的值有以下几种
+						1. 如果传入的是单参数且参数类型是一个List的时候，collection属性值为list
+						2. 如果传入的是单参数且参数类型是一个array数组的时候，collection的属性值为array 
+						3. 如果传入的是一个类的对象，则它的值应该为属性名。例如该类中有一个类型为List<String>的属性ids。当我们
+					使用的查询中有in时，应该这样写
+					<select..>
+						select... where id in
+						<foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+							#{id}
+						</foreach>
+					</select>
+
+			4. 当需要加查询结果保存到一个复杂属性中时
+				1. 例如有一个属性address是一个对象，它有一个属性name。则可以通过resultMap使用.号
+			<resultMap id..><result property="address.name" column="columnName" jdbcType="VARCHAR" /></resultMap>
 			
 		3. 对于自增的主键，如何在插入一条数据后获得最新插入的数据的自增id。这样写：
 		<insert id="testInsert" parameterType="im.qingtui.sa.attendance.schedule.model.AttendanceStatistic">
@@ -2136,12 +2183,27 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 
 2018.02.08
 1. SpringMVC
-	1. 验证框架
+	1. 验证前台传送过来的参数是否合法, 即验证用于接收参数的...Param类
 		1. 基本用法
 			在实体类的属性上加上注解，如 @NotNull, @Max(value = 3, message = "info"), @Range等。controller的方法中，在需要检验
 	的参数前面加上 @Valid注解，同时方法中还需要一个类型为BindingResult bindingResult的参数用于接收错误信息。如果前台传过来的参
 	数不符合校验规则，那么bindingResult.hasErrors()返回值为true。bindingResult.getAllErrors()返回一个List<ObjectError>, 里面有
 	所有的错误信息。list.get(0).getDefaultMessage()可以得到具体的错误信息
+
+	2. @RequestMapping注解
+		1. value表示映射地址, 它是一个数组, 即value = {"/p1", "/p2"}, 路径中也可以带参数，如value = "/path/{param}"
+			1. 获取路径中参数的方法method(@PathVariable String param)或method(@PathVariable(name = "param") String anyParamName)
+			
+			2. 路径中可以含多个参数如value = "{p1}/path/{p2}", 获取方法method(@PathVariable String p1, @PathVariable
+		String p2)
+			
+			3. 路径参数支持正则表达式
+
+		2. method请求方式, method = {RequestMethod.GET或POST}
+
+	3. 获取请求参数
+		1. https://www.cnblogs.com/xiaoxi/p/5695783.html
+		2. http://blog.csdn.net/a350204530/article/details/60763379
 
 2018.02.09
 1. javap命令
@@ -2162,3 +2224,9 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 
 2018.02.12
 1. leetcode, 牛客网
+
+2018.02.24
+1. 各层之间参数传递：从controller前台接收到的参数保存在nameParam类当中(包-项目名.frontpv.param.模块名)。从controller返回给前
+台的参数保存在nameVo中(包-项目名.frontpv.vo.模块名)。mybatis的映射文件中, parameterType和resultType通常是
+nameEntity(包-项目名.dao.model.模块名)或nameDo(包-项目名.model.模块名)。facade层的类调用manager后将结果封装
+nameDTO(包-项目名.dto)类，然后返回给controller层, 然后controller层将其转化为Vo型返给前台
