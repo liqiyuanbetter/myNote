@@ -1,0 +1,62 @@
+1. distinct会应用于所有select语句中的列而不是i部分，只有所有列的的数据都不同才被认为是不同
+
+2. 使用order by对多列进行排序时，第一顺位是写在order by后面的第一列。只有在第一列的数据相同时才会按照第二列的顺序排列。如果查询结果中第一列的数据完全不同，则不会按照第二列排序使用order by对多个列排序时，可以分别指定每个列的排序顺序，即select * from tableName order by c1 desc, c2 asc
+
+3. 注意bewteen and关键字只能用于值类型的比较而不能用于串类型
+
+4. 在条件查询中，如果and和or同时出现，则and的优先级更高，即sql先将and两侧的条件结合再与or结合(java中也是这样. && 的优先级高于||)。例如c1 = v1 or c1 = v2 and c2 < v3相当于(c1 = v1) or (c1 = v2 and c2 < v3)
+
+5. %表示匹配任何字符出现任意次数, 例如'搜索模式%qi%'表示匹配任何位置包含文本qi的值，而不论它之前或之后出现什么字符。但是注意空格会干扰通配符匹配，即如果c1列有一行的数据是liqi yuan, 则通过like '%qi%'是查询不到的，但是通过'%qi%%'或'%qi %'查询的到。前者能够匹配所有包含qi的数据，包括qi , 但是后者只能匹配包含qi 的数据，如'qiyuan'将不被匹配。_通配符只能匹配一个字符，不能多也不能少
+
+6. 在使用%通配符进行过滤时，通常在like后面加一个binary即可区分大小写
+
+7. 使用正则表达式进行搜索。mysql中正则表达式的关键字是REGEXP, 用法是where columnName REGEXP 'value'. 则所有列值中包含value的数据都将被返回，相当于like '%value%'。正则表达式表示只要文本中包含了符合这个表达式的值，则该数据就会被查询出来
+	1. 多个条件进行匹配使用|。如REGEXP 'value1|value2|value3'
+
+	2. 匹配几个字符之一。
+		1. 使用表达式[123]ton时，[123]定义一组字符串，表示匹配1或或3。假如表中有aaa1ton, bbb2ton, 3ton则他们都会被查询出来.注意在mysql中，[123]ton并不表示需数据需要完全符合，而是只要包含这个正则表达式就可以。
+
+		2. [123ton]的写法是[1|2|3]ton的简写，但是注意不能写成'1|2|3ton'，因为这相当于匹配包含1或2或3ton。即|必须写在[]内，否则将应用于整个串。
+
+		3. 使用否定符^l来进行匹配, 如[^123]表示匹配1, 2, 3意外的任何东西, 注意否定符是写在集合符号[]里面而不是外面的
+
+	4. 可以用-来指定匹配范围, 如[1-8], [a-z]表示从1到8，从a到z
+
+	5. mysql使用\\即两个反斜杠来实现特殊字符的转义，如\\-, \\\\
+
+	6. 通过使用重复元字符来匹配多个实例
+		1. 重复元字符有*表示0个或多个，+表示1个或多个，？表示0个或1个, {n}表示恰好n个, {n, }表示n个及以上, {n, m}表示n到m个
+
+		2. 'e{2}'表示的是e必须连续出现两次，即匹配的是'ee'，而不是只要e出现了两次就可以。另外重复元字符总是匹配在它前面出现的一个字符，如'lqy{2}'表示的是y出现两次而不是lqy出现两次, 即相当于'lqyy'
+
+	7. 使用定位符
+		1. 前面的匹配都是匹配一个串中任意位置的文本，为了匹配特定位置的文本可以使用^(文本的开始), $(文本的结尾), [[:<:]](词的开始), [[:>:]](词的结尾)。
+
+		2. ^reg, 表示文本必须是匹配reg开头的，即相当于^(reg)。文本的结尾用法是reg$，$符号写在表达式的后面。注意不能把^和$连在一起用，但是可以^reg1|reg2$表示匹配reg1开头的和以reg2结尾的
+
+创建计算字段
+	1. mysql允许将多列合成或计算，如select concat(c1, '---', c2) as n1, c3 * c4 as n2 from tableName;
+
+数据处理函数
+	1. 文本处理函数
+		1. soundex可以对语音进行比较，如lie和lee的发音相近，我们可以这样查询 select * from table where soundex(user_name)=soundex('lee')则lie和lee都能被查询出来
+
+	2. 日期时间处理函数
+		1. mysql中日期总是yyyy-mm-dd(可能有hh:mm:ss)的格式。因此在查询日期相等时2018-01-01和2018-01-01 23:22:44是不想等的。如果只想比较日期是否相同可以用函数Date()，比较时间可以用函数Time()。如select * from table where Date(time_column)='2018-01-01'
+
+		2. 时间的查询条件同样可以使用between and。如where date(date_column) between '2018-01-01' and '2018-02-02'。
+		
+		3. 可以单独取出年月日如：where year(time)=2018 and month(time)=2 and day(time)=21。同样的还有minute(), hour(), second()函数。注意使用这些函数后等号后面跟的就不是字符串而是数字值了
+
+汇总数据
+	1. 聚集函数
+		1. count(*)对行的数目进行统计，不管列中是否为空值。而count(c1)将忽略c1列中为NULL的值
+
+	2. 还可以使用distinct来聚集不同的值。如avg(distinct price)将排除价格相同的行来计算平均值
+
+分组数据
+	1. 使用with rollup关键字会将分组后结果再进行一次聚集函数的计算。如select avg(price) as num, type from products group by type with rollup。假如type只有两种，则最后查询结果有三行，第三行会计算这两组平均值的平均值。type列的值为NULL
+
+	2. 过滤分组使用having.它和where的区别在于where过滤行，而having过滤分组。且where在分组前进行过滤，having在分组后进行过滤。另外having也支持所有where的用法。例如select avg(price) as num, type from products group by type with rollup having avg(price)>1000。假如有一个type的平均值不到1000，则该组数据会被过滤掉，但是不影响rollup的值，不是说过滤了rollup就不计算那个被过滤的分组了。此外having后的条件也并不一定要是查询条件中的聚集函数，也可以是having count(*) > 2, 即只要那些数量大于2的分组的平均值(同样不影响rollup产生的那一行)
+
+	3. 分组和where同时使用，如select type, avg(price) as avg from products where price>600 group by type。这个查询将只计算那些价格大于600的商品的平均值
