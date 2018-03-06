@@ -142,46 +142,64 @@ js变量声明提升
 
 	</plugins>
 </build>
-1. mysql安装
-	1. 5.7的高版本
-		1. 解压mysql后在path中添加mysql的bin目录的路径，可采取添加变量%MYSQL_HOME%的形式;
+1. mysql DBMS
+	1. mysql安装
+		1. 5.7的高版本
+			1. 解压mysql后在path中添加mysql的bin目录的路径，可采取添加变量%MYSQL_HOME%的形式;
 
-		2. 在cmd命令中执行mysqld --initialize命令会在mysql根目录下生成data文件夹，保存数据库等数据。如果没有在
-	path中配置bin路径，则需要在bin目录中执行mysqld命令;初始化成功后，会在data目录下生成一些文件，其中，xxx.error.log文件
-	里说明了root账户的临时密码。其内容为：
-		2017-09-21T01:23:31.812068Z 1 [Note] A temporary password is generated for root@localhost: Yi%#y;dtA6pp
-	后面的一串字符即初始的密码;
+			2. 在cmd命令中执行mysqld --initialize命令会在mysql根目录下生成data文件夹，保存数据库等数据。如果没有在
+		path中配置bin路径，则需要在bin目录中执行mysqld命令;初始化成功后，会在data目录下生成一些文件，其中，xxx.error.log文件
+		里说明了root账户的临时密码。其内容为：
+			2017-09-21T01:23:31.812068Z 1 [Note] A temporary password is generated for root@localhost: Yi%#y;dtA6pp
+		后面的一串字符即初始的密码;
 
-		3. 执行安装服务命令mysqld install serverName --defaults-file="...my.ini", 其中serverName是自己指定的计算机上
-	该mysql服务的名称，同时可以指定安装的配置文件。
+			3. 执行安装服务命令mysqld install serverName --defaults-file="...my.ini", 其中serverName是自己指定的计算机上
+		该mysql服务的名称，同时可以指定安装的配置文件。
 
-		4. 在使用cmd登录mysql时，需要输入 mysql -u root -p, 这里不需要输入密码，回车后再输入密码即可，因为输入密码是*
-	号表示的，直接在一行里面输入会暴露密码，因此命令提示enter password后再输入密码，这是输入2中初始密码即可。
+			4. 在使用cmd登录mysql时，需要输入 mysql -u root -p, 这里不需要输入密码，回车后再输入密码即可，因为输入密码是*
+		号表示的，直接在一行里面输入会暴露密码，因此命令提示enter password后再输入密码，这是输入2中初始密码即可。
 
-		5. 进入mysql后想操纵数据库会提示操作功能不完全需要重置密码，重置密码命令为
-			1. alter user 'root'@'localhost' identified by '123';
-			2. set password for 'root'@'localhost'=password('123'), 此处password是一个加密的函数;
-		第一次或是之后重置命令都是用的这个，因为这是在进入数据库后执行的，所以不需要输入原来的密码。
+			5. 进入mysql后想操纵数据库会提示操作功能不完全需要重置密码，重置密码命令为
+				1. alter user 'root'@'localhost' identified by '123';
+				2. set password for 'root'@'localhost'=password('123'), 此处password是一个加密的函数;
+			第一次或是之后重置命令都是用的这个，因为这是在进入数据库后执行的，所以不需要输入原来的密码。
 
-		6. 注意事项
-			1. 5.7之后数据库mysql的user表中不再有password这个字段，而是修改成了authentication_string字段，该字段
-		内容为加密后的密码。所以也可以通过修改user表中的user字段来修改登录名，比如将root改为lqy
-			use mysql;
-			update user set user="lqy" where user="root";
-		这张表中的其他字段说明该用户对数据库操作的权限。
+			6. 注意事项
+				1. 5.7之后数据库mysql的user表中不再有password这个字段，而是修改成了authentication_string字段，该字段
+			内容为加密后的密码。所以也可以通过修改user表中的user字段来修改登录名，比如将root改为lqy
+				use mysql;
+				update user set user="lqy" where user="root";
+			这张表中的其他字段说明该用户对数据库操作的权限。
 
-			2. 在my.ini配置文件中的[mysqld]下面加上skip-grant-tables可跳过所有密码验证，此时发现在navicat中
-		使用任何账号密码登录都能成功;
-			
-			3. 如果忘记了密码想要重新修改，步骤如下：
-				1. 停止mysql服务，将该服务对应的配置文件加上skip-grant-tables，然后重启服务进入mysql;
-				2. 通过上面的方式修改密码，发现提示在skip-grant-tables无法修改，这是再键入flush privileges;
-			命令，然后再次修改密码；
-				3. 修改配置文件不跳过密码，然后再重启服务，通过mysql -u user -p然后输入密码登录
+				2. 在my.ini配置文件中的[mysqld]下面加上skip-grant-tables可跳过所有密码验证，此时发现在navicat中
+			使用任何账号密码登录都能成功;
+				
+				3. 如果忘记了root用户密码想要重新修改，步骤如下：
+					1. 停止mysql服务，将该服务对应的配置文件加上skip-grant-tables，然后重启服务进入mysql;
+					2. 通过上面的方式修改密码，发现提示在skip-grant-tables无法修改，这是再键入flush privileges;
+				命令，然后再次修改密码；
+					3. 修改配置文件不跳过密码，然后再重启服务，通过mysql -u user -p然后输入密码登录
 
-2. mysql连接远程服务器
-	1. mysql -h 远程服务器id或url地址 -u user -p
+	2. mysql连接远程服务器命令, mysql -h 远程服务器id或url地址 -u user -p
 
+	3. mysql用户管理
+		1. 新增用户及授权(以root用户权限登录)
+			1. 创建新用户及授权
+				grant 权限(包括insert, update, select, delete或者all privileges) on dbName(*为所有库).tableName(*为所有表) 
+			to newUserName@登录主机(%为允许所有主机, localhost为本机, 注意用户名和主机名两边都要加引号) identified by 
+			'登录密码'。然后可以执行flush privileges刷新系统权限表
+
+			2. 收回用户权限
+				与授权命令基本一样，只是把grant换成了revoke.即revoke 权限 on db.tb to userName@host
+
+			3. 删除用户
+				1. drop user 'userName'@'host'
+				2. mysql中所有用户的信息都存储在mysql.user这张表中，因此也可以通过以下语句来删除用户
+			DELETE FROM user WHERE User='userName' AND Host='localhost'; 
+
+			4. 修改用户名和连接主机 rename user 'userName'@'host' to 'newUserName'@'newHost'
+
+	4. 常用操作命令: https://www.cnblogs.com/good_hans/archive/2010/03/29/1700046.html
 
 2. spring boot
 	1. http://www.cnblogs.com/larryzeal/p/5799195.html
