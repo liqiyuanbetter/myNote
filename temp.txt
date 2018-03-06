@@ -60,3 +60,6 @@
 	2. 过滤分组使用having.它和where的区别在于where过滤行，而having过滤分组。且where在分组前进行过滤，having在分组后进行过滤。另外having也支持所有where的用法。例如select avg(price) as num, type from products group by type with rollup having avg(price)>1000。假如有一个type的平均值不到1000，则该组数据会被过滤掉，但是不影响rollup的值，不是说过滤了rollup就不计算那个被过滤的分组了。此外having后的条件也并不一定要是查询条件中的聚集函数，也可以是having count(*) > 2, 即只要那些数量大于2的分组的平均值(同样不影响rollup产生的那一行)
 
 	3. 分组和where同时使用，如select type, avg(price) as avg from products where price>600 group by type。这个查询将只计算那些价格大于600的商品的平均值
+
+组合查询
+	1. 

@@ -142,42 +142,64 @@ js变量声明提升
 
 	</plugins>
 </build>
-1. mysql安装
-	1. 5.7的高版本
-		1. 解压mysql后在path中添加mysql的bin目录的路径，可采取添加变量%MYSQL_HOME%的形式;
+1. mysql DBMS
+	1. mysql安装
+		1. 5.7的高版本
+			1. 解压mysql后在path中添加mysql的bin目录的路径，可采取添加变量%MYSQL_HOME%的形式;
 
-		2. 在cmd命令中执行mysqld --initialize命令会在mysql根目录下生成data文件夹，保存数据库等数据。如果没有在
-	path中配置bin路径，则需要在bin目录中执行mysqld命令;初始化成功后，会在data目录下生成一些文件，其中，xxx.error.log文件
-	里说明了root账户的临时密码。其内容为：
-		2017-09-21T01:23:31.812068Z 1 [Note] A temporary password is generated for root@localhost: Yi%#y;dtA6pp
-	后面的一串字符即初始的密码;
+			2. 在cmd命令中执行mysqld --initialize命令会在mysql根目录下生成data文件夹，保存数据库等数据。如果没有在
+		path中配置bin路径，则需要在bin目录中执行mysqld命令;初始化成功后，会在data目录下生成一些文件，其中，xxx.error.log文件
+		里说明了root账户的临时密码。其内容为：
+			2017-09-21T01:23:31.812068Z 1 [Note] A temporary password is generated for root@localhost: Yi%#y;dtA6pp
+		后面的一串字符即初始的密码;
 
-		3. 执行安装服务命令mysqld install serverName --defaults-file="...my.ini", 其中serverName是自己指定的计算机上
-	该mysql服务的名称，同时可以指定安装的配置文件。
+			3. 执行安装服务命令mysqld install serverName --defaults-file="...my.ini", 其中serverName是自己指定的计算机上
+		该mysql服务的名称，同时可以指定安装的配置文件。
 
-		4. 在使用cmd登录mysql时，需要输入 mysql -u root -p, 这里不需要输入密码，回车后再输入密码即可，因为输入密码是*
-	号表示的，直接在一行里面输入会暴露密码，因此命令提示enter password后再输入密码，这是输入2中初始密码即可。
+			4. 在使用cmd登录mysql时，需要输入 mysql -u root -p, 这里不需要输入密码，回车后再输入密码即可，因为输入密码是*
+		号表示的，直接在一行里面输入会暴露密码，因此命令提示enter password后再输入密码，这是输入2中初始密码即可。
 
-		5. 进入mysql后想操纵数据库会提示操作功能不完全需要重置密码，重置密码命令为
-			1. alter user 'root'@'localhost' identified by '123';
-			2. set password for 'root'@'localhost'=password('123'), 此处password是一个加密的函数;
-		第一次或是之后重置命令都是用的这个，因为这是在进入数据库后执行的，所以不需要输入原来的密码。
+			5. 进入mysql后想操纵数据库会提示操作功能不完全需要重置密码，重置密码命令为
+				1. alter user 'root'@'localhost' identified by '123';
+				2. set password for 'root'@'localhost'=password('123'), 此处password是一个加密的函数;
+			第一次或是之后重置命令都是用的这个，因为这是在进入数据库后执行的，所以不需要输入原来的密码。
 
-		6. 注意事项
-			1. 5.7之后数据库mysql的user表中不再有password这个字段，而是修改成了authentication_string字段，该字段
-		内容为加密后的密码。所以也可以通过修改user表中的user字段来修改登录名，比如将root改为lqy
-			use mysql;
-			update user set user="lqy" where user="root";
-		这张表中的其他字段说明该用户对数据库操作的权限。
+			6. 注意事项
+				1. 5.7之后数据库mysql的user表中不再有password这个字段，而是修改成了authentication_string字段，该字段
+			内容为加密后的密码。所以也可以通过修改user表中的user字段来修改登录名，比如将root改为lqy
+				use mysql;
+				update user set user="lqy" where user="root";
+			这张表中的其他字段说明该用户对数据库操作的权限。
 
-			2. 在my.ini配置文件中的[mysqld]下面加上skip-grant-tables可跳过所有密码验证，此时发现在navicat中
-		使用任何账号密码登录都能成功;
-			
-			3. 如果忘记了密码想要重新修改，步骤如下：
-				1. 停止mysql服务，将该服务对应的配置文件加上skip-grant-tables，然后重启服务进入mysql;
-				2. 通过上面的方式修改密码，发现提示在skip-grant-tables无法修改，这是再键入flush privileges;
-			命令，然后再次修改密码；
-				3. 修改配置文件不跳过密码，然后再重启服务，通过mysql -u user -p然后输入密码登录
+				2. 在my.ini配置文件中的[mysqld]下面加上skip-grant-tables可跳过所有密码验证，此时发现在navicat中
+			使用任何账号密码登录都能成功;
+				
+				3. 如果忘记了root用户密码想要重新修改，步骤如下：
+					1. 停止mysql服务，将该服务对应的配置文件加上skip-grant-tables，然后重启服务进入mysql;
+					2. 通过上面的方式修改密码，发现提示在skip-grant-tables无法修改，这是再键入flush privileges;
+				命令，然后再次修改密码；
+					3. 修改配置文件不跳过密码，然后再重启服务，通过mysql -u user -p然后输入密码登录
+
+	2. mysql连接远程服务器命令, mysql -h 远程服务器id或url地址 -u user -p
+
+	3. mysql用户管理
+		1. 新增用户及授权(以root用户权限登录)
+			1. 创建新用户及授权
+				grant 权限(包括insert, update, select, delete或者all privileges) on dbName(*为所有库).tableName(*为所有表) 
+			to newUserName@登录主机(%为允许所有主机, localhost为本机, 注意用户名和主机名两边都要加引号) identified by 
+			'登录密码'。然后可以执行flush privileges刷新系统权限表
+
+			2. 收回用户权限
+				与授权命令基本一样，只是把grant换成了revoke.即revoke 权限 on db.tb to userName@host
+
+			3. 删除用户
+				1. drop user 'userName'@'host'
+				2. mysql中所有用户的信息都存储在mysql.user这张表中，因此也可以通过以下语句来删除用户
+			DELETE FROM user WHERE User='userName' AND Host='localhost'; 
+
+			4. 修改用户名和连接主机 rename user 'userName'@'host' to 'newUserName'@'newHost'
+
+	4. 常用操作命令: https://www.cnblogs.com/good_hans/archive/2010/03/29/1700046.html
 
 2. spring boot
 	1. http://www.cnblogs.com/larryzeal/p/5799195.html
@@ -1275,44 +1297,45 @@ Collection对象如list也可以调用sort方法并传入一个自己的排序器。Comparable中只有一
 	1. https://www.cnblogs.com/huyong/archive/2011/05/04/2036377.html
 	2. https://www.cnblogs.com/sc-xx/archive/2011/12/03/2275084.html
 
-2. MySql子程序语法
-	1. 声明变量
-		1. declare声明变量只能用在begin-end之间，相当于局部变量，这些变量的声明周期到end为止，且声明变量只能在begin语句
-	的开头，不能再中途声明。且声明时要指定变量的数据类型。 @变量名声明的变量是全局变量，在整个会话中都有效，不需要指定数据类
-	型;
-		2. 变量的赋值方法如下: set @v(或V) = 3; set @v(或V) := 3; select col into @v(或V) from t where expre; 当要同时给
-	多个变量赋值时只能写一个into关键字，写法如下: select k1, k2 into @v, V，不能写select k1 into @v, k2 into V; 使用查询语句
-	赋值时如果查询结果不止一条，则将最后一条结果的值赋给变量;
+2. MySql语法
+	1. 子程序
+		1. 声明变量
+			1. declare声明变量只能用在begin-end之间，相当于局部变量，这些变量的声明周期到end为止，且声明变量只能在begin语句
+		的开头，不能再中途声明。且声明时要指定变量的数据类型。 @变量名声明的变量是全局变量，在整个会话中都有效，不需要指定数据类
+		型;
+			2. 变量的赋值方法如下: set @v(或V) = 3; set @v(或V) := 3; select col into @v(或V) from t where expre; 当要同时给
+		多个变量赋值时只能写一个into关键字，写法如下: select k1, k2 into @v, V，不能写select k1 into @v, k2 into V; 使用查询语句
+		赋值时如果查询结果不止一条，则将最后一条结果的值赋给变量;
 
-	2. 触发器
-		1. 语法
-		CREATE TRIGGER <触发器名称>  --触发器必须有名字，最多64个字符，可能后面会附有分隔符.
-	它和MySQL中其他对象的命名方式基本相象.
-		{ BEFORE | AFTER }  --触发器有执行的时间设置：可以设置为事件发生前或后。
-		{ INSERT | UPDATE | DELETE }  --同样也能设定触发的事件：它们可以在执行insert、update或delete的过程中触发。
-		ON <表名称>  --触发器是属于某一个表的:当在这个表上执行插入、 更新或删除操作的时候就导致触发器的激活。
-	我们不能给同一张表的同一个事件安排两个触发器。
-		FOR EACH ROW  --触发器的执行间隔：FOR EACH ROW子句通知触发器 每隔一行执行一次动作，而不是对整个表执行一次。
-		<触发器SQL语句>  --触发器包含所要触发的SQL语句：这里的语句可以是任何合法的语句，包括复合语句，
-	但是这里的语句受的限制和函数的一样。
-		
-		2. 触发器针对数据的插入，更新，删除事件。触发器都是针对某一张表的，不能给一张表的同一事件设置两个触发器;
-	且不能将多个事件写在同一个触发器内;
+		2. 触发器
+			1. 语法
+			CREATE TRIGGER <触发器名称>  --触发器必须有名字，最多64个字符，可能后面会附有分隔符.
+		它和MySQL中其他对象的命名方式基本相象.
+			{ BEFORE | AFTER }  --触发器有执行的时间设置：可以设置为事件发生前或后。
+			{ INSERT | UPDATE | DELETE }  --同样也能设定触发的事件：它们可以在执行insert、update或delete的过程中触发。
+			ON <表名称>  --触发器是属于某一个表的:当在这个表上执行插入、 更新或删除操作的时候就导致触发器的激活。
+		我们不能给同一张表的同一个事件安排两个触发器。
+			FOR EACH ROW  --触发器的执行间隔：FOR EACH ROW子句通知触发器 每隔一行执行一次动作，而不是对整个表执行一次。
+			<触发器SQL语句>  --触发器包含所要触发的SQL语句：这里的语句可以是任何合法的语句，包括复合语句，
+		但是这里的语句受的限制和函数的一样。
+			
+			2. 触发器针对数据的插入，更新，删除事件。触发器都是针对某一张表的，不能给一张表的同一事件设置两个触发器;
+		且不能将多个事件写在同一个触发器内;
 
-		3. 查看某张表上的触发器用SHOW TRIGGERS LIKE 'TABLE_NAME';
+			3. 查看某张表上的触发器用SHOW TRIGGERS LIKE 'TABLE_NAME';
 
-	3. 函数
-		1. 内置函数大全 https://www.cnblogs.com/kissdodog/p/4168721.html;
+		3. 函数
+			1. 内置函数大全 https://www.cnblogs.com/kissdodog/p/4168721.html;
 
-		2. 时间: DATE_FORMAT(d, f)函数中, f表达式里，%Y表示年份, 且保留4位, 即yyyy。%y保留两位, 如17。
-	%m表示月份，%M会显示为月份的英文单词; %h是小时，大写表示为24小时制。%i表示为分钟数。%s表示秒数;%r则直接表示
-	为带AM或PM的时间数;
+			2. 时间: DATE_FORMAT(d, f)函数中, f表达式里，%Y表示年份, 且保留4位, 即yyyy。%y保留两位, 如17。
+		%m表示月份，%M会显示为月份的英文单词; %h是小时，大写表示为24小时制。%i表示为分钟数。%s表示秒数;%r则直接表示
+		为带AM或PM的时间数;
 
-		3. 自定义函数语法为 
-			CREATE FUNCTION FUNCTION_NAME(PARAMS...) RETURNS(有s) TYPE(没有分号)
-			BEGIN END;
+			3. 自定义函数语法为 
+				CREATE FUNCTION FUNCTION_NAME(PARAMS...) RETURNS(有s) TYPE(没有分号)
+				BEGIN END;
 	
-	4. 流程控制
+	2. 流程控制
 		1. IF .. THEN .. ELSE(没有THEN).. END IF;
 		
 		2. CASE .. WHEN .. THEN .. END CASE;
@@ -1321,7 +1344,7 @@ Collection对象如list也可以调用sort方法并传入一个自己的排序器。Comparable中只有一
 
 		4. WHILE .. DO .. END WHILE;
 	
-	5. 在查询条件中使用exists关键字
+	3. 在查询条件中使用exists关键字
 		1. 在使用select * from t where exists (select ..)时，会将t中的每一条数据取出来，只要select结果集不为空，
 	则exists就会返回true，t中则条数据就会被查询出来。比如select * from t where exists(select null)
 	和select * from t的结果是一样的。所以这个exists的用法是将父表的某一条数据去和子查询中的所有数据去做比较。比如
@@ -1333,7 +1356,7 @@ Collection对象如list也可以调用sort方法并传入一个自己的排序器。Comparable中只有一
 
 		3. https://www.cnblogs.com/glory-jzx/archive/2012/07/19/2599215.html
 
-	6. 游标
+	4. 游标
 		1. https://www.cnblogs.com/mqxs/p/6018766.html
 		2. https://www.cnblogs.com/trying/p/3296793.html
 
