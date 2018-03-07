@@ -2252,4 +2252,4 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 1. 各层之间参数传递：从controller前台接收到的参数保存在nameParam类当中(包-项目名.frontpv.param.模块名)。从controller返回给前
 台的参数保存在nameVo中(包-项目名.frontpv.vo.模块名)。mybatis的映射文件中, parameterType和resultType通常是
 nameEntity(包-项目名.dao.model.模块名)或nameDo(包-项目名.model.模块名)。facade层的类调用manager后将结果封装
-nameDTO(包-项目名.dto)类，然后返回给controller层, 然后controller层将其转化为Vo型返给前台 s
+nameDTO(包-项目名.dto)类，然后返回给controller层, 然后controller层将其转化为Vo型返给前台
