@@ -62,4 +62,31 @@
 	3. 分组和where同时使用，如select type, avg(price) as avg from products where price>600 group by type。这个查询将只计算那些价格大于600的商品的平均值
 
 组合查询
-	1. 
+	1. 使用union
+		select c1, c2 fom t where c1<5
+		union
+		select c1, c2 from t where c2 in(1, 2)
+	以上查询相当于select c1, c2 from t where c1 < 5 or c2 in(1, 2)。注意这里是or不是and。union相当于是取了一个并集
+
+	2. 注意事项
+		1. 可以是用多个union分割多张表
+		2. union中每个查询必须包含相同的列，表达式或聚集函数。
+		3. union会默认取消重复的行，如果需要这些数据，应当使用union all
+
+使用全文本搜索
+	1. 全文本搜索只能在engin=MyISAM的表中进行。建表示通过FULLTEXT指定对哪些列进行索引。例如
+		CREATE TABLE tableName (
+			id int,
+			description varchar(500),
+			PRIMARY KEY('id'),
+			FULLTEXT(description)
+		)ENGINE=MyISAM
+
+	2. 在搜索时通过Match()和Against()两个函数执行全文本搜索，例如
+	SELECT * FROM TABLE tableName WHERE Match(description) Against('butcher')。但是需要注意如果一个词出现在50%以上的行中，则不会返回结果.50%规则不做用于in boolean mode
+
+	3. 使用查询扩展。使用against('butcher' with query expansion)可能会增加查询结果的行数。它可能会将包含butcher的行的其他单词也做为搜索表达式搜索。表中数据越多，查询结果越丰富。
+
+	4. 可以结合布尔操作符使用布尔文本搜索(in boolean mode)
+
+插入数据时使用检索出的数据insert into tableName(c1, c2) select ... from where.该插入不关心列名是否匹配，只关心列的顺序。因此要注意列的数据类型可以匹配
