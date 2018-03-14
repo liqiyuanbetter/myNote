@@ -2262,3 +2262,6 @@ nameDTO(包-项目名.dto)类，然后返回给controller层, 然后controller层将其转化为Vo型
 2. 利用javax.email发送邮件 http://blog.csdn.net/zhouzhimin/article/details/52807512
 
 3. pom文件详细解 http://blog.csdn.net/sunzhenhua0608/article/details/32938533
+
+2018.03.14
+1. web.xml文件中<context-param>和<init-param>参数的区别 http://blog.csdn.net/qgfjeahn/article/details/52768309
