@@ -89,4 +89,4 @@
 
 	4. 可以结合布尔操作符使用布尔文本搜索(in boolean mode)
 
-插入数据时使用检索出的数据insert into tableName(c1, c2) select ... from where.该插入不关心列名是否匹配，只关心列的顺序。因此要注意列的数据类型可以匹配
+插入数据时使用检索出的数据insert into tableName(c1, c2) select ... from where.该插入不关心列名是否匹配，只关心列的顺序。因此要注意列的数据类型可以匹配   
