@@ -540,33 +540,43 @@ addHeader方法可以设置cookie为httponly的，例如
 1. 在ajax请求中，服务器无法设置cookie，即使在response header中有setcookie;
 
 2017.10.10
-1. 利用maven build启动Tomcat项目需要在pom.xml文件中配置，内容如下
-	<build>
-	    <plugins>
-		    <!-- tomcat7 启动所需jar包 -->
-		    <plugin>
-			<groupId>org.apache.tomcat.maven</groupId>
-			<artifactId>tomcat7-maven-plugin</artifactId>
-			<version>2.1</version>
-			<configuration>
-			    <!--端口 -->
-			    <port>8800</port>
-			    <!--注意名称 -->
-			    <path>/TextTomCat</path>
-			    <uriEncoding>UTF-8</uriEncoding>
-			    <!--注意此名字 启动时会用到 -->
-			    <server>tomcat7</server>
-			</configuration>
-		    </plugin>
-	    </plugins>
-	 </build>
-	然后在启动的时候写tomcat7:run注意这个tomcat7就是server中的名字
-	配置不同的端口号可以同时启动多个tomcat服务
+1. maven插件
+	1. 利用maven的tomcat插件启动项目
+		1. 插件
+			<build>
+				<plugins>
+					<!-- tomcat7 启动所需jar包 -->
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.1</version>
+						<configuration>
+							<!--端口 -->
+							<port>8800</port>
+							<!--注意名称 -->
+							<path>/TextTomCat</path>
+							<uriEncoding>UTF-8</uriEncoding>
+						</configuration>
+					</plugin>
+				</plugins>
+			 </build>
+			然后在启动的时候写tomcat7:run注意这个tomcat7就是server中的名字
+			配置不同的端口号可以同时启动多个tomcat服务
+		
+		2. 使用身份验证和授权
+			1. 当我们使用tomcat作为服务器时，在conf目录下的tomcat-user.xml文件中保存了用户和角色信息，即
+				<tomcat-users>
+					<role rolename="r1">
+					<role rolename="r2">
+					<user username="user" password="pass" roles="r1,r2">
+				</tomcat-users>
+			但当我们使用maven插件启动项目时，可以通过这个配置来指定要加载的用户角色文件，在configuration中使用
+			<tomcatUsers>tomcat-users.xml文件的路径</tomcatUsers>
 
-2. pom配置文件中maven-compiler-plugin的作用是指定jdk编译版本，可以看到我们修改这个版本之后再update project，那么
-这个项目的JRE System Library就会变成相应的版本号。如果不配置，maven会使用默认版本编译;
+	2. pom配置文件中maven-compiler-plugin的作用是指定jdk编译版本，可以看到我们修改这个版本之后再update project，那么
+	这个项目的JRE System Library就会变成相应的版本号。如果不配置，maven会使用默认版本编译;
 
-3. pushServer
+2. pushServer
 
 2017.10.12
 1. 在线字体图片制作
