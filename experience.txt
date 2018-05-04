@@ -37,8 +37,8 @@ Object
 	但是在maven仓库中显示已经将该artifact 移入了javax.servlet.jsp.jstl
 
 3. 软件安装不安全官方说法
-		you are installing software that contains unsigned content.The authenticity or validity of this software
-	cannot be established.Do you want to continue with this installation?
+		you are installing software that contains unsigned content. The authenticity or validity of this software
+	cannot be established. Do you want to continue with this installation?
 
 4. Velocity 学习地址
 	http://blog.csdn.net/qq_25237663/article/details/52262532
@@ -2067,16 +2067,16 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 		delete返回的都是插入或修改的行数
 			
 			2. insert通过批量插入时会返回一个大于1的值。foreach和trim, if联用
-			<insert id="testBatchInsert" parameterType="java.util.List">
-				INSERT INTO attendance_statistic(account_id) VALUES
-				<foreach collection="list" item="item" index="index" separator=",">
-				  <trim prefix="(" suffix=")" suffixOverrides=",">
-					<if test="item.accountId != null">
-					  #{item.accountId, jdbcType=VARCHAR},
-					</if>
-				  </trim>
-				</foreach>
-			 </insert>
+				<insert id="testBatchInsert" parameterType="java.util.List">
+					INSERT INTO attendance_statistic(account_id) VALUES
+					<foreach collection="list" item="item" index="index" separator=",">
+					  <trim prefix="(" suffix=")" suffixOverrides=",">
+						<if test="item.accountId != null">
+						  #{item.accountId, jdbcType=VARCHAR},
+						</if>
+					  </trim>
+					</foreach>
+				</insert>
 
 			3. 关于foreach标签
 				1. foreach元素的属性主要有 item，index，collection，open，separator，close
@@ -2096,6 +2096,8 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 							#{id}
 						</foreach>
 					</select>
+
+				2. 批量插入时，一定要注意传入的list不能为空或者长度为0，否则要报错
 
 			4. 当需要加查询结果保存到一个复杂属性中时
 				1. 例如有一个属性address是一个对象，它有一个属性name。则可以通过resultMap使用.号
@@ -2209,10 +2211,14 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 1. SpringMVC
 	1. 验证前台传送过来的参数是否合法, 即验证用于接收参数的...Param类
 		1. 基本用法
-			在实体类的属性上加上注解，如 @NotNull, @Max(value = 3, message = "info"), @Range等。controller的方法中，在需要检验
-	的参数前面加上 @Valid注解，同时方法中还需要一个类型为BindingResult bindingResult的参数用于接收错误信息。如果前台传过来的参
-	数不符合校验规则，那么bindingResult.hasErrors()返回值为true。bindingResult.getAllErrors()返回一个List<ObjectError>, 里面有
-	所有的错误信息。list.get(0).getDefaultMessage()可以得到具体的错误信息
+			1. 在实体类的属性上加上注解，如 @NotNull, @Max(value = 3, message = "info"), @Range等。controller的方法中，在需要
+		检验的参数前面加上 @Valid注解，同时方法中还需要一个类型为BindingResult bindingResult的参数用于接收错误信息。如果前台
+		传过来的参数不符合校验规则，那么bindingResult.hasErrors()返回值为true。bindingResult.getAllErrors()返回一个
+		List<ObjectError>, 里面有所有的错误信息。list.get(0).getDefaultMessage()可以得到具体的错误信息
+
+			2. 需要注意的是, @Valid注解后的参数必须紧跟BindingResult类型参数，否则可能会报400错误。例如controller中还有路径
+		参数, 这个参数要写在 @Valid注解的参数前面。如controllerMethod(@PathVariable String type, @Valid requestParam, 
+		BindingReuslt bindReuslt)，不然会导致校验失败且报错
 
 	2. @RequestMapping注解
 		1. value表示映射地址, 它是一个数组, 即value = {"/p1", "/p2"}, 路径中也可以带参数，如value = "/path/{param}"
