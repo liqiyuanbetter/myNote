@@ -1186,7 +1186,7 @@ isEqual(), 他们的作用和名字一样，例如可以这样使用,
 				sysout(s);
 			}
 		}
-	}
+	}方法引用的标准形式是：类名::方法名。（注意：只需要写方法名，不需要写括号）
 	filter(list, str -> str.length() <= 4)
 
 	3. Function接口中有一个抽象方法apply, 这个接口常用于list.stream().map()中，用于对list进行改造;Function的定义是
@@ -2143,7 +2143,7 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 1. java sdk
 	1. System.arraycopy和Arrays.copyOf
 		1. System.arraycopy(src, srcPos, dest, destPos, length)。它的意义是将src数组从srcPos(从0开始, 且包括该位置)开始的length
-	个元素复制到destPos从destPos(包括destPos)开始的length元素，该函数可以用于自我复制，即System.arraycopy(a1, 0, a1, 1, 3)。注意
+	个元素复制到dest从destPos(包括destPos)开始的length元素，该函数可以用于自我复制，即System.arraycopy(a1, 0, a1, 1, 3)。注意
 	这个函数的结果是destPos被改变了，而不是src被改变了;
 
 		2. Arrays.copyOf(arr, length)该方法返回一个新的数组。前者需要已经存在两个指定了长度的数组，该方法则可以直接返回一个
@@ -2166,19 +2166,19 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 
 	现象2
 		ArrayList<String> list = new ArrayList();
-			list.add("1");
-			list.add("2");
-			Iterator var2 = list.iterator();
+		list.add("1");
+		list.add("2");
+		Iterator var2 = list.iterator();
 
-			while(var2.hasNext()) {
-				String s = (String)var2.next();
-				System.out.println(s);
-				if ("2".equals(s)) {
-					// add和remove位置可以互换
-					list.add("3");
-					list.remove(s);
-				}
+		while(var2.hasNext()) {
+			String s = (String)var2.next();
+			System.out.println(s);
+			if ("2".equals(s)) {
+				// add和remove位置可以互换
+				list.add("3");
+				list.remove(s);
 			}
+		}
 	输出结果是1, 2 且不会报错
 
 	2. 原因
