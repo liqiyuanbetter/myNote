@@ -1233,6 +1233,12 @@ Function<T, R>, apply的定义方式是R apply(T t)。这里面的T由list.stream()得到的Str
 	e2, e3三个元素，则最后结果为apply(apply(e1, e2), e3)。apply的执行结果被保存在Optional的value值中，可以通过Optional
 	的get()方法获取这个value的值。这个方法可以用在计算一个列表的所有元素的和等;
 
+		7. 参考
+		http://baijiahao.baidu.com/s?id=1580787969948497458&wfr=spider&for=pc
+		http://www.importnew.com/14841.html
+		http://www.importnew.com/11908.html#streams
+		http://www.importnew.com/16436.html
+
 4. 方法引用
 	1. 方法引用用于简写lambda表达式中已经存在的方法，注意方法引用只能用在lambda表达式中;
 
@@ -2300,8 +2306,3 @@ https://zhidao.baidu.com/question/27877332.html
 		
 	2. ThreadLocal类详解
 		1. https://blog.csdn.net/lufeng20/article/details/24314381
-
-	java8 steam http://baijiahao.baidu.com/s?id=1580787969948497458&wfr=spider&for=pc
-	http://www.importnew.com/14841.html
-	http://www.importnew.com/11908.html#streams
-	http://www.importnew.com/16436.html
