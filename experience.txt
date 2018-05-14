@@ -342,7 +342,7 @@ addHeader方法可以设置cookie为httponly的，例如
 		Set-Cookie:coo_1=val_1
 		Set-Cookie:coo_2=val_2; Max-Age=2000; HttpOnly
 
-3. java中的反射
+3. java中的 反射
 	1. 某个类没有默认不带参数构造函数能用newInstance吗?不能;
 
 	2. 在子类中想通过反射获取父类中某一个私有变量的值时，方法如下
@@ -371,7 +371,7 @@ addHeader方法可以设置cookie为httponly的，例如
 	4. getDeclaredMethod和getMethod区别: 前者能获取到所有访问修饰符的方法，但不能获取到继承的方法。后者能获取到所有公有的
 方法，包括从父类和接口中继承的
 
-	4. 泛型详解
+	5. 泛型 详解
 		1. 获取泛型的实例化参数
 			1. 现在假设有一个操作数据库的基本dao类
 				class BaseDao<T> {
@@ -432,9 +432,48 @@ addHeader方法可以设置cookie为httponly的，例如
 			在Clazz<? super Integer> clazz = new Clazz<Number>中，在调用setT方法是只能传入整型数据。可以调用getT()方法，但是
 		得到的都是Object型对象
 
-	5. 参考资料
-		1. 泛型type体系与反射 http://blog.csdn.net/qbg19881206/article/details/22757061
-		2. <? extends C> https://www.cnblogs.com/drizzlewithwind/p/6100164.html
+		3. Reflections 中的 getDeclared** 与 get** 的区别 
+			总的来说, getDeclared只能获取自身的, 但是能获取所有修饰符的。get可以获取所有的public(对方法成员)包括继承的
+
+		参考资料
+			1. 泛型type体系与反射 http://blog.csdn.net/qbg19881206/article/details/22757061
+			2. <? extends C> https://www.cnblogs.com/drizzlewithwind/p/6100164.html
+
+	6. 注解
+		1. 元注解有四个, 分别是 @Target, @Retention, @Documented, @Inherited，他们是注解的注解
+			1. @Target表示注解所修饰的对象的范围，他的取值是一个叫做--ElementType--的枚举，这个枚举的值有
+				1. CONSTRUCTOR:用于描述构造器
+				2. FIELD:用于描述域
+				3. LOCAL_VARIABLE:用于描述局部变量
+				4. METHOD:用于描述方法
+				5. PACKAGE:用于描述包
+				6. PARAMETER:用于描述参数
+				7. TYPE:用于描述类、接口(包括注解类型) 或enum声明
+
+			2. Rentention 定义了该注解的生命周期，它的取值是RetentionPolicy枚举, 取值有
+				1. SOURCE:在源文件中有效，该注解类型的信息只保留在源码里而不会保留在编译后的.class文件中）
+
+				2. CLASS 在class文件中有效, 该注解信息会保留在源码里，也会保留在.class文件中, 但是在执行时并不会被
+			加载到JVM中，这是注解的默认策略
+
+				3. RUNTIME 在运行时有效, 即执行时也会被加载到JVM中。注意isAnnotationPresent, getAnnotation等方法都
+			只能捕获到RUNTIME这一级的注解
+
+			3. Inherited让某个被标注的类的子类也会继承该注解。即父类上有某个注解A，如果注解A被注解Inherited注解了，那么
+		子类调用.getClass().isAnnotationPresent(A.class)的结果是true，否则为false; 此外当调用C.class.getDeclaredAnnotations
+		方法时, 只会得到标注C的注解，而不会得到C的父类的注解
+
+		2. 要查看某个类上的所有注解的名字，要用这种方法
+			Annotation as = c.class.getAnnotations();
+			for (Annotation a : as) {
+				sout(a.annotationType().getName(); // annotationType返回类型是Class<? extends Annotation>
+				// 即不能直接调用a.getClass().getName()，否则得到的是com.sun.proxy.$Proxy1
+			}
+
+		3. 参考资料:
+			1. http://blog.csdn.net/zjf280441589/article/details/50444343
+			2. https://www.cnblogs.com/peida/archive/2013/04/24/3036689.html
+			3. http://blog.csdn.net/hbcui1984/article/details/4735487
 		
 2017.09.27
 1. FileFilter接口用于过滤抽象路径名，它只有accept一个方法，该方法规定了那些路径名可以listFile(..)接收;
@@ -1945,43 +1984,18 @@ pom.xml文件的project节点下添加属性
 		4. @NoArgsConstructor, @RequiredArgsConstrustor, @AllArgsConstructor表示提供不带参和带参数的构造函数, 
 	其中 @RequiredArgsConstructor 表示的是构造参数中必须带有那些被 @NonNull 标注了的属性;
 
-		5. @Cleanup 注解也十分强大，用在类型为输入输出流的局部变量上，使用后不必再手动关闭流;
-
-2. java中的注解
-	1. 元注解有四个, 分别是 @Target, @Retention, @Documented, @Inherited，他们是注解的注解
-		1. @Target表示注解所修饰的对象的范围，他的取值是一个叫做--ElementType--的枚举，这个枚举的值有
-			1. CONSTRUCTOR:用于描述构造器
-		　　　　2. FIELD:用于描述域
-		　　　　3. LOCAL_VARIABLE:用于描述局部变量
-		　　　　4. METHOD:用于描述方法
-		　　　　5. PACKAGE:用于描述包
-		　　　　6. PARAMETER:用于描述参数
-		　　　　7. TYPE:用于描述类、接口(包括注解类型) 或enum声明
-
-		2. Rentention定义了该注解的生命周期，它的取值是RetentionPolicy枚举, 取值有
-			1. SOURCE:在源文件中有效，该注解类型的信息只保留在源码里而不会保留在编译后的.class文件中）
-
-		　　　　2. CLASS:在class文件中有效, 该注解信息会保留在源码里，也会保留在.class文件中, 但是在执行时并不会被
-		加载到JVM中，这是注解的默认策略
-
-		　　　　3. RUNTIME:在运行时有效, 即执行时也会被加载到JVM中。注意isAnnotationPresent, getAnnotation等方法都
-		只能捕获到RUNTIME这一级的注解
-
-		3. Inherited让某个被标注的类的子类也会继承该注解。即父类上有某个注解A，如果注解A被注解Inherited注解了，那么
-	子类调用.getClass().isAnnotationPresent(A.class)的结果是true，否则为false; 此外当调用C.class.getDeclaredAnnotations
-	方法时, 只会得到标注C的注解，而不会得到C的父类的注解
-
-	2. 要查看某个类上的所有注解的名字，要用这种方法
-		Annotation as = c.class.getAnnotations();
-		for (Annotation a : as) {
-			sysout(a.annotationType().getName();// annotationType返回类型是Class<? extends Annotation>
-			// 即不能直接调用a.getClass().getName()，否则得到的是com.sun.proxy.$Proxy1
-		}
-
-	3. 参考资料:
-		1. http://blog.csdn.net/zjf280441589/article/details/50444343
-		2. https://www.cnblogs.com/peida/archive/2013/04/24/3036689.html
-		3. http://blog.csdn.net/hbcui1984/article/details/4735487
+		5. @Cleanup 注解也十分强大，用在类型为输入输出流的局部变量上，使用后不必再手动关闭流
+			原始写法
+				InputSteam in = new FileInputStream("");
+				try {
+					// do something
+				} catch() {
+				} finally {
+					in.close();
+				}
+			使用 @Cleanup
+				@Cleanup InputStream in = new FileInputStream("");
+				// do something
 
 2018.01.08
 1. idea入门程序 http://blog.csdn.net/qq_31655965/article/details/52788374
@@ -2345,3 +2359,6 @@ https://zhidao.baidu.com/question/27877332.html
 		1. Windows下amoeba安装及读写分离配置 https://blog.csdn.net/bxdxstu/article/details/45843247
 
 		2. 官方文档 http://docs.hexnova.com/amoeba/index.html
+
+2018.05.10
+	1. read用法
