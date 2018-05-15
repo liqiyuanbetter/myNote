@@ -1207,13 +1207,15 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 位于项目根目录下的/target/classes这个目录，推测之所以单独有一个resources是为了方便管理。因为直接放在java下就是跟最外层的包在
 同一级，如果配置文件多显得混乱。如果运行maven:clean会删除target文件夹及其所有子目录。
 
-	2. 如果写this.getClass().getClassLoader().getResource("").getFile()那么得到的是所有类编译后的类文件所在的根目录, 
-在maven项目中这个路径是/target/classes/; 如果不加getClassLoader只写this.getClass().getResource().getFile()，那么得到的路径会
+	2. 如果写---this.getClass().getClassLoader().getResource("").getFile()那么得到的是所有类编译后的类文件所在的根目录, 
+在maven项目中这个路径是/target/classes/; 如果不加getClassLoader只写---this.getClass().getResource().getFile()，那么得到的路径会
 包括该类所在的包的路径，如/target/classes/package_name/。可以理解为这个类加载器是所有类公用的; 可以总结为放在各个包下的配置
 文件不要用classLoader，而放在总的配置文件里的，或者说跟顶层包在同一级目录的配置文件需要用getClassLoader。如果我们在配置文件夹
 resources下新建了一个和某个包名同名的文件夹，那么编译后我们发现这个文件夹下的配置文件就会和该包中的类同一级
 
 	3. 我们想获取文件时要以最终生成的.class文件的路径作为着手点，不能以.java的路径作为着手点
+
+	4. 调用this.getClass.getResource()和ClassName.class.getResource()得到的结果是一样的
 
 2. 静态导入import static
 	1. 我们可以使用import static com...className.*，这表示将导入所有className中的静态成员，使用时就可以直接写静态成员名
@@ -2362,3 +2364,8 @@ https://zhidao.baidu.com/question/27877332.html
 
 2018.05.10
 	1. read用法
+
+2018.05.15
+	1. 将自己的orm打成jar包
+
+	2. jdbc教程 https://www.yiibai.com/jdbc/
