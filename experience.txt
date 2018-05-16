@@ -1217,11 +1217,35 @@ resourcesÏÂĞÂ½¨ÁËÒ»¸öºÍÄ³¸ö°üÃûÍ¬ÃûµÄÎÄ¼ş¼Ğ£¬ÄÇÃ´±àÒëºóÎÒÃÇ·¢ÏÖÕâ¸öÎÄ¼ş¼ĞÏÂµÄÅäÖ
 
 	4. µ÷ÓÃthis.getClass.getResource()ºÍClassName.class.getResource()µÃµ½µÄ½á¹ûÊÇÒ»ÑùµÄ
 
-2. ¾²Ì¬µ¼Èëimport static
+	5. getPath()µÄbug
+		µ÷ÓÃgetRecource(pathName).getPath()Ê±£¬Èç¹ûpathNameÖĞÓĞ¿Õ¸ñ, Èçf f.properties, ÔòµÃµ½µÄ×Ö·û´®»á±ä³Éf%20f.proerties, Èç¹û
+	´ËÊ±ÓÃnew File("")¾Í»áÓĞÎÊÌâ, Òò´ËÍ¨³£×öÕâÑùÒ»¸ö´¦Àí new File(url.getPath().replaceAll("%20", " "))
+
+	6. getResourceºÍgetResourcesµÄÇø±ğ https://blog.csdn.net/gzuimis/article/details/44198737
+
+2. ideaºÍeclipse mavenÏîÄ¿ĞÂ½¨ÅäÖÃÎÄ¼şµÄÇø±ğ
+	1. ¶ÔÓÚÎ»ÓÚjava°üÏÂÃæ¶ø²»ÔÚ×ÊÔ´ÎÄ¼ş¼Ğ(¼´resources)ÏÂµÄÅäÖÃÎÄ¼ş, eclipse±àÒëºó»á×Ô¶¯½«Æä¼ÓÈëµ½ÏàÓ¦µÄ°üµÄÏÂÃæ¡£¶øidea²»»á, ÎªÁË
+ÈÃideaÄÜÔÚ±àÒëºó½«ÅäÖÃÎÄ¼ş¼ÓÈëµ½targetÖĞ, ĞèÒªÔÚpomÎÄ¼şÖĞ¼ÓÉÏÒÔÏÂÅäÖÃ
+		<build>
+			<resources>
+			  <resource>
+				<directory>${basedir}/src/main/java</directory>
+				<includes>
+				  <include>**/*.properties</include>
+				  <include>**/*.txt</include>
+				</includes>
+			  </resource>
+			</resources>
+		</build>
+	ÆäÖĞ${basedir}ÊÇMAVENÄÚÖÃ±äÁ¿, ±íÊ¾ÏîÄ¿¸ùÄ¿Â¼
+
+	2. ¶ÔÓÚidea, resourcesÎÄ¼şµÄÎ»ÖÃ±ØĞëÔÚsrc/main/javaÍ¬¼¶, ¼´Î»ÓÚmainÎÄ¼ş¼ĞµÄÏÂÒ»¼¶
+
+3. ¾²Ì¬µ¼Èëimport static
 	1. ÎÒÃÇ¿ÉÒÔÊ¹ÓÃimport static com...className.*£¬Õâ±íÊ¾½«µ¼ÈëËùÓĞclassNameÖĞµÄ¾²Ì¬³ÉÔ±£¬Ê¹ÓÃÊ±¾Í¿ÉÒÔÖ±½ÓĞ´¾²Ì¬³ÉÔ±Ãû
 ¶ø²»ÓÃĞ´ÀàÃû£¬¿ÉÒÔĞ´*±íÊ¾ËùÓĞµÄ¾²Ì¬³ÉÔ±£¬Ò²¿ÉÒÔÖ»µ¼ÈëÄ³Ò»¸ö¾²Ì¬³ÉÔ±
 
-3. SSLSocket¼°ÆäÏà¹ØÀà
+4. SSLSocket¼°ÆäÏà¹ØÀà
 	1. http://blog.csdn.net/zdx1515888659/article/details/44593967
 
 2017.11.21
@@ -2369,3 +2393,12 @@ https://zhidao.baidu.com/question/27877332.html
 	1. ½«×Ô¼ºµÄorm´ò³Éjar°ü
 
 	2. jdbc½Ì³Ì https://www.yiibai.com/jdbc/
+
+2018.05.16
+	1. javaÀà¼ÓÔØÆ÷
+		1. *** https://blog.csdn.net/jiangwei0910410003/article/details/17733153/
+		2. ·Ç³£ÉîÈë https://blog.csdn.net/javazejian/article/details/73413292
+		3. https://blog.csdn.net/briblue/article/details/54973413
+		4. https://blog.csdn.net/xiaoliuliu2050/article/details/53023734
+
+	2. ÔÚjdbcÁ¬½ÓÖĞ£¬ÊÇ·ñ²»ÓÃforNameÒ²ĞĞ£¬ÒòÎªÖ»ÊÇÎªÁËÖ´ĞĞ¾²Ì¬·½·¨
