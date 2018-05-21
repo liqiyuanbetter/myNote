@@ -1024,44 +1024,132 @@ ws连接;
 2. 类图各种术语解释: https://www.cnblogs.com/olvo/archive/2012/05/03/2481014.html
 
 2017.11.14
-1. 关于继承和函数重写重载等基本概念
-	1. 抽象类在implement一个接口后可以不用实现任何方法。接口中的default方法也可以不需要任何类去实现它;
+1. java子类与父类详解
+	1. 关于继承和函数重写重载等基本概念
+		1. 抽象类在implement一个接口后可以不用实现任何方法。接口中的default方法也可以不需要任何类去实现它;
 
-	2. Father {
-		protected void name() {// do some work}
-	}
-	Son {
-		public void useParentMethod() {
-			// 当name函数只存在于父类中时
-			// super.name和this.name都是调用的同一个函数
+		2. Father {
+			protected void name() {// do some work}
+		}
+
+		Son {
+			public void useParentMethod() {
+				// 当name函数只存在于父类中时
+				// super.name和this.name都是调用的同一个函数
+				
+				// 当子类中有一个和父类函数签名完全一样的name函数时，super.调用父类的，this.调用子类的
+				super.name();
+				this.name();
+			}
 			
-			// 当子类中有一个和父类函数签名完全一样的name函数时，super.调用父类的，this.调用子类的
-			super.name();
-			this.name();
-		}
-		
-		// "重写"父类的成员时，只能用修饰范围大于等于父类的修饰词来修饰
-		// 父类是protected，子类就只能使用protected或public来修饰
-		/*@Override
-		protected void name() {
-			System.out.println("子类的name函数");
-		}*/
-		
-		// 子类可以"重载"父类的同名函数，这个重载的函数可以任意指定修饰词
-		private void name(String s) {
-		
-		}
-		public void name(String s, String s1) {
+			// "重写"父类的成员时，只能用修饰范围大于等于父类的修饰词来修饰
+			// 父类是protected，子类就只能使用protected或public来修饰
+			/*@Override
+			protected void name() {
+				System.out.println("子类的name函数");
+			}*/
 			
+			// 子类可以"重载"父类的同名函数，这个重载的函数可以任意指定修饰词
+			private void name(String s) {
+			
+			}
+			public void name(String s, String s1) {
+				
+			}
+			
+			// 不可以试图通过只改变函数返回值的类型的来重载父类的同名函数
+			// 函数的返回值不属于函数的方法签名
+			// 因此这样写跟在同一个类当中写了两个同名但返回值不一样的方法是一样的，是非法的
+			/*public int name() {
+				return 1;
+			}*/
 		}
-		
-		// 不可以试图通过只改变函数返回值的类型的来重载父类的同名函数
-		// 函数的返回值不属于函数的方法签名
-		// 因此这样写跟在同一个类当中写了两个同名但返回值不一样的方法是一样的，是非法的
-		/*public int name() {
-			return 1;
-		}*/
-	}
+	
+		3. 如果子类和父类有同名属性, 或者子类重载了父类的函数, 子类并不是覆盖了父类的成员, 而是隐藏了。父类成员仍然占用栈内存。
+
+		4. 子类和父类的构造函数
+			1. public SubClass {
+					// super();
+					1. 子类的每一个构造函数在不明确指定调用父类的哪个构造函数时, 都会默认调用父类的不带参数的构造函数。相当于子类
+				构造函数的第一条语句默认为 super(), 如果父类没有不带参数的默认构造函数, 则子类的构造函数中, 必须显式指定是调用了
+				父类的哪一个构造函数, 如
+					// super("strParam");
+					每一个子类的构造函数都必须且只能调用一次父类的任意一个构造函数
+
+					2. 如果要写显式的写super()或者super(param...), 则super()必须是子类构造函数的第一条语句。因此，当然不可能在
+				一个构造函数中出现两个super(param...), 如
+					// super(param...); 
+					// super();
+					因为这样相当于第二个super违反了super()必须是子类构造函数第一条语句的原则
+
+					3. 在一个构造函数中, 如果还想用this()调用自身的构造函数, 则不可以super()和this()同时出现, 即不可以这样写
+					// super(param...); 
+					// this(param...)
+					因为实际上，如果要使用this()调用自身的构造函数，那么this()语句也必须是这个调用了this的子类构造函数"显式"调用的
+				第一条语句, 而且this也只能调用一次
+					但是在1, 2中我们说了子类的每一个构造函数都必须调用父类的构造函数, 这是因为子类最顶层的那个构造函数一定调用了
+				super语句, 所以后来的通过this调用了它的子类构造函数就可以不用再调用父类构造函数了
+					
+					4. 构造函数执行顺序
+						先执行父类构造函数(子类想初始化, 必须先实例化父类), 然后一级一级执行通过this调用的子类构造函数
+				}
+
+	2. 两个例子
+		1. 
+			class A {
+				public void fun(A a) {sout(1);}
+			}
+			class B extends A {
+				public void fun(A a) {sout(2);}
+				public void fun(B b) {sout(3);}
+			}
+			A a = new B();
+			a.f(new B()); // 输出结果是2
+
+		分析原因: 
+		1. a是一个A类型的对象, 它肯定不可能调用它的子类B才拥有的方法f(B b), 所以输出结果不可能为3。这个f一定是调用的class A 
+	自身的方法fun(A a);
+
+		2. 对象a是由一个B类的对象向上转型得来, 因此class A的方法f(A a)实际上被class B的重载方法f(A a)覆盖了。所以输出结果应该为2。
+	这里因为B类是A的子类，所以方法f(A a)实际上也可以接受B类型的参数
+
+	2. 
+	public static void main(String[] args) {
+		SuperClass superClass = new SubClass();
+		/* 结果是
+			父类构造函数--super class
+			null 子类fun方法
+			子类构造函数--sub class
+			sub class 子类fun方法
+		*/
+    }
+    static class SuperClass {
+        private String name = "super class";
+        protected void fun() {
+            System.out.println(name + " 父类fun方法");
+        }
+        public SuperClass() {
+            System.out.println("父类构造函数" + "--" + name);
+            fun();
+        }
+    }
+    static class SubClass extends SuperClass {
+        private String name = "sub class";
+        @Override
+        public void fun() {
+            System.out.println(name + " 子类fun方法");
+        }
+        public SubClass() {
+            System.out.println("子类构造函数" + "--" + name);
+            fun();
+        }
+    }
+	原因分析：
+		对象实例化时，首先会给所有的变量都存入栈空间中(存放引用)。当所有的存储空间分配好之后才开始赋值(将值存入堆中)。因此，初始化
+	子类对象时，首先给子类的name分配空间，然后给父类name分配空间。此时栈空间分配已经完成，开始赋值。首先给父类name赋值，接着调用
+	父类构造函数，由于父类构造函数中的fun已经被子类重载，因此调用子类的fun函数，name指向的也是子类的name。但此时子类的name尚且没
+	有赋值，因此输出为null
+
 2. java集合源码分析: http://blog.csdn.net/column/details/collection.html
    线程详解: http://blog.csdn.net/ns_code/article/details/17539599
 
