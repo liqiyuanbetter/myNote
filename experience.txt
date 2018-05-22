@@ -1031,7 +1031,6 @@ ws连接;
 		2. Father {
 			protected void name() {// do some work}
 		}
-
 		Son {
 			public void useParentMethod() {
 				// 当name函数只存在于父类中时
@@ -1041,7 +1040,6 @@ ws连接;
 				super.name();
 				this.name();
 			}
-			
 			// "重写"父类的成员时，只能用修饰范围大于等于父类的修饰词来修饰
 			// 父类是protected，子类就只能使用protected或public来修饰
 			/*@Override
@@ -1049,7 +1047,7 @@ ws连接;
 				System.out.println("子类的name函数");
 			}*/
 			
-			// 子类可以"重载"父类的同名函数，这个重载的函数可以任意指定修饰词
+			// 子类可以"重载"父类的同名函数，这个"重载"的函数可以任意指定修饰词
 			private void name(String s) {
 			
 			}
@@ -1107,11 +1105,11 @@ ws连接;
 			a.f(new B()); // 输出结果是2
 
 		分析原因: 
-		1. a是一个A类型的对象, 它肯定不可能调用它的子类B才拥有的方法f(B b), 所以输出结果不可能为3。这个f一定是调用的class A 
-	自身的方法fun(A a);
+			1. a是一个A类型的对象, 它肯定不可能调用它的子类B才拥有的方法f(B b), 所以输出结果不可能为3。这个f一定是调用的class A 
+		自身的方法fun(A a);
 
-		2. 对象a是由一个B类的对象向上转型得来, 因此class A的方法f(A a)实际上被class B的重载方法f(A a)覆盖了。所以输出结果应该为2。
-	这里因为B类是A的子类，所以方法f(A a)实际上也可以接受B类型的参数
+			2. 对象a是由一个B类的对象向上转型得来, 因此class A的方法f(A a)实际上被class B的重载方法f(A a)覆盖了。所以输出结果应该为2。
+		这里因为B类是A的子类，所以方法f(A a)实际上也可以接受B类型的参数
 
 	2. 
 	public static void main(String[] args) {
@@ -1587,7 +1585,7 @@ Collection对象如list也可以调用sort方法并传入一个自己的排序器。Comparable中只有一
 	2. https://www.cnblogs.com/syfwhu/p/6116323.html
 
 2017.12.27
-1. 关于java中的进制问题
+1. java中的进制问题
 	1. 在java中，0xff和一般的数字型常量一样，例如0xff就是十进制的255，都是表示字面常量，只不过0xff是用十六进制表示的，
 而255使用十进制表示的，字面常量是没有符号的。有时我们在进行位运算时，这种用十六进制表示的常量会让我们的代码更容易理解。比如
 byte a = 34; a & 0xf0很明显就是要取a的高4位的值;
@@ -1700,7 +1698,7 @@ toHexString方法时，该方法会先将参数转化成一个int型数据，那么直接写toHexString(b)
 2017.12.08
 1. 查看端口被哪个进程占用: https://jingyan.baidu.com/article/3c48dd34491d47e10be358b8.html
 
-2. 关于bat批处理文件
+2. bat 批处理文件
 	1. 通常在批处理文件的第一行加上echo off, 设置命令不回显，这样执行批处理文件时，文件里的所有命令包括路径如
 C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不显示，在echo off前面加上 @。另外如果只想
 让某一条命令不回显，可以在这条命令前加@ 。另外echo的功能就是在屏幕上打印信息，这些信息会换行。常常用echo.在echo off模式下
@@ -2483,7 +2481,10 @@ https://zhidao.baidu.com/question/27877332.html
 	2. jdbc教程 https://www.yiibai.com/jdbc/
 
 2018.05.16
-	1. java类加载器
+	1. java类加载器 ClassLoader
+		
+
+	参考资料
 		1. *** https://blog.csdn.net/jiangwei0910410003/article/details/17733153/
 		2. 非常深入 https://blog.csdn.net/javazejian/article/details/73413292
 		3. https://blog.csdn.net/briblue/article/details/54973413
