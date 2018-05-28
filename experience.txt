@@ -1899,13 +1899,39 @@ git clone是一样的，相当于只是通过eclipse将一个git项目拉到了本地，但是该项目和ecl
 
 2017.12.21
 1. json转化
-	1. 后台常用fastjson包里的方法
-		1. 对象转json字符串--JSON.toJSONString(Object o)可以将对象o转换成一个json字符串，如果这个对象里面
-	有空的属性值，则直接略过该属性;
+	1. 使用 fastjson
+		1. 对象转json字符串--JSON.toJSONString(Object o)可以将对象o转换成一个json字符串，如果这个对象里面有空的属性值，则直接略
+	过该属性。如果想要忽略某些属性，有以下几种方法
+			1. 加上注解 @JSONField(serialize = false), 优先级高于过滤器
+
+			2. 使用SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Class<?>, String...);则只有指定的参数才能输出。
+		JSON.toJSONString(obj, filter)。该方法不能影响 @JSONField(serialize = false)的属性
+
+			3. 使用使用属性过滤器PropertyFilter最为灵活，不仅可以根据属性名过滤还可以根据类和属性值过滤, 如
+				PropertyFilter filter = new PropertyFilter() {
+					public boolean apply(Object object, String propertyName, Object propertyValue) {
+						if (propertyName.equals("id") && Integer.parseInt(propertyValue.toString) == 1)
+							return true;
+						return false;
+					}
+				};
+				JSON.toJSONString(myObj, filter);
+			只有apply方法中返回为true的才会被转化
 
 		2. JSON.parseObject(String json)方法可以将一个json字符串转换成一个JSONObject对象，这个对象可以通过
 	getString("keyName")等方法来获取json字符串里的属性值。另一个重载方法JSON.parseObject(String json, class<T>)
 	可以将json字符串转化成相应的实体类对象
+			1. 在使用JSON.parseObject(String, class<T>)将json字符串直接转化为对象时, 对象的属性名会和json字符串中的属性一一对应，
+		但是如果名字不一致，可以通过 @JSONField(name = "propertyName")来转化。如json字符串 {user-name: "liqiyuan"}, 显然类的属性名
+		不能有-, 所以可以这样
+			class User {
+				@JSONField(name = "user-name")
+				private String userName;
+			}
+			User user = Json.parseObject(json, User.class);
+
+			2. 使用JSONField注解同样会影响调用JSON.toJSONString方法
+
 
 	2. 前台直接用内置方法
 		1. 将json对象(js对象)转换成json字符串，用var str = JSON.stringify(obj), 注意如果要使用obj.toJSONString, 
@@ -2491,3 +2517,15 @@ https://zhidao.baidu.com/question/27877332.html
 		4. https://blog.csdn.net/xiaoliuliu2050/article/details/53023734
 
 	2. 在jdbc连接中，是否不用forName也行，因为只是为了执行静态方法
+
+2018.05.28
+	https://www.cnblogs.com/langtianya/p/4441206.html
+	https://blog.csdn.net/qq_27093465/article/details/52262340
+	https://blog.csdn.net/javazejian/article/details/73413292
+	https://www.cnblogs.com/tuning/p/6943427.html
+	https://blog.csdn.net/zghwaicsdn/article/details/50957474
+	https://blog.csdn.net/jiangwei0910410003/article/details/17733153/
+	https://blog.csdn.net/liangxw1/article/details/51353572
+	https://blog.csdn.net/u014389822/article/details/40227209
+	https://github.com/smallcham/Barrage/blob/master/src/main/java/org/medusa/barrage/proxy/MessageProxy.java
+	https://blog.csdn.net/a973893384/article/details/51517388
