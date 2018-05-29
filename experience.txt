@@ -22,15 +22,35 @@ Object
 		Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName))))
 
 2017.09.07
-1. ¹ØÓÚmaven
-	¹ØÓÚÒıÓÃjar°üµÄÎÊÌâ
+1. maven
+	1. ¹ØÓÚÒıÓÃjar°üµÄÎÊÌâ
 			1. ÔÚĞÂ½¨ÆÕÍ¨µÄwebÏîÄ¿Ê±£¬ÏîÄ¿×Ô¶¯ÔÚbuild pathÖĞÌí¼ÓÁËapachet tomcatÏà¹Øjar°ü£¬Òò´Ë¿ÉÒÔÖ±½ÓÊ¹ÓÃservlet
 		µ«ÊÇmavenÏîÄ¿ÖĞÄ¬ÈÏjar°üÖ»ÓĞÏµÍ³jar°ü£¬´ËÍâÍâËùÓĞjar°ü¶¼ÒÀÀµÓÚpomÎÄ¼şÖĞµÄÒıÈë£¬½â¾ö·½·¨ÓĞÁ½¸ö:
 				1. Ò»¸öÊÇÓÒ¼üÏîÄ¿µÄbuild pathÖĞÌí¼ÓServer Runtime
-				2. Ò»¸öÊÇÔÚpomÖĞÒıÈëÒÀÀµjavax.servlet-api
+				2. Ò»¸öÊÇÔÚpomÖĞÒıÈëÒÀÀµjavax.servlet-apiºÍjavax.servlet.jsp-api(jspÎÄ¼ş)
+
 			2. ÁíÍâÖØÒªµÄÊÇ, ÔÚÒıÈëservletÒÀÀµÊ±, scrope·¶Î§Ò»¶¨ÒªÖ¸¶¨Îªprovided£¬Ëü±íÊ¾ÔÚÏîÄ¿µÄ±àÒëºÍ²âÊÔ½×¶Î¸Ãjar
-		°üÉúĞ§¡£¶ø´ò³Éwar°üµÄÊ±ºò²»»á¼ÓÈë¡£ÒòÎª±ÈÈçÏîÄ¿ÔËĞĞÔÚtomcatÈİÆ÷ÖĞÊ±, tomcat»áÌá¹©jar°ü, ÔÙ´ò°ü½øÈ¥¾Í»á·¢Éú³åÍ»£»
-			3. ´ËÍâ, ÒÀÀµÄ¬ÈÏµÄ·¶Î§ÊÇcompile, Ëü±íÊ¾ÔÚÏîÄ¿µÄÕû¸ö²âÊÔ, ±àÒë, ´ò°ü½×¶Î¶¼ÉúĞ§
+		°üÉúĞ§¡£¶ø´ò³Éwar°üµÄÊ±ºò²»»á¼ÓÈë¡£ÒòÎª±ÈÈçÏîÄ¿ÔËĞĞÔÚtomcatÈİÆ÷ÖĞÊ±, tomcat»áÌá¹©jar°ü, ÔÙ´ò°ü½øÈ¥¾Í»á·¢Éú³åÍ»¡£
+		ÒÀÀµÄ¬ÈÏµÄ·¶Î§ÊÇcompile, Ëü±íÊ¾ÔÚÏîÄ¿µÄÕû¸ö²âÊÔ, ±àÒë, ´ò°ü½×¶Î¶¼ÉúĞ§
+
+			3. ÈçºÎ½«±¾µØµÄjar°üÒıÈëmavenÖĞ--ÔÚpomÎÄ¼şÖĞ¼ÓÈëÈçÏÂµÄµÚ¶ş¼¶±êÇ©
+				<repositories>
+					<repository>
+						<id>1</id>
+						<name>c</name>
+						<url>file://C:/Users/Liqiyuan/Desktop</url>
+					</repository>
+				</repositories>
+			id, name¿ÉÒÔËæ±ãÈ¡, url±íÊ¾ÒªÒıÈëµÄjar°üÎÄ¼şµÄ¡®¸ùÄ¿Â¼¡¯ËùÔÚÂ·¾¶, Èç¸Ãjar°üËùÔÚµÄ×îÍâ²ãÎÄ¼ş¼ĞÔÚ×ÀÃæÉÏ
+			ÒıÈëÒÀÀµ
+				<dependency>
+					<groupId>com.oldbutcher</groupId>
+					<artifactId>calculator</artifactId>
+					<version>1.0</version>
+				</dependency>
+			×¢Òâ, ÕâÀïÒ»¶¨Òª×ñÑ­ÈçÏÂ¹æ·¶, ÒªÒıÈëµÄjar°üµÄÃüÃûÎªcalculator-1.0.jar, ÇÒ¸Ãjar°ü±ØĞëÎ»ÓÚÈçÏÂÂ·¾¶
+		com\oldbutcher\calculator\1.0, ÕâÀïcom\oldbutcherÊÇgroupId, calculatorÊÇartifactIdÃû¡£¿ÉÒÔ¿´µ½ÔÚartifactId´ú±í
+		±íÊ¾Â·¾¶µÄÏÂÒ»¼¯ÎÄ¼ş¼ĞÊÇ°æ±¾ºÅ£¬È»ºóÔÚÕâ¸ö°æ±¾ºÅÎÄ¼ş¼ĞÏÂ²ÅÊÇÒÔartifactId-versionÃüÃûµÄjar°ü
 
 2. ¹ØÓÚjstl±êÇ©
 	¹ØÓÚÕâÀïÒıÓÃjstl°üµÄÎÊÌâ, Èç¹ûÒıÓÃµÄÊÇjavax.servlet.jsp.jstl¶ø²»ÊÇjavax.servlet¾Í»á³ö´í
@@ -103,8 +123,8 @@ js±äÁ¿ÉùÃ÷ÌáÉı
 	1. http://blog.csdn.net/q98842674/article/details/12094777/
 	2. http://blog.csdn.net/wengengeng/article/details/52013650
 	3. http://jingyan.baidu.com/article/f3ad7d0ffc061a09c3345bf0.html
-2017.09.21
 
+2017.09.21
 <build>
 	<finalName>MyDemo</finalName>
 	<plugins>
@@ -612,7 +632,7 @@ addHeader·½·¨¿ÉÒÔÉèÖÃcookieÎªhttponlyµÄ£¬ÀıÈç
 1. ÔÚajaxÇëÇóÖĞ£¬·şÎñÆ÷ÎŞ·¨ÉèÖÃcookie£¬¼´Ê¹ÔÚresponse headerÖĞÓĞsetcookie;
 
 2017.10.10
-1. maven²å¼ş
+1. maven
 	1. ÀûÓÃmavenµÄtomcat²å¼şÆô¶¯ÏîÄ¿
 		1. ²å¼ş
 			<build>
@@ -1288,7 +1308,7 @@ start()£¬Ôò²»¹ÜÊÇ·ñµ÷ÓÃt.interrupt(), Ôòt.isInterrupted()µÄ½á¹û¶¼Îªfalse;
 Ä¬ÈÏ×Ô´øÒ»¸öÅÅĞòÆ÷£¬Collections.sort(list)£¬×¢ÒâComparator½Ó¿ÚÖĞÖ»ÓĞÒ»¸ö³éÏó·½·¨compare(T, T)
 
 2017.11.20
-1. ¹ØÓÚgetResource("")
+1. ¹ØÓÚ getResource("")
 	1. ×¢ÒâÔÚmavenÏîÄ¿ÖĞ, ·ÅÔÚsrc/main/resourcesÏÂµÄÎÄ¼ş¸úÖ±½Ó·ÅÔÚsrc/main/javaÏÂµÄÎÄ¼şÔÚ±àÒëºóµÄÎ»ÖÃ¶¼ÊÇÒ»ÑùµÄ£¬ËüÃÇ¶¼
 Î»ÓÚÏîÄ¿¸ùÄ¿Â¼ÏÂµÄ/target/classesÕâ¸öÄ¿Â¼£¬ÍÆ²âÖ®ËùÒÔµ¥¶ÀÓĞÒ»¸öresourcesÊÇÎªÁË·½±ã¹ÜÀí¡£ÒòÎªÖ±½Ó·ÅÔÚjavaÏÂ¾ÍÊÇ¸ú×îÍâ²ãµÄ°üÔÚ
 Í¬Ò»¼¶£¬Èç¹ûÅäÖÃÎÄ¼ş¶àÏÔµÃ»ìÂÒ¡£Èç¹ûÔËĞĞmaven:clean»áÉ¾³ıtargetÎÄ¼ş¼Ğ¼°ÆäËùÓĞ×ÓÄ¿Â¼¡£
@@ -1310,8 +1330,8 @@ resourcesÏÂĞÂ½¨ÁËÒ»¸öºÍÄ³¸ö°üÃûÍ¬ÃûµÄÎÄ¼ş¼Ğ£¬ÄÇÃ´±àÒëºóÎÒÃÇ·¢ÏÖÕâ¸öÎÄ¼ş¼ĞÏÂµÄÅäÖ
 	6. getResourceºÍgetResourcesµÄÇø±ğ https://blog.csdn.net/gzuimis/article/details/44198737
 
 2. ideaºÍeclipse mavenÏîÄ¿ĞÂ½¨ÅäÖÃÎÄ¼şµÄÇø±ğ
-	1. ¶ÔÓÚÎ»ÓÚjava°üÏÂÃæ¶ø²»ÔÚ×ÊÔ´ÎÄ¼ş¼Ğ(¼´resources)ÏÂµÄÅäÖÃÎÄ¼ş, eclipse±àÒëºó»á×Ô¶¯½«Æä¼ÓÈëµ½ÏàÓ¦µÄ°üµÄÏÂÃæ¡£¶øidea²»»á, ÎªÁË
-ÈÃideaÄÜÔÚ±àÒëºó½«ÅäÖÃÎÄ¼ş¼ÓÈëµ½targetÖĞ, ĞèÒªÔÚpomÎÄ¼şÖĞ¼ÓÉÏÒÔÏÂÅäÖÃ
+	1. ¶ÔÓÚÎ»ÓÚjava°üÏÂÃæ¶ø²»ÔÚ×ÊÔ´ÎÄ¼ş¼Ğ(¼´resources)ÏÂµÄÅäÖÃÎÄ¼ş, eclipse±àÒëºó»á×Ô¶¯½«Æä¼ÓÈëµ½ÏàÓ¦µÄ°üµÄÏÂÃæ¡£¶øidea²»»á, 
+ÎªÁËÈÃideaÄÜÔÚ±àÒëºó½«ÅäÖÃÎÄ¼ş¼ÓÈëµ½targetÖĞ, ĞèÒªÔÚpomÎÄ¼şÖĞ¼ÓÉÏÒÔÏÂÅäÖÃ
 		<build>
 			<resources>
 			  <resource>
@@ -2507,9 +2527,9 @@ https://zhidao.baidu.com/question/27877332.html
 2018.05.16
 	1. javaÀà¼ÓÔØÆ÷ ClassLoader
 		1. ClassLoader µÄload·½·¨ºÍ ºÍ Class.forNameµÄÇø±ğ
-			1. Á½Õß¶¼»á½«ÀàµÄ.class·½·¨¼ÓÔØµ½JVMÖĞ¡£µ«Class.forName(className)·½·¨»¹»áÖ´ĞĞÏàÓ¦µÄclassÖĞµÄ¾²Ì¬´úÂë¿éÖĞµÄ·½·¨ÒÔ¼°
-		³õÊ¼»¯¾²Ì¬±äÁ¿, load·½·¨Ôò²»»á, ³ı·ÇÔÙµ÷ÓÃnewInstance·½·¨¡£ĞèÒª×¢ÒâµÄÊÇ, ½ö½öÉùÃ÷Ò»¸öÀà¶ø²»³õÊ¼»¯ÊÇ²»»áµ÷ÓÃÆä¾²Ì¬´úÂë¿éµÄ¡£
-		new Class()»òÕßµ÷ÓÃÕâ¸öÀàµÄÄ³Ò»¸ö¾²Ì¬·½·¨¶¼»áÖ´ĞĞËùÓĞµÄ¾²Ì¬´úÂë¿é
+			1. Á½Õß¶¼»á½«ÀàµÄ.class·½·¨¼ÓÔØµ½JVMÖĞ¡£µ«Class.forName(className)·½·¨»¹»áÖ´ĞĞÏàÓ¦µÄclassÖĞµÄ¾²Ì¬´úÂë¿éÖĞµÄ·½·¨ÒÔ
+		¼°³õÊ¼»¯¾²Ì¬±äÁ¿, load·½·¨Ôò²»»á, ³ı·ÇÔÙµ÷ÓÃnewInstance·½·¨¡£ĞèÒª×¢ÒâµÄÊÇ, ½ö½öÉùÃ÷Ò»¸öÀà¶ø²»³õÊ¼»¯ÊÇ²»»áµ÷ÓÃÆä¾²Ì¬´ú
+		Âë¿éµÄ¡£new Class()»òÕßµ÷ÓÃÕâ¸öÀàµÄÄ³Ò»¸ö¾²Ì¬·½·¨¶¼»áÖ´ĞĞËùÓĞµÄ¾²Ì¬´úÂë¿é
 
 	²Î¿¼×ÊÁÏ
 		1. *** https://blog.csdn.net/jiangwei0910410003/article/details/17733153/
