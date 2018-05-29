@@ -1025,7 +1025,7 @@ ws连接;
 
 2017.11.14
 1. java子类与父类详解
-	1. 关于继承和函数重写重载等基本概念
+	1. 关于 继承 和 重写 重载等基本概念
 		1. 抽象类在implement一个接口后可以不用实现任何方法。接口中的default方法也可以不需要任何类去实现它;
 
 		2. Father {
@@ -1907,7 +1907,7 @@ git clone是一样的，相当于只是通过eclipse将一个git项目拉到了本地，但是该项目和ecl
 			2. 使用SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Class<?>, String...);则只有指定的参数才能输出。
 		JSON.toJSONString(obj, filter)。该方法不能影响 @JSONField(serialize = false)的属性
 
-			3. 使用使用属性过滤器PropertyFilter最为灵活，不仅可以根据属性名过滤还可以根据类和属性值过滤, 如
+			3. 使用属性过滤器PropertyFilter最为灵活，不仅可以根据属性名过滤还可以根据类和属性值过滤, 如
 				PropertyFilter filter = new PropertyFilter() {
 					public boolean apply(Object object, String propertyName, Object propertyValue) {
 						if (propertyName.equals("id") && Integer.parseInt(propertyValue.toString) == 1)
@@ -1929,9 +1929,7 @@ git clone是一样的，相当于只是通过eclipse将一个git项目拉到了本地，但是该项目和ecl
 				private String userName;
 			}
 			User user = Json.parseObject(json, User.class);
-
-			2. 使用JSONField注解同样会影响调用JSON.toJSONString方法
-
+			使用 @JSONField注解同样会影响调用JSON.toJSONString方法
 
 	2. 前台直接用内置方法
 		1. 将json对象(js对象)转换成json字符串，用var str = JSON.stringify(obj), 注意如果要使用obj.toJSONString, 
@@ -2508,7 +2506,10 @@ https://zhidao.baidu.com/question/27877332.html
 
 2018.05.16
 	1. java类加载器 ClassLoader
-		
+		1. ClassLoader 的load方法和 和 Class.forName的区别
+			1. 两者都会将类的.class方法加载到JVM中。但Class.forName(className)方法还会执行相应的class中的静态代码块中的方法以及
+		初始化静态变量, load方法则不会, 除非再调用newInstance方法。需要注意的是, 仅仅声明一个类而不初始化是不会调用其静态代码块的。
+		new Class()或者调用这个类的某一个静态方法都会执行所有的静态代码块
 
 	参考资料
 		1. *** https://blog.csdn.net/jiangwei0910410003/article/details/17733153/
