@@ -2526,7 +2526,7 @@ https://zhidao.baidu.com/question/27877332.html
 
 2018.05.16
 	1. java类加载器 ClassLoader
-		1. ClassLoader 的load方法和 和 Class.forName的区别
+		1. ClassLoader 的load方法和 Class.forName的区别
 			1. 两者都会将类的.class方法加载到JVM中。但Class.forName(className)方法还会执行相应的class中的静态代码块中的方法以
 		及初始化静态变量, load方法则不会, 除非再调用newInstance方法。需要注意的是, 仅仅声明一个类而不初始化是不会调用其静态代
 		码块的。new Class()或者调用这个类的某一个静态方法都会执行所有的静态代码块
@@ -2541,12 +2541,15 @@ https://zhidao.baidu.com/question/27877332.html
 
 2018.05.28
 	https://www.cnblogs.com/langtianya/p/4441206.html
-	https://blog.csdn.net/qq_27093465/article/details/52262340
 	https://blog.csdn.net/javazejian/article/details/73413292
-	https://www.cnblogs.com/tuning/p/6943427.html
 	https://blog.csdn.net/zghwaicsdn/article/details/50957474
 	https://blog.csdn.net/jiangwei0910410003/article/details/17733153/
 	https://blog.csdn.net/liangxw1/article/details/51353572
 	https://blog.csdn.net/u014389822/article/details/40227209
 	https://github.com/smallcham/Barrage/blob/master/src/main/java/org/medusa/barrage/proxy/MessageProxy.java
 	https://blog.csdn.net/a973893384/article/details/51517388
+
+2018.05.30
+1. netty
+	https://blog.csdn.net/qq_23660243/article/details/69258687
+	https://www.zhihu.com/question/24322387
