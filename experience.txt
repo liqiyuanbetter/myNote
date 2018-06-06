@@ -2553,3 +2553,9 @@ https://zhidao.baidu.com/question/27877332.html
 1. netty
 	https://blog.csdn.net/qq_23660243/article/details/69258687
 	https://www.zhihu.com/question/24322387
+
+2018.6.6
+1. python
+	http://www.runoob.com/python/python-ide.html
+	https://www.zhihu.com/question/264654004
+	https://blog.csdn.net/ratsniper/article/details/78954852
