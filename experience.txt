@@ -2559,3 +2559,7 @@ https://zhidao.baidu.com/question/27877332.html
 	http://www.runoob.com/python/python-ide.html
 	https://www.zhihu.com/question/264654004
 	https://blog.csdn.net/ratsniper/article/details/78954852
+
+2018.6.8
+1. redis
+	http://www.runoob.com/redis/redis-install.html
