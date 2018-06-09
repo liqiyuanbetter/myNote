@@ -52,6 +52,9 @@ Object
 		com\oldbutcher\calculator\1.0, 这里com\oldbutcher是groupId, calculator是artifactId名。可以看到在artifactId代表
 		表示路径的下一集文件夹是版本号，然后在这个版本号文件夹下才是以artifactId-version命名的jar包
 
+	2. maven教程
+		https://www.yiibai.com/maven/maven_environment_setup.html#article-start
+
 2. 关于jstl标签
 	关于这里引用jstl包的问题, 如果引用的是javax.servlet.jsp.jstl而不是javax.servlet就会出错
 	但是在maven仓库中显示已经将该artifact 移入了javax.servlet.jsp.jstl
@@ -2563,3 +2566,12 @@ https://zhidao.baidu.com/question/27877332.html
 2018.6.8
 1. redis
 	http://www.runoob.com/redis/redis-install.html
+
+2018.6.9
+1. spirng-security
+	https://www.yiibai.com/spring-security/spring-security-hello-world-example.html
+
+2. xml
+	1. 命名空间
+		https://www.cnblogs.com/osttwz/p/6892999.html
+		https://blog.csdn.net/yangyuge1987/article/details/59536964
