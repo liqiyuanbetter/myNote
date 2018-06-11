@@ -2570,6 +2570,7 @@ https://zhidao.baidu.com/question/27877332.html
 2018.6.9
 1. spirng-security
 	https://www.yiibai.com/spring-security/spring-security-hello-world-example.html
+	https://blog.csdn.net/yin380697242/article/details/51921593
 
 2. xml 命名空间 xmlns
 	1. 问题来源
@@ -2601,29 +2602,37 @@ https://zhidao.baidu.com/question/27877332.html
 		在某个标签内直接写xmlns=""而不用写xmlns:name=""。这样写了之后表示该标签及其子标签都默认属于这个命名空间。例如对于spring
 	的配置文件
 		<bean xmlns="http://www.springframework.org/schema/beans">
-	它表明了这个bean标签下的所有标签都默认属于beans-----包括bean标签本身，可以看一个用法
+		它表明了这个bean标签下的所有标签都默认属于beans-----包括bean标签本身。事实上也只有
+	http://www.springframework.org/schema/beans 中才定义了bean这个标签。下面这个例子中没有将该地址作为默认命名空间
 
-	<beans:beans xmlns="http://www.springframework.org/schema/security"
-		xmlns:beans="http://www.springframework.org/schema/beans"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/security
-		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
-
-		<http auto-config="true">
-			<intercept-url pattern="/admin**" access="ROLE_USER" />
-		</http>
-
-		<authentication-manager>
-		  <authentication-provider>
-			<user-service>
-			<user name="yiibai" password="123456" authorities="ROLE_USER" />
-			</user-service>
-		  </authentication-provider>
-		</authentication-manager>
-
-	</beans:beans>
-	该配置文件的默认命名空间是security而不是beans, 而security命名空间中是没有beans这个标签的, 因此使用了beans:beans.
+		<beans:beans xmlns="http://www.springframework.org/schema/security"
+			xmlns:beans="http://www.springframework.org/schema/beans"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/security
+			http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+			<http auto-config="true">
+				<intercept-url pattern="/admin**" access="ROLE_USER" />
+			</http>
+			<authentication-manager>
+			  <authentication-provider>
+				<user-service>
+				<user name="yiibai" password="123456" authorities="ROLE_USER" />
+				</user-service>
+			  </authentication-provider>
+			</authentication-manager>
+		</beans:beans>
+		该配置文件的默认命名空间是security而不是beans, 而security命名空间中是没有beans这个标签的, 因此使用了beans:beans。或者按另
+	一种写法如下
+		<bean xmlns="" xmlns:security="http://www.springframework.org/schema/security">
+			<security:http auto-config="true">
+				<security:intercept-url pattern="/admin**" access="ROLE_USER" />
+			<security:/http>
+		</bean>
 		https://www.cnblogs.com/osttwz/p/6892999.html
 		https://blog.csdn.net/yangyuge1987/article/details/59536964
+
+	3. xsi:schemaLocation的作用
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 的作用是描述xml文件，直观的，它定义了该命名空间中有哪些标签以及这
+	写标签有些什么样的属性。注意schemaLocation=""中的文件总是成对出现的
