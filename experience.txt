@@ -2636,3 +2636,77 @@ https://zhidao.baidu.com/question/27877332.html
 	3. xsi:schemaLocation的作用
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 的作用是描述xml文件，直观的，它定义了该命名空间中有哪些标签以及这
 	写标签有些什么样的属性。注意schemaLocation=""中的文件总是成对出现的
+
+2018.6.12
+1. spring mvc
+	1. 关于 contextConfigLocation 参数
+		1. 写在<context-param> 
+			写在这下面的配置文件通常对应的是系统级的配置，它的作用范围是整个系统上下文。如定时任务的配置文件等都在这里进行初始化。
+		但是要使用这个配置，必须加上一个名为ContextLoaderListener的监听器，否则不能正确加载配置
+
+		2. 写在<servlet>的<inint-param>标签下
+			这些面的配置文件对应的是controller级别，它的作用范围是控制层上下文，这一点从它放在servlet标签下也可以看得出来，它是一个
+		servlet级别。它的初始化适合DispatcherServlet一起的，如果不加该标签，它有一个默认值/WEB-INF/servletName-servlet.xml。
+		它里面的配置不应当涉及到除了转发之外的任何实体。除了视图的解析方式、静态资源文件的存放位置、controller的初始化方式之外的配置
+		都不应该放在 servlet 配置文件中，应为它只负责请求的转发，返回结果的解析以及静态资源文件的解析，其他的对象的初始化，
+		定时任务等，都不应该放到这个配置文件下进行管理。
+	
+	2. 拦截器 interceptor
+		1. 拦截器接口
+			Spring众多拦截器接口如HandlerInterceptor通常都有以下三个方法 preHandle, postHandle, afterCompletion三个接口。
+
+			1. preHandle
+				该方法将在请求处理之前进行调用。该方法常进行一些前置初始化操作或者进行一些判断来决定请求是否要继续进行下去
+			SpringMVC 中的Interceptor是链式的调用的, 每个Interceptor的调用会依他们的--顺序--执行，且最先调用的都是preHandle方法。
+			如果前一个拦截器的preHandle返回为false, 则后一个拦截器和controller中的方法都不会执行。
+
+			2. postHandle
+				该方法只有在preHandle方法返回true时才执行，且在Controller方法调用之后执行。但是它会在DispatcherServlet 进行视图返
+			回渲染之前被调用，所以我们可以在这个方法中对Controller 处理之后的ModelAndView 对象进行操作。其执行顺序和preHandle相反
+			会按照拦截器声明顺序倒序执行
+			
+			3. afterCompletion
+				该方法也只会在preHandle返回true时才会执行, 而且是在DispatcherServlet渲染了视图之后执行, 这和postHandle方法是不同的。
+			
+			https://www.cnblogs.com/hy928302776/articles/6956747.html
+
+		2. 配置
+			在spring的配置文件中通过<mvc:interceptors>标签来配置拦截器, 注意有s。例如
+			<mvc:interceptors>
+				**直接定义在interceptors标签下的拦截器会拦截所有请求, class表明要使用的拦截器类
+				<bean class="...XXXInterceptor">
+				<mvc:interceptor>
+					**mvc:mapping定义需要拦截的请求路由。注意/**能匹配到所有子目录/a/b/c, 但是/*只能匹配一级, 如/a
+					<mvc:mapping path="/**">
+					**mvc:exclud-mapping定义不需要拦截的请求路由
+					<mvc:exclude-mapping path="">
+				</mvc:interceptor>
+			</mvc:interceptors>
+
+	3. bean 依赖注入
+		1. <property> 属性值写法
+			1. 当属性是基本类型时, 可以写<property name="" value="" />也可以吧value写在标签内, 即<property><value>值</value></>
+		但是注意不能直接把属性值写在标签内, 即<property>值</property>
+			
+			2. 当属性值类型是一个类时, 可以写<property name="" ref="这里面写其他bean的id或name" />, 也可以写
+		<property><ref bean="其他bean的id" /></property>
+
+			3. 属性值是一个数组或者List型时
+				<property name="">
+					<list>
+						<value>值</value>(实例化类型是基本类型)或者<ref bean="" />(实例化类型是类)
+					</list>
+				</property>
+			
+			4. 属性值是一个map类型时
+				<property name="">
+					<map>
+						<entry key(key-ref)="" value(value-ref)="">
+					</map>
+				</property>
+
+2. 分页
+	https://www.cnblogs.com/lantu1989/p/6403108.html	
+	
+2018.6.13
+requeset.getSession he request.getServletContext.setAttri 范围 applicaton?
