@@ -2709,4 +2709,4 @@ https://zhidao.baidu.com/question/27877332.html
 	https://www.cnblogs.com/lantu1989/p/6403108.html	
 	
 2018.6.13
-requeset.getSession he request.getServletContext.setAttri ·¶Î§ applicaton?
+requeset.getSession.setAttribute he request.getServletContext.setAttri ·¶Î§ applicaton?
