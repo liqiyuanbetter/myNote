@@ -2005,11 +2005,14 @@ var data = {
 5. json对象数据格式，当数据里有数组且数组的元素还是对象时，要先写[], 再写{}, 如
 	var data = {
 		name: "liqiyuan",
+		age:[1, 2, 3],
 		school: [
 			{id: "001", name: "lzgz"},
 			{id: "002", name: "nchu"}
 		]
 	}
+	注意, 对于json字符串, 如果只是一个单纯的数字数组或者字符串数组，不能写{}，只需要写[]即可, 如
+	["s1", "s2"], [1, 3, 4], 只有对象数组才需要写{}
 
 6. 使用$.ajax()在前后台传送数据时
 	1. type指定为POST时，如果传递的是js对象时，后台能够通过getParameter(keyName)的方式获取参数的值。如果js对象为
@@ -2680,6 +2683,8 @@ https://zhidao.baidu.com/question/27877332.html
 					<mvc:mapping path="/**">
 					**mvc:exclud-mapping定义不需要拦截的请求路由
 					<mvc:exclude-mapping path="">
+					**也可以定义在interceptor标签下
+					<bean class="...XXXInterceptor">
 				</mvc:interceptor>
 			</mvc:interceptors>
 
@@ -2704,9 +2709,29 @@ https://zhidao.baidu.com/question/27877332.html
 						<entry key(key-ref)="" value(value-ref)="">
 					</map>
 				</property>
+	
+	4. 在非web项目中使用spring
+		1. 使用注解进行依赖注入
+			对于被例如 @Autowired注解的类，需要使用AnnotationConfigApplicationContext上下文, 其参数basePackages为使用了注解的包。
+		然后就可以通过getBean(直接写对象小写名)获取这个bean
+
+	5. @value注解
+		https://www.cnblogs.com/zhouyeqin/p/8072135.html
+
+	6. contextproperty-placeholder location
+
+	7. RequestContextHolder
 
 2. 分页
 	https://www.cnblogs.com/lantu1989/p/6403108.html	
 	
 2018.6.13
 requeset.getSession.setAttribute he request.getServletContext.setAttri 范围 applicaton?
+
+2018.06.29
+	1. javafx 
+		http://www.javafxchina.net/main/
+		https://www.yiibai.com/javafx/
+
+2018.07.02
+	1. 优化反射 https://blog.csdn.net/moonpure/article/details/45216587
