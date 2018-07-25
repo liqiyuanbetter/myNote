@@ -2460,6 +2460,20 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 		1. https://www.cnblogs.com/xiaoxi/p/5695783.html
 		2. http://blog.csdn.net/a350204530/article/details/60763379
 
+	2. Spring mvc 对静态资源的处理 <mvc:resources> 标签
+		1. 在spring的servlet转发配置文件(也就是在web.xml文件中配置的servlet入口中初始化参数contextConfigLocation配置的那个值)中，为了使用基于注解的方式，我们通常加上配置
+	<mvc:annotation-driven/>，同时使用<context:component-scan base-package="im.qingtui.*"/>来扫描包。为了避免对静态资源被DispatcherServlet拦截，我们使用
+	<mvc:resources mapping="/static/**" location="/static/"/>。这个标签表示所有对映射路径/statistic/**的任何访问都会被当作静态资源处理，同时被映射到/static/这个文件夹下。
+	而且由于location属性是Resources类型，因此可以使用诸如"classpath:"等的资源前缀指定资源位置。传统Web容器的静态资源只能放在Web容器的根路径下，<mvc:resources />完全打破了这个限制。
+	甚至允许我们将静态资源防止在jar包下面
+		
+		2. 此外，<mvc:resources />依据当前著名的Page Speed、YSlow等浏览器优化原则对静态资源提供优化。你可以通过cacheSeconds属性指定静态资源在浏览器端的缓存时间。在输出静态资源时，
+	会根据配置设置好响应报文头的Expires 和 Cache-Control值。用户在接收到静态资源的获取请求时，会检查请求头的Last-Modified值，如果静态资源没有发生变化，则直接返回303相应状态码，提示客户端
+	使用浏览器缓存的数据，而非将静态资源的内容输出到客户端，以充分节省带宽，提高程序性能。
+	
+		3. 测试：
+			1. 使用和不使用<mvc:resouces>的区别
+			2. 查看cacheSeconds属性是否有用，可以通过查看response头信息查看
 2018.02.09
 1. javap命令
 	1. javap是JDK自带的反汇编器，可以查看java编译器生成的字节码。通过它可以了解编译器内部是怎么工作的。它的基本用法是在.class
