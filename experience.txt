@@ -473,7 +473,7 @@ addHeader方法可以设置cookie为httponly的，例如
 				6. PARAMETER:用于描述参数
 				7. TYPE:用于描述类、接口(包括注解类型) 或enum声明
 
-			2. Rentention 定义了该注解的生命周期，它的取值是RetentionPolicy枚举, 取值有
+			2. @Rentention 定义了该注解的生命周期，它的取值是--RetentionPolicy--枚举, 取值有
 				1. SOURCE:在源文件中有效，该注解类型的信息只保留在源码里而不会保留在编译后的.class文件中）
 
 				2. CLASS 在class文件中有效, 该注解信息会保留在源码里，也会保留在.class文件中, 但是在执行时并不会被
@@ -482,7 +482,7 @@ addHeader方法可以设置cookie为httponly的，例如
 				3. RUNTIME 在运行时有效, 即执行时也会被加载到JVM中。注意isAnnotationPresent, getAnnotation等方法都
 			只能捕获到RUNTIME这一级的注解
 
-			3. Inherited让某个被标注的类的子类也会继承该注解。即父类上有某个注解A，如果注解A被注解Inherited注解了，那么
+			3. @Inherited让某个被标注的类的子类也会继承该注解。即父类上有某个注解A，如果注解A被注解Inherited注解了，那么
 		子类调用.getClass().isAnnotationPresent(A.class)的结果是true，否则为false; 此外当调用C.class.getDeclaredAnnotations
 		方法时, 只会得到标注C的注解，而不会得到C的父类的注解
 
@@ -1281,7 +1281,7 @@ start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 		2. 通过git config user.email来修改当前用户时，如果这个email对应着github上的一个账号则 user.name的修改是无效
 	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name;
 
-		3. 全局账号的默认配置文件在C:\Users\当前用户名这个文件夹下，这也是linux根目录~。可以直接在这个文件夹中修改用户配置，
+		3. 全局账号的默认配置文件在C:\Users\当前用户名这个文件夹下，这也是linux根目录, 即~。可以直接在这个文件夹中修改用户配置，
 	即
 		[user]
 			name = liqiyuan
@@ -2724,9 +2724,6 @@ https://zhidao.baidu.com/question/27877332.html
 
 2. 分页
 	https://www.cnblogs.com/lantu1989/p/6403108.html	
-	
-2018.6.13
-requeset.getSession.setAttribute he request.getServletContext.setAttri 范围 applicaton?
 
 2018.06.29
 	1. javafx 
@@ -2735,3 +2732,19 @@ requeset.getSession.setAttribute he request.getServletContext.setAttri 范围 appl
 
 2018.07.02
 	1. 优化反射 https://blog.csdn.net/moonpure/article/details/45216587
+
+2017.07.25
+	1. Linux
+		1. 关于几种目录
+			1. ～表示当前用户的主目录，相当于/User/liqiyuan, /表示根目录。事实上cd /User/liqiyuan和cd ~是一样的。 .. 表示上一级目录
+
+			2. 有时侯按tab见没有补全输入可能是因为存在多个可以匹配的文件名
+
+		2. 基本操作命令
+			1. 文本文件编辑
+				1. vim fileName.type
+					输入该命令之后可以编辑文本，但不能用鼠标操作。打开文件后需要按i开始编辑文件，编辑结束后要按Esc键然后输入 :wq!
+				表示保存并退出文本编辑
+
+				2. open -e fileName.type
+					表示已编辑的模式打开文本文件，可以用鼠标操作。	
