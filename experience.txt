@@ -2748,7 +2748,7 @@ https://zhidao.baidu.com/question/27877332.html
 	1. 优化反射 https://blog.csdn.net/moonpure/article/details/45216587
 
 2017.07.25
-	1. Linux
+	1. Linux 基本命令
 		1. 关于几种目录
 			1. ～表示当前用户的主目录，相当于/User/liqiyuan, /表示根目录。事实上cd /User/liqiyuan和cd ~是一样的。 .. 表示上一级目录
 
@@ -2762,3 +2762,44 @@ https://zhidao.baidu.com/question/27877332.html
 
 				2. open -e fileName.type
 					表示已编辑的模式打开文本文件，可以用鼠标操作。	
+
+2018.07.30
+1. Spring boot
+	https://www.cnblogs.com/ityouknow/p/5662753.html
+
+2. contex:tproperty-placeholder location
+
+3. Special skills
+	1. 如何在控制台打印彩色文字
+		1. 可以使用Janis依赖，但是需要注意的是，打包后在不同平台终端可能出现不可预知的显示结果，例如mac终端上有多个换行符
+
+		2. 通过ANSI转移序列来控制输出格式，具体可以参考 https://www.cnblogs.com/opangle/p/4082692.html
+	
+	2. maven 打包
+		1. 打spring的包时常常比较麻烦，通过以下maven插件可以顺利打包
+			<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>im.qingtui.data.adapter.app.Adapter</mainClass>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/spring.handlers</resource>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/spring.schemas</resource>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
