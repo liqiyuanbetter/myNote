@@ -2655,7 +2655,7 @@ https://zhidao.baidu.com/question/27877332.html
 	写标签有些什么样的属性。注意schemaLocation=""中的文件总是成对出现的
 
 2018.6.12
-1. spring mvc
+1. Spring MVC
 	1. 关于 contextConfigLocation 参数
 		1. 写在<context-param> 
 			写在这下面的配置文件通常对应的是系统级的配置，它的作用范围是整个系统上下文。如定时任务的配置文件等都在这里进行初始化。
@@ -2702,7 +2702,7 @@ https://zhidao.baidu.com/question/27877332.html
 				</mvc:interceptor>
 			</mvc:interceptors>
 
-	3. bean 依赖注入
+	3. bean 依赖注入基本用法
 		1. <property> 属性值写法
 			1. 当属性是基本类型时, 可以写<property name="" value="" />也可以吧value写在标签内, 即<property><value>值</value></>
 		但是注意不能直接把属性值写在标签内, 即<property>值</property>
@@ -2725,16 +2725,86 @@ https://zhidao.baidu.com/question/27877332.html
 				</property>
 	
 	4. 在非web项目中使用spring
-		1. 使用注解进行依赖注入
-			对于被例如 @Autowired注解的类，需要使用AnnotationConfigApplicationContext上下文, 其参数basePackages为使用了注解的包。
-		然后就可以通过getBean(直接写对象小写名)获取这个bean
+		1. 使用Spring上下文对象获取上下文，比如：
+			AbstractApplicationContext context = new ClassPathXmlApplicationContext(String... configs(要加载的配置文件))。注意，我们可以通过
+		context.getBean(String beanName, Class class)来获取我们需要注入的对象。这种对象的类要么在Spring的配置文件中是一个<bean>, 要么有@Component等注解。
+		注意一般的类是不能通过getBean的方式获取其实例的。
+			
+	5. 通过 @Value 注解来给bean的属性注入值
+		1. 使用Value时，有${}和#{}两种方式来注入值，${}是从配置文件中获取值，#{}甚至可以直接从类中获取值, 即可以从引用中读值。注意value注解的括号中一定要加引号。比如
+	@Value(${"datasource.url"})。事实上在bean的配置文件中，同样可以使用这种方式来给bean的属性赋值，比如
+				<bean class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close" id="dataSource" init-method="init">
+    					<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+    					<property name="url" value="${datasource.url}"/>
+    					<property name="username" value="${datasource.user}"/>
+    					<property name="password" value="${datasource.password}"/>
+  				</bean>
+		
+		2. @Value注解从何处获取配置？
+			1. 在需要从配置文件读取配置的类上使用@PropertySource注解，其value值表明要读取的配置文件。比如
+				@Data
+@Service
+@PropertySource(value = "classpath:sys2.properties")
+public class DataBaseConnector {
 
-	5. @value注解
+    @Value("${user.email}")
+    private String email;
+
+    @Value("${user.password}")
+    private String userPassword;
+
+    @Value("${special}")
+    private String special;
+
+}
+			注意该类必须有@Service方注解否则不是一个bean。注解方式读取配置的优先级是低于配置文件中对bean的配置的
+				
+
+			2. 在配置文件中加上如下bean
+				<bean id="propertyConfiguer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"></bean>
+				下面对PropertyPlaceholderConfigurerd的属性进行适当的解释：
+					1. <property name="locations"> 或 <property name="location">。很显然前者可以读取多个配置文件，后者只能读取一个配置文件，如：
+						<property name="locations">
+      <list>
+        <value>classpath:sys2.properties</value>
+        <value>classpath:sys.properties</value>
+      </list>
+    </property>
+					
+					
+					2. <property name="order" value="1" />表示加载的顺序，在仅使用该属性的情况下，order较低的配置文件将不会被加载。因此如果某个属性
+				如${propName}在配置优先的文件中不存在，则项目启动会报错
+
+					3. <property name="ignoreUnresolvablePlaceholders" value="true" />设置是否忽略不可解析的placeholder，当配置了多个
+				org.springframework.beans.factory.config.PropertyPlaceholderConfigurerbean时，添加此属性可以使项目自动从有某个配置的文件中加载其属性值。
+				注意，这仅仅对使用单个配置文件的bean而言，如果使用的是locations属性，则spring会自动从有某个配置的文件中读取属性值
+
+			3. 在配置文件中使用<content:property-placeholder>元素，具体用法如下
+				<context:property-placeholder location="sys.properties,sys2.properties" ignore-unresolvable="true" />各个属性值的意义
+			可以参考前面bean的用法。这里的加载顺序和location中配置文件的顺序刚好是反的，也就是会优先读取sys2.properties中的配置。
+				在idea中这种方式引用的配置通过control加左键不能直接找到，但是方式2可以找到
+
+			4. 配置PropertiesFactoryBean bean，如
+				<bean id="propertiesReader" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="locations">
+      <list>
+        <value>classpath:sys2.properties</value>
+        <value>classpath:sys.properties</value>
+        <value></value>
+      </list>
+    </property>
+  </bean>
+			在配置文件中仍然通过${}获取属性值。但是在类属性上使用@Value时，需要加上bean的id,如@Value("#{propertiesReader['datasource.url']}")。注意是#不是$。当然
+		也可以直接使用${datasource.url}
+	
 		https://www.cnblogs.com/zhouyeqin/p/8072135.html
 
-	6. contextproperty-placeholder location
+	6. context:property-placeholder location
 
 	7. RequestContextHolder
+
+	8. 面向切面编程
+		1. 
 
 2. 分页
 	https://www.cnblogs.com/lantu1989/p/6403108.html	
