@@ -2804,8 +2804,48 @@ public class DataBaseConnector {
 	7. RequestContextHolder
 
 	8. 面向切面编程
-		1. 
+		1. 面向切面编程就像横向切一刀。例如每个函数都需要计算期执行时间，如果在每个函数中都去写计算时间的方法显得十分繁琐，此时使用切面就显得非常便捷。
+		
+		2. 使用@Apsect注解类标注一个切面类是最为简洁的方式，常用的增强处理有
+			1. @Before 前置增强 
+				该切面在方法执行前生效。可以在切面使用JoinPoint参数。JoinPoint对象中有很多方法，比如getArgs获取被增强方法中参数，getSignature()
+			获取签名。这个签名可以通过(Method)pjp.getSignature()强制转换类型后得到Method对象。Method对象通过getAnnotation(class)得到方法上的
+			注解。这种方式可以陪后后面的注解切点@annotaion使用
 
+			2. @AfterReturning 后置增强
+				该切面在方法返回后生效。改注解中可以使用属性returning = "rvt"属性。但是需要注意，切面方法中也必须有一个同名的参数。该参数的类型可以
+			任意指定，但是如果参数类型不为Object，则只有返回类型为指定类型的方法才会被增强，比如
+				@AfterReturning(pointcut = "execution(* *.targetAttribute(..))", returning = "rvt")
+    				public void afterReturn(int rvt) {
+        				System.out.println("AfterReturning->返回值：" + rvt);
+    				}
+				那么如果targetAttribute返回类型不为int，则它不会被增强
+
+			3. @Around 环绕增强
+				只有在环绕增强的方法中才可以使用ProceedingJoinPoint类型的参数。该切面非常强大，不仅可以改变方法的返回值，甚至还可以
+			让方法体不执行，对于public Object around(ProceedingJoinPoint pjp)
+				在该增强方法中，pjp.proceed()方法就表示原方法的执行。增强中该方法前后的语句会在相应地会在被增强的方法前后执行。而该增强
+			的返回值也将作为被增强的方法最终的返回值，比如
+				long start = System.nanoTime();
+        			System.out.println("Around->执行前！");
+        			//开始执行访问接口 执行方法
+        			Object object = pjp.proceed();
+        			System.out.println("执行后！");
+        			long end = System.nanoTime();
+
+        			System.out.println(methodName + "用时：" + CommonUtil.nanoTime2Second(end - start) + "秒！\n");
+
+        			return 123; // 该方法最终的返回值变成了123
+
+		3. 切点函数, 即切面中value的值
+			1. execution表达式 
+				* *.*(..) 从左到右*分别表示返回类型 包名 方法名, 括号中两个点表示任意参数类型
+
+			2. args() 指定目标方法的参数类型
+
+			3. @annotation 有某个注解的方法，这种方式使用起来非常方便，如
+				@Around(value = "@annotation(im.qingtui.data.adapter.annotation.Console)"), 则所有被Console注解了的方法都会被
+			环绕增强
 2. 分页
 	https://www.cnblogs.com/lantu1989/p/6403108.html	
 
@@ -2873,3 +2913,94 @@ public class DataBaseConnector {
           </execution>
         </executions>
       </plugin>
+
+2018.08.16
+1. 线程池
+	1. https://www.cnblogs.com/dolphin0520/p/3932921.html 讲的非常深入, 难啃
+2. AQS
+	1. https://www.cnblogs.com/waterystone/p/4920797.html 很深入, 难啃
+
+3. Java 并发基础
+	1. 线程池
+		ExecutorService executorService = Executors.newFixedThreadPool(固定数量)
+		executorService.execute或submit(Thread or Runnable)可以让所有所有加入的线程启动。关闭线程池即
+	executorService.shutDown()之后不能再加入新的线程到线程池当中
+		
+	2. 闭锁 CountDownLatch
+		1. 基本用法
+			CountDownLatch countDownLatch = new CountDownLatch(count)
+			countDownLatch.await()方法会一直阻塞，知道countDownLatch对象中的计数通过countDownLatch.countDown
+		方法降到0的时候。这样可以用于需要等多个线程执行完毕后再执行某个任务，例如
+			for(int i = 0; i < count; I++) {
+				Runnable runnable = new Runnable() {
+					// do something
+					sout(Thread.currentThread.getName() + “已完成操作！”)
+					countDown.countDown();
+				};
+				executorService.submit(runnable);
+			}
+			executorService.shutDown();
+			sout("等待所有线程执行完毕！")
+			countDown.await();
+			sout("所有线程均已执行完毕")
+			
+			或者
+			ExecutorService executorService = Executors.newFixedThreadPool(count);
+        final CountDownLatch players = new CountDownLatch(count);
+        final CountDownLatch judge = new CountDownLatch(1);
+
+        for (int i = 0; i < count; i++) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println(Thread.currentThread().getName() + "等待裁判发指令！");
+                        judge.await();
+                        System.out.println(Thread.currentThread().getName() + "已经出发了！");
+                        players.countDown();
+                    } catch (Exception e) {
+                        System.out.println("Error!");
+                    }
+                }
+            };
+            executorService.execute(runnable);
+        }
+        executorService.shutdown();
+
+        System.out.println(Thread.currentThread().getName() + "即将发出指令！");
+        judge.countDown();
+        System.out.println(Thread.currentThread().getName() + "已经发出指令！");
+        players.await();
+        System.out.println("所有选手都已经触发！");
+
+	3. 栅栏 CyclicBarrier
+		1. 与CountDownLatch不同的是，CyclicBarrier不用调用countDown方法，只要调用await()的次数达到count，
+	await()方法就不会再阻塞，比如
+		inal CyclicBarrier cyclicBarrier = new CyclicBarrier(count);
+        ExecutorService executorService = Executors.newFixedThreadPool(count);
+
+        for (int i = 0; i < count; i++) {
+            Thread people = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep((long) (Math.random() * 500));
+
+                        System.out.println(Thread.currentThread().getName() + "已经到位，开始等待！");
+                        cyclicBarrier.await();
+
+                        System.out.println("人到齐了，" + Thread.currentThread().getName() + "开始执行自己的动作！");
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, "成员" + i);
+
+            executorService.execute(people);
+        }
+
+        executorService.shutdown();
