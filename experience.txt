@@ -52,6 +52,9 @@ Object
 		com\oldbutcher\calculator\1.0, 这里com\oldbutcher是groupId, calculator是artifactId名。可以看到在artifactId代表
 		表示路径的下一集文件夹是版本号，然后在这个版本号文件夹下才是以artifactId-version命名的jar包
 
+	2. 指定依赖的最终版本
+		当依赖版本发生冲突时，可以通过<dependencymanagement>来指定依赖的最终版本
+
 	2. maven教程
 		https://www.yiibai.com/maven/maven_environment_setup.html#article-start
 
@@ -620,7 +623,7 @@ addHeader方法可以设置cookie为httponly的，例如
 		5. 相对应的，在使用java的HttpURLConnection类时，不用调用connection的setRequestProperty("Content-type", 
 	"application/x-www-form-urlencoded;charset=utf-8")[XHR的方法是setRequestHeader]。无论有没有给connection设置这个
 	请求参数，在servlet中都可以通过getParameter方法来获取参数，跟在url地址后面的参数也可以通过getParameter来获取。
-	但是传给服务器中的参数有中文时, 如果不设置这个属性，服务器收到的就是乱码。
+	但是传给服务器中的参数有中文时, 如果不设置这个属性，服务器收到的就是乱码。注意write数据之后一定要刷新或关闭流
 	
 	3. 注意在发送GET请求时，send()里面也可以写东西，但是后台是看不到的。控制台中也可以看到send里面的数据并没有被提交
 
@@ -2723,6 +2726,14 @@ https://zhidao.baidu.com/question/27877332.html
 						<entry key(key-ref)="" value(value-ref)="">
 					</map>
 				</property>
+		2. 构造函数
+			使用<constructor-arg>标签来为bean的构造函数传参
+
+	5. 使用 @Autowierd 或 @Resource 注解进行对象的自动注入
+		1. 只需要在spring的配置文件中加上<context:component-scan base-package="im.qingtui.*" />就能实现自动注入。注意并不是必须要在类上加上@Autowired
+	注解后才能实现自动注入，如果一个类在配置文件中声明了bean，那么它也可以被自动注入
+	
+		2. 如果自动注入的是某个接口，而且这个接口有多个实现类，那么指定具体要使用哪一个实现类时使用@Resource(name = "类小写名")或@Autowired InteName 实现类小写名
 	
 	4. 在非web项目中使用spring
 		1. 使用Spring上下文对象获取上下文，比如：
@@ -2803,10 +2814,10 @@ public class DataBaseConnector {
 
 	7. RequestContextHolder
 
-	8. 面向切面编程
-		1. 面向切面编程就像横向切一刀。例如每个函数都需要计算期执行时间，如果在每个函数中都去写计算时间的方法显得十分繁琐，此时使用切面就显得非常便捷。
+	8. 面向切面编程 Aspect
+		1. 面向切面编程就像横向切一刀。例如每个函数都需要计算期执行时间，如果在每个函数中都去写计算时间的方法显得十分繁琐，此时使用切面就非常便捷。
 		
-		2. 使用@Apsect注解类标注一个切面类是最为简洁的方式，常用的增强处理有
+		2. 使用@Apsect注解类标注一个切面类是最为简洁的方式，主要切面上还一定要加上@Component注解，否则Spring扫描不到。常用的增强处理有
 			1. @Before 前置增强 
 				该切面在方法执行前生效。可以在切面使用JoinPoint参数。JoinPoint对象中有很多方法，比如getArgs获取被增强方法中参数，getSignature()
 			获取签名。这个签名可以通过(Method)pjp.getSignature()强制转换类型后得到Method对象。Method对象通过getAnnotation(class)得到方法上的
@@ -2822,24 +2833,33 @@ public class DataBaseConnector {
 				那么如果targetAttribute返回类型不为int，则它不会被增强
 
 			3. @Around 环绕增强
-				只有在环绕增强的方法中才可以使用ProceedingJoinPoint类型的参数。该切面非常强大，不仅可以改变方法的返回值，甚至还可以
-			让方法体不执行，对于public Object around(ProceedingJoinPoint pjp)
-				在该增强方法中，pjp.proceed()方法就表示原方法的执行。增强中该方法前后的语句会在相应地会在被增强的方法前后执行。而该增强
-			的返回值也将作为被增强的方法最终的返回值，比如
-				long start = System.nanoTime();
-        			System.out.println("Around->执行前！");
-        			//开始执行访问接口 执行方法
-        			Object object = pjp.proceed();
-        			System.out.println("执行后！");
-        			long end = System.nanoTime();
+				1. 使用说明
+					只有在环绕增强的方法中才可以使用ProceedingJoinPoint类型的参数。该切面非常强大，不仅可以改变方法的返回值，甚至还可以
+				让方法体不执行，对于public Object around(ProceedingJoinPoint pjp)
+					在该增强方法中，pjp.proceed()方法就表示原方法的执行。增强中该方法前后的语句会在相应地会在被增强的方法前后执行。而该增强
+				的返回值也将作为被增强的方法最终的返回值，比如
+					long start = System.nanoTime();
+        				System.out.println("Around->执行前！");
+        				//开始执行访问接口 执行方法
+        				Object object = pjp.proceed();
+        				System.out.println("执行后！");
+        				long end = System.nanoTime();
 
-        			System.out.println(methodName + "用时：" + CommonUtil.nanoTime2Second(end - start) + "秒！\n");
+        				System.out.println(methodName + "用时：" + CommonUtil.nanoTime2Second(end - start) + "秒！\n");
 
-        			return 123; // 该方法最终的返回值变成了123
+        				return 123; // 该方法最终的返回值变成了123
+				
+				2. 对异常的处理
+					上面说了pjp.proceed()表示的是方法的执行，该方法是有可能抛出异常的，所以该方法需要捕获异常或者抛出异常。但是注意，在被增强的方法
+				中被捕获的异常是不会在切点被捕获的(相当于没有异常)，只有在被增强方法中被抛出的异常才会被切点捕获。
 
-		3. 切点函数, 即切面中value的值
+		3. 切点函数, 即切面中value或pointcut的值
 			1. execution表达式 
-				* *.*(..) 从左到右*分别表示返回类型 包名 方法名, 括号中两个点表示任意参数类型
+				* *.*(..) 从左到右*分别表示返回类型 包名 方法名, 括号中写两个点时表示任意参数类型。其实只想考虑参数类型时，也可以写成* *(类全限定名)。
+			即这里用一个*号代替了所有类中的所有名字的方法。
+				参数类型有一点需要注意，当试图表示某类型或其所有子类类型时，可以使用+。比如(com.oldbutcher.SuperClass+)，则类型为SuperClass的子类时
+			也将匹配该切点。也可以将切点设置为包含某一参数的方法，即(com.oldbutcher.SuperClass, ..)。
+			
 
 			2. args() 指定目标方法的参数类型
 
@@ -2867,11 +2887,20 @@ public class DataBaseConnector {
 		2. 基本操作命令
 			1. 文本文件编辑
 				1. vim fileName.type
-					输入该命令之后可以编辑文本，但不能用鼠标操作。打开文件后需要按i开始编辑文件，编辑结束后要按Esc键然后输入 :wq!
+					输入该命令之后可以编辑文本，但不能用鼠标操作。打开文件后需要按 i 开始编辑文件，编辑结束后要按Esc键然后输入 :wq!
 				表示保存并退出文本编辑
 
 				2. open -e fileName.type
 					表示已编辑的模式打开文本文件，可以用鼠标操作。	
+
+				3. 通过tail -f(-1000) info | grep 文字 可以看到日志文件中指定的内容
+
+		3. 启动spring boot项目
+			直接通过java -jar 包名就可以启动。按con + c或者这个窗口长期不动它就会自动关闭。为了避免这种情况可以在最后加上&符号使其一直启动。
+
+		4. 查看端口占用
+			有时启动项目时会报端口被占用例如Address already in use的错误，这时候可以通过jps命令查看端口号被进程占用情况，然后通过kill 进程名来杀掉进程。
+		其他更为复杂的命令netstat -apn | grep 需要查看的端口号以及ps -ef | grep 4438
 
 2018.07.30
 1. Spring boot
@@ -3004,3 +3033,29 @@ public class DataBaseConnector {
         }
 
         executorService.shutdown();
+
+2018.10.10
+1. 参与新tms开发感悟
+	1. 发布新的dubbo项目
+		1. 记得配置中心也要发布哦
+		
+		2. 注意，在功能分支上修改了代码然后往dev上合的时候，不要更新分支的版本号，而应该是将分支合到dev上之后在dev再去修改版本号(如果更新了api版本的话)
+
+		3. 若在本地以test方式启动项目，则在dubbo服务平台可以看到两个启动的dubbo项目，这时可以通过禁用选项来禁用其中一个。但无法禁用其对消息的监听
+
+		4. 注意server项目在自己编辑的时候用的api版本是本地的，但是compile的时候用的是仓库里相应的依赖版本。所以可能出现在本地compile的时候报错
+	找不到某个方法。
+
+	2. 读取apollo配置
+		1. 私有空间的配置是根据appid来读取的。而且一定要记得在项目中添加 <apollo:config/>
+
+	3. 单元测试的内容如果开启了新的线程，记得sleep，不然主线程结束了就无法继续测试。但是jenkins上构建前记得删除sleep代码，不然构建很久。
+
+	4. 配置
+		1. Cms dispathcer.xml中有专门配置的过滤器，这些过滤器有的可以完成诸如将header中的domianid，accountid等信息提取出来然后放进request里面
+
+	5. 关于分支
+		1. 开发新功能时，从master上打一个分支，然后取名为dev-feature, 然后吧这个新分支往dev上合测试。没问题后把新分支往qa上合。注意不能把dev合qa
+
+2018.10.21
+1.todo->了解@ControllerAdvice的用法
