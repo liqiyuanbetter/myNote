@@ -1,39 +1,39 @@
 2017.09.06
-�����ֽ������ַ���
+关于字节流和字符流
 Object
-	----InputStream����ͼ��֮����ֽ���
+	----InputStream，读图像之类的字节流
 		----FileInputStream
-		1. ���Ĺ��캯���������ļ���(String)���ļ�(File), �ܵ�����
-		----DataInputStream(����������)
-		1. ���캯���Ĳ�����һ���ֽ���(InputStream)
-		2. ��������������Ӧ�ó�����������޹ط�ʽ�ӵײ��������ж�ȡ���� Java �������ͣ����ڶ�ȡ�����������ͣ��������
-	��������readInt, readLong����read+�����������͵�����
+		1. 它的构造函数参数是文件名(String)或文件(File), 很单纯简单
+		----DataInputStream(数据输入流)
+		1. 构造函数的参数是一个字节流(InputStream)
+		2. 数据输入流允许应用程序以与机器无关方式从底层输入流中读取基本 Java 数据类型，用于读取基本数据类型，因此它的
+	方法都是readInt, readLong这种read+基本数据类型的样子
 
-	----Reader����ȡ���ַ��ŵ��ַ���
+	----Reader，读取数字符号等字符流
 		----BufferedReader
-		1. ���ֽ��������и�Ч�Ķ�ȡ�ı�, ����乹�캯�����������ַ�������(Reader)
-		2. Reader��ֱ��������, ֻ��BufferedReader�ж�ȡ���е�readLine����
+		1. 从字节输入流中高效的读取文本, 因此其构造函数参数都是字符输入流(Reader)
+		2. Reader的直接子类中, 只有BufferedReader有读取整行的readLine方法
 		----InputStreamReader
-		1. �ֽ���ͨ���ַ�������������ʹ��ָ���� charset ��ȡ�ֽڲ��������Ϊ�ַ�
-		2. ������Ĺ��캯�����Ǻ��ֽ���������(InputStream), �Ͼ����ַ������ֽ���֮�������
+		1. 字节流通向字符流的桥梁：它使用指定的 charset 读取字节并将其解码为字符
+		2. 因此它的构造函数都是含字节输入流的(InputStream), 毕竟是字符流和字节流之间的桥梁
 			----FileReader
-			1. ���Ĺ��캯���������ļ���(String)���ļ�(File), �ܵ�����
-	��˿��ܳ�������һ�ַǳ���������:
+			1. 它的构造函数参数是文件名(String)或文件(File), 很单纯简单
+	因此可能出现这样一种非常长的声明:
 		Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName))))
 
 2017.09.07
 1. maven
-	1. ��������jar��������
-			1. ���½���ͨ��web��Ŀʱ����Ŀ�Զ���build path��������apachet tomcat���jar������˿���ֱ��ʹ��servlet
-		����maven��Ŀ��Ĭ��jar��ֻ��ϵͳjar��������������jar����������pom�ļ��е����룬�������������:
-				1. һ�����Ҽ���Ŀ��build path������Server Runtime
-				2. һ������pom����������javax.servlet-api��javax.servlet.jsp-api(jsp�ļ�)
+	1. 关于引用jar包的问题
+			1. 在新建普通的web项目时，项目自动在build path中添加了apachet tomcat相关jar包，因此可以直接使用servlet
+		但是maven项目中默认jar包只有系统jar包，此外外所有jar包都依赖于pom文件中的引入，解决方法有两个:
+				1. 一个是右键项目的build path中添加Server Runtime
+				2. 一个是在pom中引入依赖javax.servlet-api和javax.servlet.jsp-api(jsp文件)
 
-			2. ������Ҫ����, ������servlet����ʱ, scrope��Χһ��Ҫָ��Ϊprovided������ʾ����Ŀ�ı���Ͳ��Խ׶θ�jar
-		����Ч�������war����ʱ�򲻻���롣��Ϊ������Ŀ������tomcat������ʱ, tomcat���ṩjar��, �ٴ����ȥ�ͻᷢ����ͻ��
-		����Ĭ�ϵķ�Χ��compile, ����ʾ����Ŀ����������, ����, ����׶ζ���Ч
+			2. 另外重要的是, 在引入servlet依赖时, scrope范围一定要指定为provided，它表示在项目的编译和测试阶段该jar
+		包生效。而打成war包的时候不会加入。因为比如项目运行在tomcat容器中时, tomcat会提供jar包, 再打包进去就会发生冲突。
+		依赖默认的范围是compile, 它表示在项目的整个测试, 编译, 打包阶段都生效
 
-			3. ��ν����ص�jar������maven��--��pom�ļ��м������µĵڶ�����ǩ
+			3. 如何将本地的jar包引入maven中--在pom文件中加入如下的第二级标签
 				<repositories>
 					<repository>
 						<id>1</id>
@@ -41,86 +41,86 @@ Object
 						<url>file://C:/Users/Liqiyuan/Desktop</url>
 					</repository>
 				</repositories>
-			id, name�������ȡ, url��ʾҪ�����jar���ļ��ġ���Ŀ¼������·��, ���jar�����ڵ�������ļ�����������
-			��������
+			id, name可以随便取, url表示要引入的jar包文件的‘根目录’所在路径, 如该jar包所在的最外层文件夹在桌面上
+			引入依赖
 				<dependency>
 					<groupId>com.oldbutcher</groupId>
 					<artifactId>calculator</artifactId>
 					<version>1.0</version>
 				</dependency>
-			ע��, ����һ��Ҫ��ѭ���¹淶, Ҫ�����jar��������Ϊcalculator-1.0.jar, �Ҹ�jar������λ������·��
-		com\oldbutcher\calculator\1.0, ����com\oldbutcher��groupId, calculator��artifactId�������Կ�����artifactId����
-		��ʾ·������һ���ļ����ǰ汾�ţ�Ȼ��������汾���ļ����²�����artifactId-version������jar��
+			注意, 这里一定要遵循如下规范, 要引入的jar包的命名为calculator-1.0.jar, 且该jar包必须位于如下路径
+		com\oldbutcher\calculator\1.0, 这里com\oldbutcher是groupId, calculator是artifactId名。可以看到在artifactId代表
+		表示路径的下一集文件夹是版本号，然后在这个版本号文件夹下才是以artifactId-version命名的jar包
 
-	2. ָ�����������հ汾
-		�������汾������ͻʱ������ͨ��<dependencymanagement>��ָ�����������հ汾
+	2. 指定依赖的最终版本
+		当依赖版本发生冲突时，可以通过<dependencymanagement>来指定依赖的最终版本
 
-	2. maven�̳�
+	2. maven教程
 		https://www.yiibai.com/maven/maven_environment_setup.html#article-start
 
-2. ����jstl��ǩ
-	������������jstl��������, ������õ���javax.servlet.jsp.jstl������javax.servlet�ͻ����
-	������maven�ֿ�����ʾ�Ѿ�����artifact ������javax.servlet.jsp.jstl
+2. 关于jstl标签
+	关于这里引用jstl包的问题, 如果引用的是javax.servlet.jsp.jstl而不是javax.servlet就会出错
+	但是在maven仓库中显示已经将该artifact 移入了javax.servlet.jsp.jstl
 
-3. ������װ����ȫ�ٷ�˵��
+3. 软件安装不安全官方说法
 		you are installing software that contains unsigned content. The authenticity or validity of this software
 	cannot be established. Do you want to continue with this installation?
 
-4. Velocity ѧϰ��ַ
+4. Velocity 学习地址
 	http://blog.csdn.net/qq_25237663/article/details/52262532
 	http://ifeve.com/apache-velocity-dev/
 	http://www.360doc.com/content/13/0401/13/10825198_275274565.shtml
 	https://www.ibm.com/developerworks/cn/java/j-lo-velocity1/
 
 2017.09.08
-1. Velocity�����ļ�
+1. Velocity配置文件
 	http://blog.csdn.net/glarystar/article/details/6636574
 	http://blog.csdn.net/Lancelot_Lewis/article/details/51222596
 
-2. ע��velocity�������ļ���д��Ҫ��web.xml�ļ������ã�����λ����servlet��initparam����, ����:
-	<!-- �����Լ��������ļ� -->
+2. 注意velocity的配置文件编写后要在web.xml文件中设置，设置位置在servlet的initparam里面, 比如:
+	<!-- 定义自己的配置文件 -->
 	<init-param>
 		<param-name>org.apache.velocity.properties</param-name>
 		<param-value>mvelocity.properties</param-value>
 	</init-param>
 
 2017.09.11
-1. ѧϰspring������ַ:
+1. 学习spring不错地址:
 	http://snowolf.iteye.com/blog/1628861
 	http://blog.csdn.net/qq_31138523/article/details/60584333
 
 2017.09.18
-1. ����Ŀ���𵽷������ϵĲ���
-	1. ��eclipse�н���Ŀ���, ����Ϊ��maven��ִ������clean package;
+1. 将项目部署到服务器上的步骤
+	1. 在eclipse中将项目打包, 方法为在maven中执行命令clean package;
 
-	2. ��Ŀ���𵽷������Ϻ���Բ����޸ķ������ϵ�Ӧ�õ����ݿ��ַ����Ϊ���ݿ��ڷ������ϣ�Ӧ�����õ�����
-��ַ��127.0.0.1�������ڷ�������Ӧ��ʹ�������ַʱ�������ӵķ������ϵ����ݿ�;
+	2. 项目部署到服务器上后可以不用修改服务器上的应用的数据库地址，因为数据库在服务器上，应用配置的数据
+地址是127.0.0.1，运行在服务器的应用使用这个地址时就是连接的服务器上的数据库;
 
-	3. ��Ӧ�õķ���Ҳ���ƣ����ط���ʱͨ��localhost���������Ͻ��ngixֻ��Ҫ����ַ��Ϊ������ip�����磬�ڷ��������ط���
-ʱҲ��ͨ��localhost:port/proName������ͨ��ngixӳ�����--������ip(Ĭ�϶˿�80)/proNameʱֱ��ӳ�䵽localhost:port/proName��
-������ʵ���ڷ�������������tomcat�е���Ŀ����ֱ��ʹ�÷�������ַ:port/proName��ԭ���Ƿ�����ֻ���Ⱪ¶80�˿ڣ����ⲿͨ��
-�����ַ�Ĳ�ͬӳ�䵽���������صĲ�ͬ�˿��ϣ���˷��ʷ������ϵ�Ӧ��ʱ���Բ��Ӷ˿ںţ�����ͨ��ngix�Զ�ӳ����;
+	3. 对应用的访问也类似，本地访问时通过localhost，服务器上结合ngix只需要将地址换为服务器ip。例如，在服务器本地访问
+时也是通过localhost:port/proName，现在通过ngix映射访问--服务器ip(默认端口80)/proName时直接映射到localhost:port/proName，
+这样来实现在服务器上运行在tomcat中的项目。不直接使用服务器地址:port/proName的原因是服务器只对外暴露80端口，而外部通过
+请求地址的不同映射到服务器本地的不同端口上，因此访问服务器上的应用时可以不加端口号，而是通过ngix自动映射了;
 
-	4. ��war������tomcat��webapp���ɣ�tomcat���Զ����ͷ�����Ŀ;
+	4. 将war包放入tomcat的webapp即可，tomcat会自动解释翻译项目;
 
-2. ��tomcat��bin/catalina.bat��ͨ��setTitle����ָ���������������ƣ�Ĭ��Ϊtomcat�������������������ڲ�ͬ�汾tomcat�ϵ�Ӧ�á�
+2. 在tomcat的bin/catalina.bat中通过setTitle可以指定服务启动的名称，默认为tomcat。这样可以区分运行在不同版本tomcat上的应用。
 
 2017.09.19
-js������������
+js变量声明提升
 	http://www.cnblogs.com/silentjesse/p/4024536.html
 
 2017.09.20
-1. windows server������tomcat����������Ҫ�ڷ���ǽ--�߼�����--��վ����--�½���վ����ѡ��˿ڲ�ָ���ض����ض˿�Ϊ8080
-����ͨ��ip:8080����tomcat��index
-	1. ��������û��������վ����Ҳ�ܷ��ʣ�
-	2. ajax postͨ����������
+1. windows server上配置tomcat服务器，需要在防火墙--高级设置--入站规则--新建入站规则，选择端口并指定特定本地端口为8080
+方可通过ip:8080访问tomcat的index
+	1. 局域网中没有添加入站规则也能访问？
+	2. ajax post通过？传参数
 2. windows server 
 	1. http://blog.163.com/smile_big/blog/static/35710579201432510300378/
 	2. http://www.xitonghe.com/jiaocheng/diannao-2534.html
 	3. http://www.cnblogs.com/XieSir/articles/3420154.html
 	4. http://jingyan.baidu.com/article/90895e0ffb5c1764ec6b0bbb.html
 
-3. maven�������
+3. maven打包部署
 	1. http://www.cnblogs.com/tangwan/p/4662107.html
 	2. http://blog.csdn.net/u010022051/article/details/50585752
 	3. http://blog.csdn.net/a468903507/article/details/45392083
@@ -144,14 +144,14 @@ js������������
 				<server>local_tomcat</server>
 				<ignorePackaging>true</ignorePackaging>
 				<contextReloadable>true</contextReloadable> -->
-				<!-- server��username��password��Ӧmaven��setting�µ����� -->
+				<!-- server、username、password对应maven的setting下的配置 -->
 				<!-- <server>
 					<id>tomcat</id>
 					<username>lqy</username>
 					<password>lqy</password>
 				</server> -->
 				<!-- <path>/${project.build.finalName}</path> -->
-				<!-- war�ļ�·��ȱʡ�����ָ��target -->
+				<!-- war文件路径缺省情况下指向target -->
 				<!--<warFile>${basedir}/target/${project.build.finalName}.war</warFile> -->
 			</configuration>
 		</plugin>
@@ -169,96 +169,96 @@ js������������
 	</plugins>
 </build>
 1. mysql DBMS
-	1. mysql��װ
-		1. 5.7�ĸ߰汾
-			1. ��ѹmysql����path������mysql��binĿ¼��·�����ɲ�ȡ���ӱ���%MYSQL_HOME%����ʽ;
+	1. mysql安装
+		1. 5.7的高版本
+			1. 解压mysql后在path中添加mysql的bin目录的路径，可采取添加变量%MYSQL_HOME%的形式;
 
-			2. ��cmd������ִ��mysqld --initialize�������mysql��Ŀ¼������data�ļ��У��������ݿ�����ݡ����û����
-		path������bin·��������Ҫ��binĿ¼��ִ��mysqld����;��ʼ���ɹ��󣬻���dataĿ¼������һЩ�ļ������У�xxx.error.log�ļ�
-		��˵����root�˻�����ʱ���롣���磺
+			2. 在cmd命令中执行mysqld --initialize命令会在mysql根目录下生成data文件夹，保存数据库等数据。如果没有在
+		path中配置bin路径，则需要在bin目录中执行mysqld命令;初始化成功后，会在data目录下生成一些文件，其中，xxx.error.log文件
+		里说明了root账户的临时密码。例如：
 			2017-09-21T01:23:31.812068Z 1 [Note] A temporary password is generated for root@localhost: Yi%#y;dtA6pp
-		�����һ���ַ�����ʼ������;
+		后面的一串字符即初始的密码;
 
-			3. ִ�а�װ��������mysqld install serverName --defaults-file="...my.ini", ����serverName���Լ�ָ���ļ������
-		��mysql��������ƣ�ͬʱ����ָ����װ�������ļ���
+			3. 执行安装服务命令mysqld install serverName --defaults-file="...my.ini", 其中serverName是自己指定的计算机上
+		该mysql服务的名称，同时可以指定安装的配置文件。
 
-			4. ��ʹ��cmd��¼mysqlʱ����Ҫ���� mysql -u root -p, ���ﲻ��Ҫ�������룬�س������������뼴�ɣ���Ϊ����������*
-		�ű�ʾ�ģ�ֱ����һ����������ᱩ¶���룬���������ʾenter password�����������룬��������2�г�ʼ���뼴�ɡ�
+			4. 在使用cmd登录mysql时，需要输入 mysql -u root -p, 这里不需要输入密码，回车后再输入密码即可，因为输入密码是*
+		号表示的，直接在一行里面输入会暴露密码，因此命令提示enter password后再输入密码，这是输入2中初始密码即可。
 
-			5. ����mysql����������ݿ����ʾ�������ܲ���ȫ��Ҫ�������룬������������Ϊ
+			5. 进入mysql后想操纵数据库会提示操作功能不完全需要重置密码，重置密码命令为
 				1. alter user 'root'@'localhost' identified by '123';
-				2. set password for 'root'@'localhost'=password('123'), �˴�password��һ�����ܵĺ���;
-			��һ�λ���֮������������õ��������Ϊ�����ڽ������ݿ��ִ�еģ����Բ���Ҫ����ԭ�������롣
+				2. set password for 'root'@'localhost'=password('123'), 此处password是一个加密的函数;
+			第一次或是之后重置命令都是用的这个，因为这是在进入数据库后执行的，所以不需要输入原来的密码。
 
-			6. ע������
-				1. 5.7֮�����ݿ�mysql��user���в�����password����ֶΣ������޸ĳ���authentication_string�ֶΣ����ֶ�
-			����Ϊ���ܺ�����롣����Ҳ����ͨ���޸�user���е�user�ֶ����޸ĵ�¼�������罫root��Ϊlqy
+			6. 注意事项
+				1. 5.7之后数据库mysql的user表中不再有password这个字段，而是修改成了authentication_string字段，该字段
+			内容为加密后的密码。所以也可以通过修改user表中的user字段来修改登录名，比如将root改为lqy
 				use mysql;
 				update user set user="lqy" where user="root";
-			���ű��е������ֶ�˵�����û������ݿ������Ȩ�ޡ�
+			这张表中的其他字段说明该用户对数据库操作的权限。
 
-				2. ��my.ini�����ļ��е�[mysqld]�������skip-grant-tables����������������֤����ʱ������navicat��
-			ʹ���κ��˺������¼���ܳɹ�;
+				2. 在my.ini配置文件中的[mysqld]下面加上skip-grant-tables可跳过所有密码验证，此时发现在navicat中
+			使用任何账号密码登录都能成功;
 				
-				3. ���������root�û�������Ҫ�����޸ģ��������£�
-					1. ֹͣmysql���񣬽��÷����Ӧ�������ļ�����skip-grant-tables��Ȼ�������������mysql;
-					2. ͨ������ķ�ʽ�޸����룬������ʾ��skip-grant-tables�޷��޸ģ������ټ���flush privileges;
-				���Ȼ���ٴ��޸����룻
-					3. �޸������ļ����������룬Ȼ������������ͨ��mysql -u user -pȻ�����������¼
+				3. 如果忘记了root用户密码想要重新修改，步骤如下：
+					1. 停止mysql服务，将该服务对应的配置文件加上skip-grant-tables，然后重启服务进入mysql;
+					2. 通过上面的方式修改密码，发现提示在skip-grant-tables无法修改，这是再键入flush privileges;
+				命令，然后再次修改密码；
+					3. 修改配置文件不跳过密码，然后再重启服务，通过mysql -u user -p然后输入密码登录
 
-	2. mysql����Զ�̷���������, mysql -h Զ�̷�����id��url��ַ -u user -p
+	2. mysql连接远程服务器命令, mysql -h 远程服务器id或url地址 -u user -p
 
-	3. mysql�û�����
-		1. �����û�����Ȩ(��root�û�Ȩ�޵�¼)
-			1. �������û�����Ȩ
-				grant Ȩ��(����insert, update, select, delete����all privileges) on dbName(*Ϊ���п�).tableName(*Ϊ���б�) 
-			to newUserName@��¼����(%Ϊ������������, localhostΪ����, ע���û��������������߶�Ҫ������) identified by 
-			'��¼����'��Ȼ�����ִ��flush privilegesˢ��ϵͳȨ�ޱ����޸����ӵ�ַ��Ҳ����ֱ����ϵͳ�Դ���mysql�����޸�user����
-			����һ���ǵ�Ҫִ��flush privileges����ˢ��
+	3. mysql用户管理
+		1. 新增用户及授权(以root用户权限登录)
+			1. 创建新用户及授权
+				grant 权限(包括insert, update, select, delete或者all privileges) on dbName(*为所有库).tableName(*为所有表) 
+			to newUserName@登录主机(%为允许所有主机, localhost为本机, 注意用户名和主机名两边都要加引号) identified by 
+			'登录密码'。然后可以执行flush privileges刷新系统权限表。修改连接地址等也可以直接在系统自带的mysql库中修改user表，
+			但是一定记得要执行flush privileges命令刷新
 
-			2. �ջ��û�Ȩ��
-				����Ȩ�������һ����ֻ�ǰ�grant������revoke.��revoke Ȩ�� on db.tb to userName@host
+			2. 收回用户权限
+				与授权命令基本一样，只是把grant换成了revoke.即revoke 权限 on db.tb to userName@host
 
-			3. ɾ���û�
+			3. 删除用户
 				1. drop user 'userName'@'host'
-				2. mysql�������û�����Ϣ���洢��mysql.user���ű��У����Ҳ����ͨ�����������ɾ���û�
+				2. mysql中所有用户的信息都存储在mysql.user这张表中，因此也可以通过以下语句来删除用户
 			DELETE FROM user WHERE User='userName' AND Host='localhost'; 
 
-			4. �޸��û������������� rename user 'userName'@'host' to 'newUserName'@'newHost'
+			4. 修改用户名和连接主机 rename user 'userName'@'host' to 'newUserName'@'newHost'
 		
-	4. mysql��������
-		1. ����mysql���������в鿴�汾��select version()
+	4. mysql其他命令
+		1. 进入mysql后用命令行查看版本，select version()
 	
-	5. ʹ��federated����
-		1. ��� 
-			FEDERATED�洢�������������Զ�̵�MySQL���ݿ����ʹ��replication��cluster����(������Oracle��dblink), ʹ��FEDERATED�洢��
-	��ı�, ����ֻ�洢���Ľṹ��Ϣ, ���ݶ������Զ�����ݿ���, ��ѯʱͨ������ʱָ�������ӷ�ȥ��ȡԶ�̿�����ݷ��ص����ء�
+	5. 使用federated引擎
+		1. 简介 
+			FEDERATED存储引擎能让你访问远程的MySQL数据库而不使用replication或cluster技术(类似于Oracle的dblink), 使用FEDERATED存储引
+	擎的表, 本地只存储表的结构信息, 数据都存放在远程数据库上, 查询时通过建表时指定的连接符去获取远程库的数据返回到本地。
 
-		2. ʹ�÷���
-			1. ����federated����
-				navicate�а�f6����show engines; ���federated����Ϊno˵��û�п�������Ҫ��my.ini�ļ���[mysqld]�·�д��federated,
-			Ȼ����������mysql����
+		2. 使用方法
+			1. 开启federated引擎
+				navicate中按f6输入show engines; 如果federated引擎为no说明没有开启，需要在my.ini文件的[mysqld]下方写上federated,
+			然后重新启动mysql服务
 
-			2. ����federated�����������ַ�ʽ
-				1. �������� Connection
+			2. 建立federated关联表的两种方式
+				1. 基于连接 Connection
 					create table tableName(....) engine=federated
 					connection='mysql://userName:userPassword@host:3306/dbName/tableName'
-				����scheme://user_name[:password]@host_name[:port_num]/db_name/tbl_name
+				即：scheme://user_name[:password]@host_name[:port_num]/db_name/tbl_name
 
-				2. ���ڷ����� CREATE SERVER
-					1. ��Ҫ�ȴ���һ��Server, ��
+				2. 基于服务器 CREATE SERVER
+					1. 需要先创建一个Server, 即
 						create server server_name
-						foreign data wrapper_name(��mysql)
+						foreign data wrapper_name(如mysql)
 						options (USER '', PASSWORD, '', HOST '', PORT port, DATABASE '');
 					
-					2. ����������
+					2. 创建关联表
 						create table (...) engine=federated coonection='server_name/table_name'
 
-					3. �����ɹ��������ǿ�����mysql���е�servers���в鿴�����е�Զ��������Ϣ
+					3. 创建成功过后我们可以在mysql库中的servers表中查看到所有的远程连接信息
 					
-					4. ���ڷ��������ŵ��ǲ��ô����µĹ�����ʱ��д�����������ӵ�ַ
+					4. 基于服务器的优点是不用创建新的关联表时都写出完整的连接地址
 
-	���ò�������: https://www.cnblogs.com/good_hans/archive/2010/03/29/1700046.html
+	常用操作命令: https://www.cnblogs.com/good_hans/archive/2010/03/29/1700046.html
 
 2. spring boot
 	1. http://www.cnblogs.com/larryzeal/p/5799195.html
@@ -266,28 +266,28 @@ js������������
 	3. http://www.mldnjava.cn/book/springboot.htm
 
 2017.09.22
-1. ����maven
-	1. maven�е�parent��ǩ
-		����һ��maven��Ŀ��Ȼ�����������½�maven module��Ŀ�����½�������Ŀ��pom�ļ����Զ�������
+1. 关于maven
+	1. maven中的parent标签
+		建立一个maven项目，然后再在其中新建maven module项目，则新建的子项目的pom文件中自动会生成
 		<parent>
 			<groupId>com.oldbutcher.maventest</groupId>
 			<artifactId>Aggregator</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</parent>
-		����Ŀ�л��Զ�����modules��ǩ<module>����Ŀ��</module>
-		����Ŀ�൱�ڼ����˸���Ŀ���������½�������Ŀ������������ݺͻ�����pom.xml��������ֻ����һ��
+		父项目中会自动生成modules标签<module>子项目名</module>
+		子项目相当于集成了父项目的依赖。新建的子项目除了上面的内容和基本的pom.xml的声明外只会有一个
 		<artifactId>a-persist</artifactId>
-		����½�����Ŀʱ����ָ����group-id�򻹻�������<groupId>com.oldbutcher.maventest.asd</groupId>
+		如果新建子项目时额外指定了group-id则还会生成如<groupId>com.oldbutcher.maventest.asd</groupId>
 
-	2. ����parent��ʲô���أ�
-		����Ŀ�е�������������Ŀ��Ĭ��ȫ���̳У�Ҳ���ǲ���Ҫ��������Ŀ������dependency��ǩ������ʱ����ֻϣ�����븸��
-	Ŀ�еĲ�����������ʱ�ڸ���Ŀ��dependency��ǩ��������һ���ǩ<dependencyManagement>����ô�����������Ŀ��ʹ�þ�
-	��Ҫ�ٴ�ʹ��dependency��ǩ����������������ʱ����ʡ�������е�<version>��ǩ��<scope>��ǩ����Ϊ���Ƕ��ɸ���ָ���ˡ�
+	2. 引入parent有什么用呢？
+		父项目中的所有依赖子项目会默认全部继承，也就是不需要再在子项目中添加dependency标签。但有时我们只希望引入父项
+	目中的部分依赖，此时在父项目的dependency标签外再添加一层标签<dependencyManagement>。那么如果想在子项目中使用就
+	需要再次使用dependency标签来引入依赖。但此时可以省略依赖中的<version>标签和<scope>标签，因为他们都由父类指定了。
 
-	3. �����������Ŀ��pom�ļ���ʵ���Ͽ���д����dependencies����dependencies�е������Խ�ȫ��������Ŀ�̳С�
+	3. 另外如果父项目的pom文件中实际上可以写入多个dependencies，在dependencies中的依赖仍将全部被子项目继承。
 
-	4. ����import��ʹ��
-		1. importֻ������dependencyManagement�£�д������
+	4. 关于import的使用
+		1. import只能用在dependencyManagement下，写法如下
 			<dependencyManagement>
 				<dependencies>
 					<dependency>
@@ -298,10 +298,10 @@ js������������
 					</dependency>
 				</dependencies>
 			</dependencyManagement>
-		2. ע��typeΪpom���������ļ���������com.oldbutcher.maventest�е��������������Լ�ͨ��dependency��ǩ���á�ע��
-	����ֻ�����ý�����Ŀ��dependencyManagement�е�����������Ŀ��д������������������롣
+		2. 注意type为pom。这样该文件就引入了com.oldbutcher.maventest中的依赖，但仍需自己通过dependency标签引用。注意
+	这里只能引用进父项目的dependencyManagement中的依赖，父项目的写在外面的依赖不能引入。
 
-		3. ����ʵ��������Ŀ���Լ̳ж������Ŀ�����������д
+		3. 所以实际上子项目可以继承多个父项目，比如可以再写
 			<dependency>
 				<groupId>com.oldbutcher.maventest</groupId>
 				<artifactId>another project artifactId</artifactId>
@@ -309,11 +309,11 @@ js������������
 				<scope>import</scope>
 			</dependency>
 
-	5. ͨ��<properties>Ԫ���û������Զ���һ������Maven���ԣ�Ȼ����POM�������ط�ʹ��${������}�ķ�ʽ���ø����ԣ�����
+	5. 通过<properties>元素用户可以自定义一个或多个Maven属性，然后在POM的其他地方使用${属性名}的方式引用该属性，比如
 		<properties>
 			<spring.version>4.0.2.RELEASE</spring.version>
 		</properties>
-		Ȼ��������������п�������д:
+		然后在下面的依赖中可以这样写:
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -321,11 +321,11 @@ js������������
 		</dependency>
 
 2017.09.25
-1. jquery�е�on�¼�
-	1. ����ʹ��ԭ��js��var e = getElement..�õ�Ԫ�غ��������on�¼���Ҳ����ʹ��$("button")[0]������on�¼�;
+1. jquery中的on事件
+	1. 不能使用原生js如var e = getElement..得到元素后给其添加on事件，也不能使用$("button")[0]来添加on事件;
 
-	2. on�¼������û��selector���Ǿ����ڸ�Ԫ���������з�Χ���������¼������������div�����������ӡ������selector��
-��ѡ���������Ǳ������¼�Ԫ�ص��������Ԫ�ز��У�������Ч�����磺
+	2. on事件中如果没有selector，那就是在该元素下面所有范围内添加了事件。例如如果是div就是整行添加。如果有selector，
+该选择器必须是被添加事件元素的下面的子元素才行，否自无效。例如：
 		<div id="test">
 			test
 			<div>sd</div>
@@ -333,79 +333,79 @@ js������������
 		$("#test").on("click", "div", function(e){} {
 			console.log(this.innerHTML);
 		});
-	����д֮������¼���������#test�����div�϶�����#test�ϣ��������thisָ������������div������#test, ��ӡsd;
-	�����this��<div>sd</div>�������д$(this)��ʾ��������,���Ǹ�����ֻ��һ��Ԫ�أ��Ҿ��Ǳ�������Ǹ�div��
+	这样写之后，这个事件是添加在#test下面的div上而不是#test上，且这里的this指向的是它下面的div而不是#test, 打印sd;
+	这里的this是<div>sd</div>，而如果写$(this)表示的是数组,但是该数组只有一个元素，且就是被点击的那个div。
 
-2. jqͨ��ѡ�����õ���Ԫ�ظ�document�ĵ���Ԫ�ر�������������ͬ�Ķ������磺<button id="but">click</button>
+2. jq通过选择器得到的元素跟document的到的元素本来就是两个不同的对象。例如：<button id="but">click</button>
 	var but = document.getElementById("but"); 
-	console.log($("#but")); // ������Ϊ[button#but]
-	console.log(but) // ������Ϊ<button id="but">click</button>
-	$("#test")�����װ�˸���jquery�Լ���������Ժ�ԭ��
+	console.log($("#but")); // 输出结果为[button#but]
+	console.log(but) // 输出结果为<button id="but">click</button>
+	$("#test")里面封装了各种jquery自己定义的属性和原型
 
-3. on�÷�����
+3. on用法讲解
 	1. http://www.cnblogs.com/leejersey/p/3545372.html
-	2. ǰ����Ч�� http://t.cn/RKj3egR
+	2. 前端特效： http://t.cn/RKj3egR
 
-4. dom�¼�������Ϊð��
+4. dom事件流，何为冒泡
 	http://www.sohu.com/a/152795929_711545
 
-5. ajax�õ�������д��dataTypeΪjsonʱ���Ƿ����ֱ��дdata.�����������ԣ�ûдҪͨ��JSON.parse(..)����ת��Ϊjs����
+5. ajax得到的数据写了dataType为json时，是否可以直接写data.属性名？可以，没写要通过JSON.parse(..)将其转换为js对象
 
-6. trigger��ÿһ��ƥ���Ԫ����ֱ�Ӵ���ĳ���¼�;
+6. trigger在每一个匹配的元素上直接触发某类事件;
 
 2017.09.26
 1. xss
 
-2. ����cookieΪHttpOnly���޷�ͨ��js��ȡ����cookie��Ϣ���������Է�ֹxss����
-	1. jsession���cookie֮���Բ���ͨ��document.cookie��������Ϊ����http only�ģ������ڹȸ��в鿴�����ǲ������ű���
-�ģ��������ɷ������Զ������ģ�
+2. 设置cookie为HttpOnly则无法通过js读取到该cookie信息，这样可以防止xss攻击
+	1. jsession这个cookie之所以不能通过document.cookie访问是因为它是http only的，可以在谷歌中查看到它是不允许脚本访
+的，且它是由服务器自动创建的；
 
-	2. ���ǿ�����response��ͨ��addCookie���������������з���cookie������������cookie�ǿ���ͨ���ű����ʵġ�ͨ��
-addHeader������������cookieΪhttponly�ģ����� 
+	2. 我们可以在response中通过addCookie这个方法向浏览器中发送cookie，但是这样的cookie是可以通过脚本访问的。通过
+addHeader方法可以设置cookie为httponly的，例如 
 		response.addHeader("Set-Cookie", "cookie_name=cookie_value; Max-Age=2000; HttpOnly");
 
-	3. ���������������õ�cookie������response�п���, ����
+	3. 此外所有我们设置的cookie都能在response中看到, 例如
 		Set-Cookie:coo_1=val_1
 		Set-Cookie:coo_2=val_2; Max-Age=2000; HttpOnly
 
-3. java�е� ����
-	1. ĳ����û��Ĭ�ϲ����������캯������newInstance��?����;
+3. java中的 反射
+	1. 某个类没有默认不带参数构造函数能用newInstance吗?不能;
 
-	2. ����������ͨ�������ȡ������ĳһ��˽�б�����ֵʱ����������
+	2. 在子类中想通过反射获取父类中某一个私有变量的值时，方法如下
 	Class<?> superclass = this.getClass().getSuperclass();
-	Ȼ��Ҫ��ȡ��һ�����������ʱ��������Field��get(Object)����ʱֱ�Ӵ�this��ȥ����, �����������������游��Ķ���
+	然后要获取哪一个父类的属性时，即调用Field的get(Object)方法时直接传this进去即可, 即可以用子类对象代替父类的对象
 
-	3. ����.class��getClass()����
-		1. ���ǻ�õĶ������������(ע��õ��Ķ��Ƕ���), ��������.class������ֱ�ӵ���, ��.getClass()�ɶ�����á�
-	����obj.getClass == Object.class�Ľ��Ϊtrue;
+	3. 关于.class和getClass()方法
+		1. 他们获得的都是类型类对象(注意得到的都是对象), 区别在于.class由类名直接调用, 而.getClass()由对象调用。
+	而且obj.getClass == Object.class的结果为true;
 
-		2. ע�⣬����obj.getClass()���obj�����������, ����obj.getClass().getClass()��õ���Class��������,
-	���仰˵obj.getClass().getName()��ӡ����objȫ��, obj.getClass().getClass()��ӡ����java.lang.Class;
+		2. 注意，调用obj.getClass()获得obj的类型类对象, 但是obj.getClass().getClass()获得的是Class的类型类,
+	换句话说obj.getClass().getName()打印的是obj全名, obj.getClass().getClass()打印的是java.lang.Class;
 
-		3. ע�⵱ĳ��������ǩ���� <T> .. funName(T t)ʱ, ����Ĳ���������ĳ����Ķ��������ĳ����������Ͷ���
-	�������Ҫͨ��t.getClass()����ȡ���������󣬴Ӷ�������һ���������ж�ע��ȡ���˴�ʱ������ͨ������.class������
-	��ȥ���������t�͸�һ������object��Ķ���һ��������û�������Ͷ���ĸ��ַ������ȡע�⣬��ȡ�����ȣ�������ֻ��
-	Object��ļ����������������������Ȼʹ��t.getClass()��ʱ�õ�����Class��������Ͷ���Ҳ�ﲻ��������Ҫ��Ŀ�ġ�
+		3. 注意当某个方法的签名是 <T> .. funName(T t)时, 传入的参数必须是某个类的对象而不是某个类的类类型对象。
+	传入后需要通过t.getClass()来获取该类的类对象，从而进行下一步操作如判断注解等。因此此时不可能通过类名.class传参数
+	进去。因这里的t就跟一个最顶层的object类的对象一样，它并没有类类型对象的各种方法如获取注解，获取类名等，它里面只有
+	Object类的几个基本方法。如果我们仍然使用t.getClass()这时得到的是Class类的类类型对象，也达不到我们想要的目的。
 
-		4. �������Ĳ�����(Class<?> clazz...)ʱ������Ĳ���ֻ���������Ͷ���, ��obj.getClass()��Obj.class, ������
-	����ĳ����Ķ��󡣴�ʱ����Ĳ����Ѿ���ĳ����������Ͷ����ˣ����ֱ��ʹ��clazz.isAnnotationPresent�Ⱦ��С�������
-	����ʹ��clazz.getClass()��õ��������͵������Ͷ��󷴶��������
+		4. 当方法的参数是(Class<?> clazz...)时，传入的参数只能是类类型对象, 如obj.getClass()或Obj.class, 而不能
+	传入某个类的对象。此时传入的参数已经是某个类的类类型对象了，因此直接使用clazz.isAnnotationPresent等就行。这里如
+	果再使用clazz.getClass()获得的是类类型的类类型对象反而会出错。
 		
-		5. ��֮ĳ��������������Ͷ����д��й��������ĸ�����Ϣ��������������Ͷ���������Ͷ����д�ŵ���������
-	����ĸ�����Ϣ����Щ��Ϣ��û���κ����õġ��ɼ�ReflectFrame��MyServletProcessor�ࡣ
+		5. 总之某个类或对象的类类型对象中存有关于这个类的各种信息，但是这个类类型对象的类类型对象中存放的是类类型
+	对象的各种信息，这些信息是没有任何作用的。可见ReflectFrame得MyServletProcessor类。
 
-	4. getDeclaredMethod��getMethod����: ǰ���ܻ�ȡ�����з������η��ķ����������ܻ�ȡ���̳еķ����������ܻ�ȡ�����й��е�
-�����������Ӹ���ͽӿ��м̳е�
+	4. getDeclaredMethod和getMethod区别: 前者能获取到所有访问修饰符的方法，但不能获取到继承的方法。后者能获取到所有公有的
+方法，包括从父类和接口中继承的
 
-	5. ���� ���
-		1. ��ȡ���͵�ʵ��������
-			1. ���ڼ�����һ���������ݿ�Ļ���dao��
+	5. 泛型 详解
+		1. 获取泛型的实例化参数
+			1. 现在假设有一个操作数据库的基本dao类
 				class BaseDao<T> {
 
-					// �洢ʵ��������
+					// 存储实体类数据
 					public void saveEntity(T t) {}
 
-					// ����id�õ�ʵ����
+					// 根据id得到实体类
 					public void findEntityById(Serializable id) {
 						
 					}
@@ -413,431 +413,431 @@ addHeader������������cookieΪhttponly�ģ�����
 				
 				class UserDao extends BaseDao<User> {}
 
-			������Ҫ�洢����ʱ�����ײ�������Ϊ��saveEntity(T t)�����оʹ�����һ��ʵ�����������ǿ���ֱ�Ӹ������ʵ����
-		����t(����T�ϻ��кܶ�ע��)�����������Ҫ�ò�ѯ��䡣��t.getAnnotation(Table.class).name(����ע��Table��name����)��
-			���ǵ�����Ҫ����id��ѯĳ������ȴ�����ѣ���Ϊ���Ǵ�ʱֻ��һ��id����������֪��T������ͻᱻʵ����Ϊ�ĸ��࣬
-		������BaseDao�������������ָ���ģ�Ҳ��������������������ʱ��֪��ʵ����������ʲô����ʱ����Ҫ��BaseDao��findEntityById
-		������д
-			// this�����������, getGenericSuperClass����������type
+			当我们要存储数据时很容易操作，因为在saveEntity(T t)方法中就传入了一个实例化对象，我们可以直接根据这个实例化
+		对象t(可能T上还有很多注解)来构造出我们要得查询语句。如t.getAnnotation(Table.class).name(假设注解Table有name属性)。
+			但是当我们要根据id查询某条数据却很困难，因为我们此时只有一个id参数，并不知道T这个泛型会被实例化为哪个类，
+		它是由BaseDao类的子类来具体指定的，也就是在子类调用这个方法时才知道实例化对象是什么。这时就需要在BaseDao的findEntityById
+		里这样写
+			// this就是子类对象, getGenericSuperClass返回类型是type
 			ParamerizedType type = (ParameterizedType) this.getClass().getGenericSuperClass();
 			/* 
-			   ���ش�����ʵ�ʵ�ʵ��������, ����������Type[]
-			   ֮�����ܽ�Type�Ͳ���ֱ��ת����Class<T>����ΪClass��ʵ����Type�ӿ�
+			   返回此类型实际的实例化参数, 返回类型是Type[]
+			   之所以能将Type型参数直接转化成Class<T>是因为Class类实现了Type接口
 			 */
 			Class<T> class = (Class<T>) type.getActualTypeArguments()[0]
-			Ȼ��Ϳ��Զ����class���и��ֲ������������ľ���ʵ�������������������User
+			然后就可以对这个class进行各种操作，它代表的就是实例化参数，比如上面的User
 		
-			2. ע�����ﷵ�ص���һ��Type���飬֮��������������Ϊ�����ж��ʵ�ʲ������͡�����BaseDao<T, U>, Type�������˳���Ӧ
-		�����T, U����ʱ����дClass<U> class = (Class<U>) type.getActualTypeArguments()[1]
+			2. 注意这里返回的是一个Type数组，之所以是数组是因为可能有多个实际参数类型。比如BaseDao<T, U>, Type数组里的顺序对应
+		这里的T, U。此时可以写Class<U> class = (Class<U>) type.getActualTypeArguments()[1]
 
-		2. <? extends T> �� <? super T> ��java�����е�ͨ����ͱ߽�(�Ͻ���½�)�ĸ���
-			1. List<? extends T> �� List<? super T>������
-				1. <? extends T>���ܵ�T�Լ�T������, ��List<? extends Number> list����=ArrayList<Number>��ArrayList<Integer>. 
-			List<? super T>����T�Լ�T�ĸ��࣬��List<? super Integer>����=ArrayList<Integer>��ArrayList<Number>, 
+		2. <? extends T> 和 <? super T> 是java泛型中的通配符和边界(上界和下界)的概念
+			1. List<? extends T> 和 List<? super T>的区别
+				1. <? extends T>接受的T以及T的子类, 如List<? extends Number> list可以=ArrayList<Number>或ArrayList<Integer>. 
+			List<? super T>接受T以及T的父类，如List<? super Integer>可以=ArrayList<Integer>或ArrayList<Number>, 
 			ArrayList<Object>;
 
-				2. <? extends T> listֻ�ܶ�����Ϊ�㲻֪��listʵ��ָ�����ʲô����T��������������ȫû�й�ϵ���࣬��Ȼ�㲻��
-			�����ǲ��뵽ͬһ��list�С�����List<Integer>��List<Double>������<? extends T>���Զ�ȡ��������ֻ�ܱ�֤��ȡ���Ķ���
-			����T���͵ġ���ΪֻҪ��T��������ôһ��������T��������Ϊ����˿��Զ�ȡ���������T�е�ĳЩ����;
+				2. <? extends T> list只能读。因为你不知道list实际指向的是什么对象，T的子类是两个完全没有关系的类，显然你不能
+			将他们插入到同一个list中。例如List<Integer>和List<Double>。但是<? extends T>可以读取，但是你只能保证读取到的对象
+			就是T类型的。因为只要是T的子类那么一定都具有T的所有行为，因此可以读取出来后调用T中的某些方法;
 				
-				3. <? super T> listֻ��д����ȻT�ĸ���Ҳ���в�ͬ����Ϊ���㲻����ͼȥ����T�еķ�������Ϊ�������������һ������
-			�ķ���, ���Բ�������ȡĳ��T�Ķ���t���������ܿ�����list������T�Լ�T������Ķ���ע���㲻������T�ĸ���Ķ�����Ϊ
-			�㲢��֪��list��ʵ�ʲ���������T����һ�����ࡣ��Ȼ���Զ�ȡ��Object o = list.get(0)����������ɥʧ������������ԣ���
-			���Ķ�ȡû������;
+				3. <? super T> list只能写。显然T的父类也具有不同的行为。你不能试图去调用T中的方法，因为这个方法可能是一个独有
+			的方法, 所以不允许读取某个T的对象t。但是你总可以向list中添加T以及T的子类的对象。注意你不能添加T的父类的对象，因为
+			你并不知道list的实际参数类型是T的哪一个父类。当然可以读取成Object o = list.get(0)。但是这样丧失所有子类的特性，这
+			样的读取没有意义;
 
-				4. PECSԭ�������ߣ�����Щ����ֻ����ж�ȡĳЩԪ�صĶ�����extends�������߼�����Ҫ����������ĳЩԪ�صĶ�����
-			super������jdk1.7��java.util.Collections���copy(List<? super T> dest, List<? extends T> src)�����ͺܺõ���ѭ����
-			һԭ�򣬱����˲��������޸�
+				4. PECS原则。生产者，即那些我们只想从中读取某些元素的对象用extends。消费者即我们要向其中添加某些元素的对象用
+			super。例如jdk1.7中java.util.Collections类的copy(List<? super T> dest, List<? extends T> src)方法就很好的遵循了这
+			一原则，保护了参数不被修改
 
-			2. �����Լ��ķ�����ʱ, ��
+			2. 声明自己的泛型类时, 如
 				@Data
 				public class Clazz<T> {
 					T t
 				}
-			��Clazz<? extends Number> clazz = new ..�У��������ܵ���setT()���������ǿ��Ե���getT()�������ҷ���������Զ��Number
-			��Clazz<? super Integer> clazz = new Clazz<Number>�У��ڵ���setT������ֻ�ܴ����������ݡ����Ե���getT()����������
-		�õ��Ķ���Object�Ͷ���
+			在Clazz<? extends Number> clazz = new ..中，将不在能调用setT()方法，但是可以调用getT()方法，且返回类型永远是Number
+			在Clazz<? super Integer> clazz = new Clazz<Number>中，在调用setT方法是只能传入整型数据。可以调用getT()方法，但是
+		得到的都是Object型对象
 
-		3. Reflections �е� getDeclared** �� get** ������ 
-			�ܵ���˵, getDeclaredֻ�ܻ�ȡ������, �����ܻ�ȡ�������η��ġ�get���Ի�ȡ���е�public(�Է�����Ա)�����̳е�
+		3. Reflections 中的 getDeclared** 与 get** 的区别 
+			总的来说, getDeclared只能获取自身的, 但是能获取所有修饰符的。get可以获取所有的public(对方法成员)包括继承的
 
-		�ο�����
-			1. ����type��ϵ�뷴�� http://blog.csdn.net/qbg19881206/article/details/22757061
+		参考资料
+			1. 泛型type体系与反射 http://blog.csdn.net/qbg19881206/article/details/22757061
 			2. <? extends C> https://www.cnblogs.com/drizzlewithwind/p/6100164.html
 
-	6. ע��
-		1. Ԫע�����ĸ�, �ֱ��� @Target, @Retention, @Documented, @Inherited��������ע���ע��
-			1. @Target��ʾע�������εĶ���ķ�Χ������ȡֵ��һ������--ElementType--��ö�٣����ö�ٵ�ֵ��
-				1. CONSTRUCTOR:��������������
-				2. FIELD:����������
-				3. LOCAL_VARIABLE:���������ֲ�����
-				4. METHOD:������������
-				5. PACKAGE:����������
-				6. PARAMETER:������������
-				7. TYPE:���������ࡢ�ӿ�(����ע������) ��enum����
+	6. 注解
+		1. 元注解有四个, 分别是 @Target, @Retention, @Documented, @Inherited，他们是注解的注解
+			1. @Target表示注解所修饰的对象的范围，他的取值是一个叫做--ElementType--的枚举，这个枚举的值有
+				1. CONSTRUCTOR:用于描述构造器
+				2. FIELD:用于描述域
+				3. LOCAL_VARIABLE:用于描述局部变量
+				4. METHOD:用于描述方法
+				5. PACKAGE:用于描述包
+				6. PARAMETER:用于描述参数
+				7. TYPE:用于描述类、接口(包括注解类型) 或enum声明
 
-			2. @Rentention �����˸�ע����������ڣ�����ȡֵ��--RetentionPolicy--ö��, ȡֵ��
-				1. SOURCE:��Դ�ļ�����Ч����ע�����͵���Ϣֻ������Դ��������ᱣ���ڱ�����.class�ļ��У�
+			2. @Rentention 定义了该注解的生命周期，它的取值是--RetentionPolicy--枚举, 取值有
+				1. SOURCE:在源文件中有效，该注解类型的信息只保留在源码里而不会保留在编译后的.class文件中）
 
-				2. CLASS ��class�ļ�����Ч, ��ע����Ϣ�ᱣ����Դ���Ҳ�ᱣ����.class�ļ���, ������ִ��ʱ�����ᱻ
-			���ص�JVM�У�����ע���Ĭ�ϲ���
+				2. CLASS 在class文件中有效, 该注解信息会保留在源码里，也会保留在.class文件中, 但是在执行时并不会被
+			加载到JVM中，这是注解的默认策略
 
-				3. RUNTIME ������ʱ��Ч, ��ִ��ʱҲ�ᱻ���ص�JVM�С�ע��isAnnotationPresent, getAnnotation�ȷ�����
-			ֻ�ܲ���RUNTIME��һ����ע��
+				3. RUNTIME 在运行时有效, 即执行时也会被加载到JVM中。注意isAnnotationPresent, getAnnotation等方法都
+			只能捕获到RUNTIME这一级的注解
 
-			3. @Inherited��ĳ������ע���������Ҳ��̳и�ע�⡣����������ĳ��ע��A�����ע��A��ע��Inheritedע���ˣ���ô
-		�������.getClass().isAnnotationPresent(A.class)�Ľ����true������Ϊfalse; ���⵱����C.class.getDeclaredAnnotations
-		����ʱ, ֻ��õ���עC��ע�⣬������õ�C�ĸ����ע��
+			3. @Inherited让某个被标注的类的子类也会继承该注解。即父类上有某个注解A，如果注解A被注解Inherited注解了，那么
+		子类调用.getClass().isAnnotationPresent(A.class)的结果是true，否则为false; 此外当调用C.class.getDeclaredAnnotations
+		方法时, 只会得到标注C的注解，而不会得到C的父类的注解
 
-		2. Ҫ�鿴ĳ�����ϵ�����ע������֣�Ҫ�����ַ���
+		2. 要查看某个类上的所有注解的名字，要用这种方法
 			Annotation as = c.class.getAnnotations();
 			for (Annotation a : as) {
-				sout(a.annotationType().getName(); // annotationType����������Class<? extends Annotation>
-				// ������ֱ�ӵ���a.getClass().getName()������õ�����com.sun.proxy.$Proxy1
+				sout(a.annotationType().getName(); // annotationType返回类型是Class<? extends Annotation>
+				// 即不能直接调用a.getClass().getName()，否则得到的是com.sun.proxy.$Proxy1
 			}
 
-		3. �ο�����:
+		3. 参考资料:
 			1. http://blog.csdn.net/zjf280441589/article/details/50444343
 			2. https://www.cnblogs.com/peida/archive/2013/04/24/3036689.html
 			3. http://blog.csdn.net/hbcui1984/article/details/4735487
 		
 2017.09.27
-1. FileFilter�ӿ����ڹ��˳���·��������ֻ��acceptһ���������÷����涨����Щ·��������listFile(..)����;
-2. ��ӡ�����ļ�(�ݹ�)
-3. ��ȡĳ���������������
-4. ��ȡ��Ŀ�µ����а���
-5. �Լ�дһ��ɨ��������ļ�, Ȼ��ִ��������������а���ĳ��ע������ĳ������
-6. ��Ʋ���������
+1. FileFilter接口用于过滤抽象路径名，它只有accept一个方法，该方法规定了那些路径名可以listFile(..)接收;
+2. 打印所有文件(递归)
+3. 获取某个包下面的所有类
+4. 获取项目下的所有包名
+5. 自己写一个扫描的配置文件, 然后执行这个包下面所有包含某个注解的类的某个方法
+6. 求菲波那切数列
 	1. http://blog.csdn.net/dadai_/article/details/50209511
 
 2017.09.28
-1. get�������ʳ���url����������⣬�ܷ������ݰ���ֻ��ͨ��������������url����ķ�ʽ;
+1. get方法访问除了url里面带参数外，能否发送数据包。只能通过将参数放在在url里面的方式;
 
-2. �������һ��HTTP�ͻ�����HttpClient
+2. 浏览器是一个HTTP客户程序。HttpClient
 	1. http://itindex.net/detail/46628-apache-httpclient-4.3
 	2. http://itindex.net/detail/53214-httpurlconnection-httpclient-get
 
-3. URLHttpConnection����Ӧ�ó����URL֮���ͨ��, ��������˵��
+3. URLHttpConnection用于应用程序和URL之间的通信, 现作如下说明
 
-	1. ����URLHttpConnection���÷�ʽ������
+	1. 建立URLHttpConnection常用方式有两种
 		1. URL url = new URL(urlPath); URLConnection connection = url.openConnection();
 		2. URLConnection connection = new URLConnection(url);
 
-	2. ͨ��.getInputStream()��������(������)��ȡ���ݡ�����������һ����ַ��õ�������ҳh5���롣
-���ߵõ�����json���ݡ�ͨ��.getOutPutStream()��д������;
+	2. 通过.getInputStream()来从链接(服务器)读取数据。若该链接是一个网址则得到所有网页h5代码。
+或者得到比如json数据。通过.getOutPutStream()来写入数据;
 
-	3. URLConnectionͨ��setReqeustMethod("Request Mthod", "POST")������������ͷ��Ϣ��������ʷ�ʽΪPOST��
-����ʵ�����������ֻ��inputStream�ж�ȡ����ʵ����Ҳ��ͨ��GET��ʽ���ʵġ�����ͨ��HttpUrlConnection.setRequestMethod("POST")
-������ζ���ͨ��post��ʽ���ʵġ�Ҳ����˵URLConnection��setRequestMethodЧ��û����ô�ã�
+	3. URLConnection通过setReqeustMethod("Request Mthod", "POST")可以设置请求头信息，例如访问方式为POST。
+但是实际上如果我们只从inputStream中读取数据实际上也是通过GET方式访问的。但是通过HttpUrlConnection.setRequestMethod("POST")
+无论如何都是通过post方式访问的。也就是说URLConnection的setRequestMethod效果没有那么好；
 
-	4. ��ʹ���Ǹ�URLConnection���������˷��ʷ�ʽΪget, ֻҪ���ǵ�����getOutputStream��������ô���ջ���ת��Ϊpost��ʽ���ʡ�
-����Ҫ�����getOutputStream��������������setDoOutput(true)����Ҫ��ȡ���ݲ�������setDoInputΪtrue����Ϊ��Ĭ��Ϊtrue;
+	4. 即使我们给URLConnection对象设置了访问方式为get, 只要我们调用了getOutputStream方法，那么最终还是转换为post方式访问。
+另外要想调用getOutputStream方法必须先设置setDoOutput(true)。想要读取数据不必设置setDoInput为true，因为它默认为true;
 
-	5. ͨ��writer��������������ݺ�һ��Ҫ�ǵùر�����������������ܽ��ܲ�������;
+	5. 通过writer向服务器发送数据后，一定要记得关闭流，否则服务器可能接受不到数据;
 
-	6. HttpURLConnection������Ӧ����: http://blog.csdn.net/woxueliuyun/article/details/43267365;
+	6. HttpURLConnection请求响应流程: http://blog.csdn.net/woxueliuyun/article/details/43267365;
 
-	7. ��post��ʽ��������ύ����ʱҲ���Խ���������url��ַ���棬servletҲ�ܹ�ͨ��getParameter�ķ�ʽ��ȡ���ݡ��������url
-����˲�������ͨ��writerд�����ݣ�����ͨ��getParameterValues()������ò���ֵ������;Ҫ��url�д����������ֻ��Ҫͨ��&���ӣ�
-��writerд����������Ҳͨ��&���ӣ��������߻��಻����Ӱ��;
+	7. 以post方式向服务器提交数据时也可以将参数带在url地址里面，servlet也能够通过getParameter的方式获取数据。如果既在url
+里带了参数，又通过writer写了数据，可以通过getParameterValues()方法获得参数值的数组;要在url中带多个参数，只需要通过&链接；
+在writer写入多个参数，也通过&链接，他们两者互相不会受影响;
 
-	8. url��ַ�� "&" "/"�ȷ��ŵ�ת�崦��: http://xace.iteye.com/blog/481814/
+	8. url地址中 "&" "/"等符号的转义处理: http://xace.iteye.com/blog/481814/
 
-	9. ����������ͨ��request.getMethod����ȡ��������
+	9. 服务器可以通过request.getMethod来获取访问类型
 
-4. ����XMLHTTPRequest
+4. 关于XMLHTTPRequest
 	1. https://baike.baidu.com/item/XMLHTTPRequest/6788735
 
-5. http����ͷ
+5. http请求头
 	1. https://baike.baidu.com/item/http%E8%AF%B7%E6%B1%82%E5%A4%B4/6623287?fr=aladdin
 
 2017.09.29
-1. ajax���͵���̨�����ݺ�̨�������գ����緢�͵���һ��js����ע��getParameterҪд��getInputStreamǰ�档
+1. ajax发送到后台的数据后台怎样接收？例如发送的是一个js对象。注意getParameter要写在getInputStream前面。
 
-2. ��Ϊ����
+2. 何为跨域？
 
-	1. �������������ͬ��Э��(��http), ��ͬ�Ķ˿�(��80)����ͬ��host����www.google.com)��
-��ô���ǾͿ�����Ϊ��������ͬ����Э�飬�������˿ڶ�������ͬ, ��������ڿ���;
+	1. 当两个域具有相同的协议(如http), 相同的端口(如80)，相同的host（如www.google.com)，
+那么我们就可以认为它们是相同的域（协议，域名，端口都必须相同, 否则就属于跨域;
 
-	2. �򵥵�Get, Post����, ��response������Access-Control-Allow-Origin, ֵ�趨Ϊ"*"��ʾ�����Դ˭��������;
+	2. 简单的Get, Post请求, 在response中添加Access-Control-Allow-Origin, 值设定为"*"表示这个资源谁都可以用;
 
-	3. ʹ��xhr���趨asyncΪfalseʱ����Ҫʹ��onreadystatechange��xmlHttp.responseText����send()�������漴��;
-������post����get��xhr.setRequestHeader�������open�����ĺ���, send��ǰ��;
+	3. 使用xhr并设定async为false时，不要使用onreadystatechange，xmlHttp.responseText放在send()方法后面即可;
+不管是post还是get，xhr.setRequestHeader必须放在open函数的后面, send的前面;
 
 	4. ajax: http://www.w3school.com.cn/ajax/ajax_xmlhttprequest_send.asp
 
-	5. ajax��xhr https://segmentfault.com/a/1190000004322487
+	5. ajax和xhr https://segmentfault.com/a/1190000004322487
 	
-	6. ���������� http://blog.csdn.net/freshlover/article/details/44223467
+	6. 跨域解决方案 http://blog.csdn.net/freshlover/article/details/44223467
 
-	7. Post�ύ���� http://blog.csdn.net/tycoon1988/article/details/40080691
+	7. Post提交方案 http://blog.csdn.net/tycoon1988/article/details/40080691
 
-3. jsp��ȡ�����ϴ����ļ� 
+3. jsp获取表单上传的文件 
 	1. http://blog.sina.com.cn/s/blog_6cae7bcd0102wav3.html				
 	2. http://www.cnblogs.com/jimmy-muyuan/p/5294654.html
 
 2017.09.30
-1. ģ��һ��xss���򣬵�ȡ��̨����Ա��cookie��ð�����Ա��¼;
+1. 模拟一个xss程序，盗取后台管理员的cookie并冒充管理员登录;
 
-2. request����ͷ��Ϊʲô����Cookie?--HTTP��������ʱ����ѱ����ڸ������µ�����cookieһ�����͸�web������;
+2. request请求头中为什么会有Cookie?--HTTP发送请求时，会把保存在该域名下的所有cookie一并发送给web服务器;
 
 3. httpheader:
 	1. http://blog.jobbole.com/48358/
 	2. http://www.cnblogs.com/zhwl/archive/2012/02/28/2371691.htm
 
-4. ê��
+4. 锚点
 	1. http://www.cnblogs.com/kaituorensheng/p/3776527.html
 	2. http://www.zhangxinxu.com/wordpress/2013/08/url-anchor-html-%E9%94%9A%E7%82%B9%E5%AE%9A%E4%BD%8D%E6%9C%BA%E5%88%B6-%E5%BA%94%E7%94%A8-%E9%97%AE%E9%A2%98/
 
-5. ʹ��XMLHttpRequest����
-	1. js���������������һ�㲽��
+5. 使用XMLHttpRequest对象
+	1. js向服务器发送数据一般步骤
 	
 	var xmlHttp = new XMLHttpRequest()
-	// ״̬�ı�ʱ�������¼���������asyncΪfalseʱ����д��һ��
+	// 状态改变时产生的事件，当设置async为false时不用写这一段
 	xmlHttp.onreadystatechange = function() {
 		if (xmlHttp.status == 200 && xmlHttp.readyState == 4) {
 			alert(xmlHttp.responseText..);
 		}
 	}
-	xmlHttp.open("����ʽ(POST)", "�����ַ(http:..)", �Ƿ�Ϊ�첽(true));
-	xmlHttp.send() // ע��һ��Ҫдsend��������Ȼ��û�з�������
+	xmlHttp.open("请求方式(POST)", "请求地址(http:..)", 是否为异步(true));
+	xmlHttp.send() // 注意一定要写send方法，不然就没有发起请求
 	
-	2. ��̨��ȡ���ݷ�ʽ
-		1. ��GET��ʽ������������ݲ���ֻ�ܸ���url��ַ�ĺ��棬�Һ�ֻ̨��ͨ��request.getParameter�ķ�ʽ����ȡ��
-	�ݣ�����ͨ��request.getInputStream�ķ�ʽ����ȡ����;
+	2. 后台获取数据方式
+		1. 以GET方式发起的请求，数据参数只能跟在url地址的后面，且后台只能通过request.getParameter的方式来获取数
+	据，不能通过request.getInputStream的方式来获取数据;
 
-		2. ��POST��ʽ��������ʱ��Ҳ�����������ַ�������?����=ֵ����̨Ҳ�ܹ�ͨ��getParameter�ķ�ʽ��ȡ�����ݡ�
-	ͬʱҲ�ܹ�ͨ��getInputStream����ȡ��send(data)��������ݣ�����һ���ַ�����url�����ݺ�send�����ݻ��಻����š�
-	���send�е�data��һ��js�����Ǻ�̨���������л�ȡ����ֻ��һ���ַ���[Object object], ��˲�Ҫֱ�Ӵ�js���󵽺�̨;
+		2. 以POST方式发起请求时，也可以在请求地址后面跟上?参数=值，后台也能够通过getParameter的方式获取到数据。
+	同时也能够通过getInputStream来获取到send(data)里面的数据，例如一个字符串。url中数据和send中数据互相不会干扰。
+	如果send中的data是一个js对象，那后台从输入流中获取到的只有一个字符串[Object object], 因此不要直接传js对象到后台;
 		
-		3. �����ַ����&���ӵĲ���������ͨ��getParameter�ķ�ʽ��ȡ����������ʽΪPOSTʱ������ͨ����������ͷ
+		3. 请求地址后用&连接的参数总是能通过getParameter的方式获取。但当请求方式为POST时，可以通过设置请求头
 	xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-	�ķ�ʽ����send�е�����Ҳ�����ں�̨ͨ��getParameter�ķ�ʽ����ȡ���ͺ�����HTML�����ύ����һ��������ʱsend�е�����
-	��ʽ������xml.send("par1=va1&par2=va2")����ʽ������������ͷ����Ϊָ���˱��뷽ʽ�����Ա������ĳ������롣
-	application/x-www-form-urlencodedʵ����Ҳ��form�����ύʱenctype��Ĭ������;
+	的方式来让send中的数据也可以在后台通过getParameter的方式来获取，就好像是HTML表单提交数据一样。但此时send中的数据
+	格式必须是xml.send("par1=va1&par2=va2")的样式。且设置请求头后因为指定了编码方式还可以避免中文出现乱码。
+	application/x-www-form-urlencoded实际上也是form表单提交时enctype的默认属性;
 
-		4. ��Ҫע����ǣ�һ��ͨ�����ַ�ʽ����������ͷΪ�����ύ�ķ�ʽ����ͨ��getParameter��ȡ��send�е����ݣ���
-	������ͨ������������ȡsend�����ݡ����������ͨ����������ȡ��send�е����ݣ���ôgetParameter��ֻ�ܻ�ȡ������url��ַ
-	�еĲ��������仰˵send������ֻ��ͨ������һ�ַ�ʽ��ȡһ��;
+		4. 需要注意的是，一旦通过这种方式设置了请求头为表单提交的方式，且通过getParameter获取了send中的数据，则
+	不能再通过输入流来获取send中数据。但是如果先通过输入流获取了send中的数据，那么getParameter就只能获取到跟在url地址
+	中的参数。换句话说send中数据只能通过其中一种方式获取一次;
 	
-		5. ���Ӧ�ģ���ʹ��java��HttpURLConnection��ʱ�����õ���connection��setRequestProperty("Content-type", 
-	"application/x-www-form-urlencoded;charset=utf-8")[XHR�ķ�����setRequestHeader]��������û�и�connection�������
-	�����������servlet�ж�����ͨ��getParameter��������ȡ����������url��ַ����Ĳ���Ҳ����ͨ��getParameter����ȡ��
-	���Ǵ����������еĲ���������ʱ, ���������������ԣ��������յ��ľ������롣ע��write����֮��һ��Ҫˢ�»�ر���
+		5. 相对应的，在使用java的HttpURLConnection类时，不用调用connection的setRequestProperty("Content-type", 
+	"application/x-www-form-urlencoded;charset=utf-8")[XHR的方法是setRequestHeader]。无论有没有给connection设置这个
+	请求参数，在servlet中都可以通过getParameter方法来获取参数，跟在url地址后面的参数也可以通过getParameter来获取。
+	但是传给服务器中的参数有中文时, 如果不设置这个属性，服务器收到的就是乱码。注意write数据之后一定要刷新或关闭流
 	
-	3. ע���ڷ���GET����ʱ��send()����Ҳ����д���������Ǻ�̨�ǿ������ġ�����̨��Ҳ���Կ���send��������ݲ�û�б��ύ
+	3. 注意在发送GET请求时，send()里面也可以写东西，但是后台是看不到的。控制台中也可以看到send里面的数据并没有被提交
 
-	4. onreadystatechange����һ��Ҫд��send()���棬��Ϊ���첽�ġ�����send����д��open���档����httpͷ����
-д��send��ǰ��(xmlHttp.setRequestHeader), open()�ĺ���;
+	4. onreadystatechange并非一定要写在send()后面，因为是异步的。但是send必须写在open后面。添加http头必须
+写在send的前面(xmlHttp.setRequestHeader), open()的后面;
 
-	5. connection����setRequestProperty��xhr����setRequestHeader;
+	5. connection的是setRequestProperty，xhr的是setRequestHeader;
 
-	6. ���ָ��xhr�ķ��ʷ�ʽΪͬ���ģ���ֱ�ӽ���ȡresponseText������send()���漴�ɶ�����дonreadystatechange;
+	6. 如果指定xhr的访问方式为同步的，则直接将获取responseText语句放在send()后面即可而不用写onreadystatechange;
 
 2017.10.09
-1. ��ajax�����У��������޷�����cookie����ʹ��response header����setcookie;
+1. 在ajax请求中，服务器无法设置cookie，即使在response header中有setcookie;
 
 2017.10.10
 1. maven
-	1. ����maven��tomcat���������Ŀ
-		1. ���
+	1. 利用maven的tomcat插件启动项目
+		1. 插件
 			<build>
 				<plugins>
-					<!-- tomcat7 ��������jar�� -->
+					<!-- tomcat7 启动所需jar包 -->
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat7-maven-plugin</artifactId>
 						<version>2.1</version>
 						<configuration>
-							<!--�˿� -->
+							<!--端口 -->
 							<port>8800</port>
-							<!--ע������ -->
+							<!--注意名称 -->
 							<path>/TextTomCat</path>
 							<uriEncoding>UTF-8</uriEncoding>
 						</configuration>
 					</plugin>
 				</plugins>
 			 </build>
-			Ȼ����������ʱ��дtomcat7:runע�����tomcat7����server�е�����
-			���ò�ͬ�Ķ˿ںſ���ͬʱ�������tomcat����
+			然后在启动的时候写tomcat7:run注意这个tomcat7就是server中的名字
+			配置不同的端口号可以同时启动多个tomcat服务
 		
-		2. ʹ��������֤����Ȩ
-			1. ������ʹ��tomcat��Ϊ������ʱ����confĿ¼�µ�tomcat-user.xml�ļ��б������û��ͽ�ɫ��Ϣ����
+		2. 使用身份验证和授权
+			1. 当我们使用tomcat作为服务器时，在conf目录下的tomcat-user.xml文件中保存了用户和角色信息，即
 				<tomcat-users>
 					<role rolename="r1">
 					<role rolename="r2">
 					<user username="user" password="pass" roles="r1,r2">
 				</tomcat-users>
-			��������ʹ��maven���������Ŀʱ������ͨ�����������ָ��Ҫ���ص��û���ɫ�ļ�����configuration��ʹ��
-			<tomcatUsers>tomcat-users.xml�ļ���·��</tomcatUsers>
+			但当我们使用maven插件启动项目时，可以通过这个配置来指定要加载的用户角色文件，在configuration中使用
+			<tomcatUsers>tomcat-users.xml文件的路径</tomcatUsers>
 
-	2. pom�����ļ���maven-compiler-plugin��������ָ��jdk����汾�����Կ��������޸�����汾֮����update project����ô
-	�����Ŀ��JRE System Library�ͻ�����Ӧ�İ汾�š���������ã�maven��ʹ��Ĭ�ϰ汾����;
+	2. pom配置文件中maven-compiler-plugin的作用是指定jdk编译版本，可以看到我们修改这个版本之后再update project，那么
+	这个项目的JRE System Library就会变成相应的版本号。如果不配置，maven会使用默认版本编译;
 
 2. pushServer
 
 2017.10.12
-1. ��������ͼƬ����
+1. 在线字体图片制作
 http://www.qt86.com/
 
 2. ajax-pushlet-client
 
 2017.10.13
-1. Http������Content-Type�����Լ���Spring MVC�е�Ӧ��
+1. Http请求中Content-Type讲解以及在Spring MVC中的应用
 http://blog.csdn.net/blueheart20/article/details/45174399
 
 2017.10.16
-1. ����ǰ̨�ļ��ϴ�
+1. 关于前台文件上传
 	http://blog.csdn.net/oscar999/article/details/37499743/
 	https://www.ibm.com/developerworks/cn/web/1101_hanbf_fileupload/
 	http://www.cnblogs.com/ghfjj/p/6306386.html
 	***http://www.runoob.com/jsp/jsp-file-uploading.html***
 
 2017.10.18
-1. maven�������Խ��벻�˴��룬��source����add��Ŀ
+1. maven单步调试进入不了代码，在source里面add项目
 
 2017.10.20
-1. ���ڲ�����Ŀ������tomcat����·��:
-	1. ����������Ŀ���½���һ���ļ������ڱ����û��ϴ����ļ�ʱ���������ļ��е�·��λ�����ǲ�����tomcat�е���Ŀ�£�
-��ô�����ǵ���Ŀ���뷢���˱仯��������ͨ��eclipse��������tomcat������ʱ����ô����½����ļ��оͻ���ʧ����Ϊ���ǵ���Ŀλ��
-eclipse�Ĺ����ռ��У������ռ��е���Ŀ��û������½����ļ��С�����Ŀ���뷢���仯��tomcat�����²�������ļ���������
-���½����ļ��о���ʧ�ˡ����������Ŀ����û�з����仯��ֻ��ͨ��eclipseֹͣ���tomcat����������ô���½��ļ�����Ȼ����;
+1. 关于部署项目和配置tomcat虚拟路径:
+	1. 当我们在项目中新建了一个文件夹用于保存用户上传的文件时，如果这个文件夹的路径位于我们部署在tomcat中的项目下，
+那么当我们的项目代码发生了变化，且我们通过eclipse重新启动tomcat服务器时，那么这个新建的文件夹就会消失。因为我们的项目位于
+eclipse的工作空间中，工作空间中的项目中没有这个新建的文件夹。而项目代码发生变化后，tomcat会重新部署这个文件，所以那
+个新建的文件夹就消失了。但是如果项目代码没有发生变化，只是通过eclipse停止或打开tomcat服务器，那么该新建文件夹依然存在;
 
-	2. ������ֱ�ӷ���һ����Ŀʱ���ڲ�������·��������£���Ĭ�Ϸ��ʸ���Ŀ��index.html��index.jspҳ��, Ҳ������web.xml
-������welcome-file-list��ǩ��ָ��Ĭ�Ϸ��ʽ��档
-		1. tomcat��Ĭ�ϵĻ�׼Ŀ¼��webapps(��׼Ŀ¼��server.xml�ļ��е�host�ڵ��µ�appBaseָ��), ��׼Ŀ¼����
-	��ROOTĿ¼���Զ�����Ϊ��Ŀ¼�����Է���localhost:portʱ�����ʵ���ROOT���Ĭ�ϸ�Ŀ¼�����index.jspҳ�档���ROOT
-	����ֻ��һ����ͨ���ļ��ж�����һ����web��Ŀ;
+	2. 当我们直接访问一个项目时，在不加其他路径的情况下，会默认访问该项目的index.html或index.jsp页面, 也可以在web.xml
+中配置welcome-file-list标签来指定默认访问界面。
+		1. tomcat的默认的基准目录是webapps(基准目录由server.xml文件中的host节点下的appBase指定), 基准目录根下
+	的ROOT目录被自动设置为根目录，所以访问localhost:port时，访问的是ROOT这个默认根目录下面的index.jsp页面。这个ROOT
+	可以只是一个普通的文件夹而并不一定是web项目;
 
-		2. Ϊʲô�����index.jsp������棿��Ϊ��tomcat��configĿ¼�µ�web.xml�ļ���ָ��������Ĭ��ҳ��Ϊindex.html/
-	jsp/html, ��ʹ�޸�����Щ��������������Ŀ������tomcat������ʱ����Щ���û��ǻỹԭ;
+		2. 为什么会访问index.jsp这个界面？因为在tomcat的config目录下的web.xml文件中指定了三个默认页面为index.html/
+	jsp/html, 即使修改了这些参数，当有新项目发布到tomcat服务器时，这些设置还是会还原;
 		
-		3. ��ô�޸�Host�ڵ��appBase��ֵ�ͻ��޸Ļ�׼Ŀ¼���������޸�Ϊ�Լ���·����E:\mywebapps������E:\mywebapps
-	�¸���ճ��һ��������eclipse�е�������Ŀ֮�󣬷�����Ȼ����ֱ�ӷ��ʡ�������Ϊ��ԭ��tomcat��ROOT�ļ�������һ��
-	index.jsp�ļ����������Լ���index�ļ�����WebContentĿ¼�¡��������Լ�����Ŀ�м���index�ļ������ֿ��Է��ʡ�
-	��Ϊͨ��tomcat��������Ŀ�ǻ���Ŀ¼������index�ļ���, ���Լ����Ƶ���Ŀֻ�൱��һ����ͨ���ļ��ж��ѣ�
-	�������ű�����Ŀ¼�ṹ��ע��
-			1. ÿ��ʹ��eclipse�����Լ�����Ŀ����clean֮���ٴ�����tomcatʱ�����ỹԭappBase
-		��ֵΪwebapps�����һ����host�ڵ����������<Context>�ڵ�;
+		3. 那么修改Host节点的appBase的值就会修改基准目录。但我们修改为自己的路径如E:\mywebapps，并在E:\mywebapps
+	下复制粘贴一个我们在eclipse中的整个项目之后，发现仍然不能直接访问。这是因为在原本tomcat的ROOT文件夹下有一个
+	index.jsp文件，而我们自己的index文件放在WebContent目录下。在我们自己的项目中加入index文件，发现可以访问。
+	因为通过tomcat编译后的项目是会在目录下生成index文件的, 而自己复制的项目只相当于一个普通的文件夹而已，
+	它保留着本来的目录结构，注意
+			1. 每次使用eclipse添加自己的项目或者clean之后，再次启动tomcat时，都会还原appBase
+		的值为webapps，而且会清空host节点下面的其他<Context>节点;
 
-			2. ����ֻ���޸���appBase�ڵ�����localhost:8088�Ȳ��ܷ���tomcat����ҳ��Ҳ���ܷ��������Լ�����Ŀ��
-		������Ϊ���ǵ���Ŀ�����ǻ�׼Ŀ¼��Ĭ�ϸ�Ŀ¼������ROOT������ͨ���޸���Ŀ�ļ�����ΪROOT��������һ��pathֵ
-		Ϊ""��docBaseΪ���ǵ���Ŀ����·����Context�ڵ㼴��;
+			2. 仅仅只是修改了appBase节点后访问localhost:8088既不能访问tomcat的首页，也不能访问我们自己的项目。
+		这是因为我们的项目名不是基准目录的默认根目录的名字ROOT，可以通过修改项目文件夹名为ROOT或者添加一个path值
+		为""，docBase为我们的项目绝对路径的Context节点即可;
 
-		4. ���ƶ��˶��welcome-fileʱ����˳����أ���д��ǰ����ȷ���;
+		4. 当制定了多个welcome-file时，按顺序加载，即写在前面的先访问;
 
-		5. �����޸�tomcat�������Ʋ�Ϊlocalhost, ��Ҫ��������
-			1. �޸�conf/server.xml��host�ڵ��е�nameΪ�Լ���Ҫ��ֵ����liqiyuan, �޸ĺ�����tomcat���񣬷���
-		������localhost��Ҳ������liqiyuan����;
+		5. 可以修改tomcat主机名称不为localhost, 需要两个步骤
+			1. 修改conf/server.xml的host节点中的name为自己想要的值，如liqiyuan, 修改后启动tomcat服务，发现
+		不能用localhost，也不能用liqiyuan访问;
 
-			2. �޸�C:\Windows\System32\drivers\etc�µ�host�ļ��������м��ϱ���ip����127.0.0.1 liqiyuan������
-		���ܷ���;
+			2. 修改C:\Windows\System32\drivers\etc下的host文件，在其中加上本机ip比如127.0.0.1 liqiyuan，这样
+		就能访问;
 
-			3. eclipse�޷��޸�Host name, �ҵ�server.xml��Host�ڵ��е�name���޸�Ϊ����localhost���޷�ͨ��
-		eclipse������ͬ��;
+			3. eclipse无法修改Host name, 且当server.xml中Host节点中的name被修改为不是localhost后，无法通过
+		eclipse启动或同步;
 
-			4. ÿ���޸�host-name�󣬶�����Catalina�ļ�����������һ����host nameͬ�����ļ���, ��liqiyuan, ��
-		���ļ���Ϊ��;
+			4. 每次修改host-name后，都会在Catalina文件夹下面生成一个和host name同名的文件夹, 如liqiyuan, 且
+		该文件夹为空;
 		
-		6. 1���Ѿ��ᵽ����׼Ŀ¼�µ�ROOT���Զ���Ϊ��Ŀ¼����ô��ô�޸�Ĭ�ϵĸ�Ŀ¼�أ���host�ڵ�������<context>
-	�ڵ㲢����docBaseΪ�Լ���Ҫ����Ϊ��Ŀ¼����Ŀ��Ȼ��pathдΪ�գ���path=""��������ֱ�ӷ��ʵ�ַʱ�ͻ�������Ŀ¼
-	��; ע��:
-			1. ÿһ��context�ڵ�ʵ���ϾͶ�Ӧ��һ����Ŀ;
+		6. 1中已经提到过基准目录下的ROOT被自动设为根目录，那么怎么修改默认的根目录呢？在host节点下添加<context>
+	节点并设置docBase为自己想要设置为根目录的项目，然后将path写为空，即path=""，这样在直接访问地址时就会进到这个目录
+	下; 注意:
+			1. 每一个context节点实际上就对应着一个项目;
 
-			2. host�ڵ��µ���Ŀ��·��docBaseʵ����Ҳ����û�й涨һ��Ҫ��tomcat��webapps����ļ������棬������
-		���κ�һ��λ��;
+			2. host节点下的项目的路径docBase实际上也根本没有规定一定要在tomcat的webapps这个文件夹下面，它可以
+		在任何一个位置;
 
-			3. ����ʵ����appBase����ڵ���������ڣ����ǿ���������һ����Ŀ(war��)�����·���£�tomcat���Զ���ȥ
-		������Ȼ�����Ƿ��ʡ����Կ�������ֱ���ӽ�ȥ����Ŀ�ǲ�����host�ڵ�������Context������webapps�Ǹ������ṩ��
-		һ����ݵĲ�����Ŀ�ķ����������Ŀ�������ļ��У������ͨ��context��������;
+			3. 所以实际上appBase这个节点的意义在于，我们可以任意扔一个项目(war包)到这个路径下，tomcat会自动的去
+		编译它然后供我们访问。可以看到我们直接扔进去的项目是不会在host节点下生成Context。所以webapps是给我们提供了
+		一个便捷的部署项目的方法，如果项目在其他文件夹，则可以通过context来部署它;
 
-	3. �����޸�server.xml�ļ���host�ڵ��µ�appBase���Ժ���host�ڵ�������<Context>�ڵ��⻹����ͨ����Catalina�ļ���������
-�����ļ��ķ�ʽ���������ǵ���Ŀ: 
+	3. 除了修改server.xml文件的host节点下的appBase属性和在host节点下添加<Context>节点外还可以通过在Catalina文件夹中添加
+配置文件的方式来访问我们的项目: 
 
-		1. ��������֪��������ͨ��localhost�����Լ�����Ŀ��������server.xml�е�host�ڵ��appBase���Ժ�host�ڵ������
-	Context�ڵ��docBase�Լ�path��������;
+		1. 现在我们知道，我们通过localhost访问自己的项目仅仅是由server.xml中的host节点的appBase属性和host节点下面的
+	Context节点的docBase以及path来决定的;
 
-		2. ��catalina�ļ���������xml�ļ�����������������λ�õ���Ŀ, ����ļ�����������ǵ���Ŀ�ļ���һ�£����xml�ļ�
-	��ֻ��Contextһ���ڵ�, �ýڵ�ֻ��Ҫ����docBaseһ������, û��path���ԡ����Ҫ������Ŀָ������·����ֱ���޸���Ӧ��.xml
-	�ļ������С��������xml�ļ�����ΪROOT.xml����ֱ�ӷ���localhost:8088�ͻ���ʸ���Ŀ;
+		2. 在catalina文件夹中添加xml文件来配置我们在其他位置的项目, 这个文件名必须和我们的项目文件名一致，这个xml文件
+	中只有Context一个节点, 该节点只需要配置docBase一个属性, 没有path属性。如果要给该项目指定访问路径，直接修改响应的.xml
+	文件名就行。如果将该xml文件命名为ROOT.xml，则直接访问localhost:8088就会访问该项目;
 
-		3. ����server.xml������catalina/.xml�������У�
-			1. server.xml��host�ڵ��¿���һ�����ö����Ŀ, ��catalina�������ļ�����Ŀһһ��Ӧ;
-			2. catalina�µ����ò���eclipse���õ��κ�Ӱ��;
+		3. 配置server.xml和配置catalina/.xml的区别有：
+			1. server.xml的host节点下可以一次配置多个项目, 而catalina中配置文件和项目一一对应;
+			2. catalina下的配置不受eclipse配置的任何影响;
 	
-	4. <Context>��ǩ���������ԵĽ���
-		1. reloadable=true Catalina����/WEB-INF/classes/��/WEB-INF/lib��������Ƿ����仯���ڷ����仯��ʱ���Զ�
-	����web application, ������Ϣ������tomcat���������濴������������ڿ����׶κ����ã���Ҳ��������˷������Ŀ�����
-	��ˣ��ڷ����Ժ󣬲��Ƽ�ʹ�á�
+	4. <Context>标签中其他属性的解释
+		1. reloadable=true Catalina监视/WEB-INF/classes/和/WEB-INF/lib下面的类是否发生变化，在发生变化的时候自动
+	重载web application, 重载信息可以在tomcat服务器里面看到。这个特征在开发阶段很有用，但也大大增加了服务器的开销。
+	因此，在发布以后，不推荐使用。
 
-	5. ���������ַ�ʽ������·�������Ŀ����һ��Ҫ��һ��web��Ŀ��ֻҪ��index.html�ļ����ܷ��ʡ�����Ҫע�ⲻ��ֱ��ͨ��url��ַ
-����WEB-INF�ļ�����ļ�
+	5. 不管是哪种方式，虚拟路径里的项目并不一定要是一个web项目，只要有index.html文件就能访问。但是要注意不能直接通过url地址
+访问WEB-INF文件里的文件
 
 2017.10.23
-1. ѹ������: http://tool.lu/html/index.html
-2. ͼƬ�ϴ�ǰ��̨����: http://www.cnblogs.com/wbyp/p/6201941.html
-3. �ϴ��ļ����������ϴ��ļ�Ԥ��
-4. ����formdata
+1. 压缩代码: http://tool.lu/html/index.html
+2. 图片上传前后台代码: http://www.cnblogs.com/wbyp/p/6201941.html
+3. 上传文件进度条，上传文件预览
+4. 关于formdata
 	1. http://blog.csdn.net/liangwenmail/article/details/51921167
 	2. http://www.cnblogs.com/zhuxiaojie/p/4783939.html
-5. ʹ��ServletFileUploadʱ��Ҫ���õ��Ǳ�����Ԫ�ص�name���Զ�����id���ԣ�����fileItem��ȡ����
-6. FileReader��ȡ: http://www.cnblogs.com/tandaxia/p/5125275.html
+5. 使用ServletFileUpload时，要设置的是表单内元素的name属性而不是id属性，否则fileItem获取不到
+6. FileReader读取: http://www.cnblogs.com/tandaxia/p/5125275.html
 
 2017.10.24
-1. FileReader����
+1. FileReader对象
 2. layerui: http://www.layui.com/doc/modules/layer.html
-3. ����ǰ���ϴ��ļ�����: http://www.cnblogs.com/liboxncg/p/6095627.html
-4. FileReader�����ڽ�type=file��thisֵ���뺯��, ����ͨ��var file = obj.files[0]��ȡ�ļ���file.name, file.type, file.size������;
+3. 限制前端上传文件类型: http://www.cnblogs.com/liboxncg/p/6095627.html
+4. FileReader对象。在讲type=file的this值传入函数, 可以通过var file = obj.files[0]获取文件。file.name, file.type, file.size等数据;
 
 2017.10.25
-1. ���߳�:
+1. 多线程:
 	1. http://www.cnblogs.com/zrtqsk/p/3776328.html
 	2. http://www.cnblogs.com/wxd0108/p/5479442.html
-	3. volatile��synchronized http://blog.csdn.net/chengzhezhijian/article/details/13621129
-	4. ���������������� http://blog.csdn.net/monkey_d_meng/article/details/6251879/
-	5. list���� http://blog.csdn.net/cmtobby/article/details/2257246
+	3. volatile和synchronized http://blog.csdn.net/chengzhezhijian/article/details/13621129
+	4. 生产者消费者问题 http://blog.csdn.net/monkey_d_meng/article/details/6251879/
+	5. list区别 http://blog.csdn.net/cmtobby/article/details/2257246
 
 2017.10.27
-1. ������������javaģ����, ����������
-	1. �����������������ߵ�run������дһ��ѭ�������൱����ֻ��һ���������̺߳��������̣߳����ǲ��ϵ����������ѡ�����
-������һֱ������ĳ��ʱ�̣�������Դ��ʣ����ô����������״̬���ȴ��������̻߳���������֮�������߳�Ҳһ��; ע�⣬��һ������
-���ж��synchronized����ʱ��ֻҪ����һ��synchronized����û��ִ����ϣ���ô���б�synchronized���εķ��������ܱ������̷߳���;
+1. 生产者消费者java模型中, 有两种理解
+	1. 可以在生产者消费者的run方法中写一个循环。这相当于是只有一个消费者线程和生产者线程，他们不断的生产和消费。比如
+生产者一直生产到某个时刻，发现资源过剩，那么他会进入挂起状态，等待消费者线程唤醒他，反之消费者线程也一样; 注意，当一个对象
+中有多个synchronized方法时，只要其中一个synchronized方法没有执行完毕，那么所有被synchronized修饰的方法都不能被其他线程访问;
 
-	2. ��һ��ģʽ��run����ִֻ��һ�ζ���������demo�п�����������ߺ��������̣߳����Ƕ�ͬʱ��ʼ���������ѡ�Ȼ��ȴ�����
-�κ�һ���̶߳�����ִ�л��Ѳ���; ������⽫�߳�ͬ�����������Ĺ�ע����������(������)�̺߳�������(������)�߳�֮��ĳ�ͻ��
-��������������֮��ĳ�ͻ;
+	2. 另一种模式是run方法只执行一次动作，而在demo中开启多个消费者和生产者线程，他们都同时开始生产和消费。然后等待其他
+任何一个线程对他们执行唤醒操作; 这个问题将线程同步的问题更多的关注到了生产者(消费者)线程和生产者(消费者)线程之间的冲突，
+而不是他们两者之间的冲突;
 	
-	3. ��ô�����ǲ����̰߳�ȫ���أ��������ǽ������ߺ������ߵĲ�����ֵ������һ���ģ����Կ����̰߳�ȫ�������У�����
-�������0�����̷߳ǰ�ȫ���������Ľ��ȴ���ڱ仯�ģ���˵������Դ�Ĳ�������ԭ�Ӽ����;
+	3. 怎么看出是不是线程安全的呢，比如我们将消费者和生产者的操作数值调整成一样的，可以看到线程安全的例子中，最后的
+结果总是0，而线程非安全的例子最后的结果却是在变化的，这说明对资源的操作不是原子级别的;
 
 2017.10.30
-1. ����EventSource
-	1. EventSource����������ʹ�÷����������¼���WebӦ�ó�������¼�������ʼ��һ���¼�Դ����󣬾Ϳ��Կ�ʼ��������
-��Ϣ�ˡ�eventsource���󲻶ϵĽ��շ��������͹������¼�������ʵ�������ǿͻ���ͨ�������ϵ������˷����������ڻ����Ӧ;
+1. 关于EventSource
+	1. EventSource对象用于在使用服务器发送事件的Web应用程序接收事件流，初始化一个事件源对象后，就可以开始监听它的
+消息了。eventsource对象不断的接收服务器发送过来的事件流，其实本质上是客户端通过它不断的向服务端发起请求以期获得响应;
 
-	2. ʹ�÷���
-		1. ��������
-			1. ����˷��͵���Ӧ���ݱ��뽫��Ӧͷ��Content-type��������Ϊtext/event-stream(MIME����֮һ)��
-		�������˷��͵��¼���������һ���򵥵��ı�������(UTF-8����)��������������������4���ֶ�
-				1. event ��ʾ�¼����ͣ�event��ֵ���ǿͻ��˼������¼��������������Ϣû��event�ֶΣ�
-			��ͻ��˻ᴥ��onmessage�¼�;
+	2. 使用方法
+		1. 服务器端
+			1. 服务端发送的响应内容必须将响应头的Content-type属性设置为text/event-stream(MIME类型之一)。
+		服务器端发送的事件流仅仅是一个简单的文本数据流(UTF-8编码)，它包含的内容有以下4个字段
+				1. event 表示事件类型，event的值就是客户端监听的事件名，如果该条消息没有event字段，
+			则客户端会触发onmessage事件;
 				
-				2. data ��ʾ���͵�����
+				2. data 表示发送的数据
 
-				3. id eventsource�����ڲ�����"���һ���¼�ID"������ֵ
+				3. id eventsource对象内部属性"最后一个事件ID"的属性值
 
-				4. retry ������һ������ֵ���ƶ����������ӵ�ʱ�䣬����������������
+				4. retry 必须是一个整数值，制定了重新连接的时间，不是整数将被忽略
 
-				5. �������ĸ��ֶ��⣬��������������ע�͵Ķ���, ֱ����ð�ſ�ͷ����
+				5. 除以上四个字段外，还可以添加类似注释的东西, 直接以冒号开头即可
 
-			2. ע�������ڷ���������ʱ����ʽ������ �ֶ���: ����\n��Ҳ����˵�������ð�ţ��ұ����Ի��з���
-		β��������󻹱����Ի��з���β������ͻ��˲��񲻵��¼����¼������Ի��з���Ϊ�ָ���ġ����������������
-		���data:����ͻ��˻��Զ��Ի��з�������������;
+			2. 注意服务端在发送数据流时，格式必须是 字段名: 内容\n，也就是说必须包含冒号，且必须以换行符结
+		尾，而且最后还必须以换行符结尾，否则客户端捕获不到事件。事件流是以换行符作为分割符的。如果服务器发送了
+		多个data:，则客户端会自动以换行符将其连接起来;
 
-			3. �������˿�����һ���¼����л�϶���¼����Ի��з������ͺá�����ע�����¼�ֻ������һ����ͬ
-		retry����ʱ��;
+			3. 服务器端可以在一个事件流中混合多个事件，以换行符隔开就好。但是注意多个事件只能设置一个相同
+		retry重连时间;
 
-			4. ����������Ϊservlet����������:
+			4. 若服务器端为servlet，举例如下:
 				response.setCharacterEncoding("UTF-8");
 				response.setContentType("text/event-stream");
 				PrintWriter writer = response.getWriter();
@@ -846,234 +846,234 @@ eclipse�Ĺ����ռ��У������ռ��е���Ŀ��û������½����ļ��С�����Ŀ���뷢���仯�
 				writer.print("retry: 2000\n");
 				writer.print("\n");
 		
-		2. �ͻ��˳���
-			1. ��������var es = new EventSource("http://10....."), EventSource������Ĭ�ϵļ�����, �ֱ����
-		open, message(���¼�����ָ�����¼������ƣ����Ϊ��Ӧ��ֵ), error�¼����磺
-			es.addEventListener("myevent", function(e) {console.log("������myevent�¼�" + e.data)});
+		2. 客户端程序
+			1. 建立连接var es = new EventSource("http://10....."), EventSource有三个默认的监听器, 分别监听
+		open, message(若事件流中指定了事件的名称，则改为相应的值), error事件。如：
+			es.addEventListener("myevent", function(e) {console.log("发生了myevent事件" + e.data)});
 
-	3. EventSource���� 
+	3. EventSource资料 
 		1. https://developer.mozilla.org/zh-CN/docs/Server-sent_events/Using_server-sent_events
-		1. EventSource�Լ�ajax��ѯ http://www.jianshu.com/p/bc5a9b4a1cd1 ���ڳ�����ѯ��������̳�˵�Ĳ���׼ȷ
+		1. EventSource以及ajax轮询 http://www.jianshu.com/p/bc5a9b4a1cd1 关于长短轮询定义这个教程说的并不准确
 		2. http://blog.csdn.net/junbaozi/article/details/41350537
-		3. eventsource��websocket������: http://blog.csdn.net/bamboolsu/article/details/48653317
-		�������м���WEBӦ�ó���ͨ��ʱ�ļ�ʱ��ͼ
-		4. HTML5 �����������¼���Server-sent Events��ʵս���� �ý̳�Ī������
+		3. eventsource和websocket的区别: http://blog.csdn.net/bamboolsu/article/details/48653317
+		这里面有几张WEB应用程序通信时的简单时序图
+		4. HTML5 服务器推送事件（Server-sent Events）实战开发 该教程莫名其妙
 		https://www.ibm.com/developerworks/cn/web/1307_chengfu_serversentevent/
 
-2. pushserverʹ�÷���
-	1. ���ʹ��
-		1. ����pushlet����е�pushlet.jar, log4j.jar(web-inf/lib����)�����Լ���lib�С��½�Դ�ļ���config����
-	pushlet.properties, sources.properties(web-inf/classes�ļ�������)�ļ����������С���ajax-pushlet-client.js(lib��)
-	�ļ�������webapp�´���;
+2. pushserver使用方法
+	1. 快捷使用
+		1. 拷贝pushlet框架中的pushlet.jar, log4j.jar(web-inf/lib里面)包到自己的lib中。新建源文件夹config，将
+	pushlet.properties, sources.properties(web-inf/classes文件夹里面)文件拷贝到其中。将ajax-pushlet-client.js(lib中)
+	文件拷贝到webapp下待用;
 
-		2. ����xml�ļ�������������һ��servlet����������÷����μ�pushlet����µ�web.xml�ļ���
+		2. 配置xml文件，在其中添加一个servlet。具体的配置方法参见pushlet框架下的web.xml文件。
 
-		3. �����Լ���pushlet�ֻ࣬������ʵ��EventPullSource�ࡣʵ���������Ҫʵ����������
-			1. getSleepTime()����������һ��long��������ʾÿ����������ͻ��˷�������;
+		3. 配置自己的pushlet类，只需让其实现EventPullSource类。实现这个类需要实现两个方法
+			1. getSleepTime()方法，返回一个long参数。表示每隔多少秒向客户端发送数据;
 
-			2. pullEvent()����������һ��Event����Event event = Event.createDataEvent("/test");��ʾ�¼���ʶ��
-		��Ӧ�ͻ�����PL.joinListener("/test")������event.setField(String, String(int, long))��װ��������
-		event.setField("msg", "hello")��
+			2. pullEvent()方法，返回一个Event对象。Event event = Event.createDataEvent("/test");表示事件标识，
+		对应客户端中PL.joinListener("/test")参数。event.setField(String, String(int, long))封装参数，如
+		event.setField("msg", "hello")。
 
-		4. ����sources.properties�ļ���ȥ��������source�������Լ���pushlet���ȫ�޶�����source����
-	source=com.oldbutcher.mypushlet��source�������ֿ������д����source7=....;
+		4. 配置sources.properties文件。去掉其他的source，添加自己的pushlet类的全限定名到source。如
+	source=com.oldbutcher.mypushlet。source后面数字可以随便写，如source7=....;
 
-		5. ��ǰ��ҳ���е���
+		5. 在前端页面中调用
 				PL._init(); 
-				PL.joinListen('/test');  //�¼���ʶ ������Դ������
+				PL.joinListen('/test');  //事件标识 在数据源中引用
 			        function onData(event) { 
-					// �����ҵ�����
+					// 具体的业务代码
 					alert(event.get("msg"));
 				}
 		
-		6. ������Ŀ���ᷢ�ֿͻ��˻ᶨ�������������һ��ajax����ÿ�η�������ļ����getSleepTime()����
-	���ص���ֵ��С�����;
+		6. 运行项目，会发现客户端会定期向服务器发送一个ajax请求。每次发起请求的间隔与getSleepTime()方法
+	返回的数值大小正相关;
 
-	2. ��������
-		1. ���Լ���pushlet��ʵ��Runnable��EventSource�ӿڡ������еĽӿ�ʵ�ֿ�����ȫ����EventPullSource���д����
-	����pullEvent������Ҫʵ���Լ���ҵ���߼�;
+	2. 深入理解
+		1. 让自己的pushlet类实现Runnable和EventSource接口。该类中的接口实现可以完全仿造EventPullSource类的写法，
+	除了pullEvent方法需要实现自己的业务逻辑;
 
-		2. Ȼ�����ǿ�����дһ��Pushmanager�������������Լ���pushlet�����翪ʼ���ͻ�ֹͣ���͡�Pushmanager�п���д��
-	�¼�����������start() {myPush.activate();} stop() {myPush.stop()}; pause() {myPush.passivate();}��Ȼ�����
-	pushmanager�е���Ӧ�������ܿ���pushlet��
+		2. 然后我们可以在写一个Pushmanager类来管理我们自己的pushlet，比如开始推送或停止推送。Pushmanager中可以写如
+	下几个方法，如start() {myPush.activate();} stop() {myPush.stop()}; pause() {myPush.passivate();}。然后调用
+	pushmanager中的响应方法就能控制pushlet。
 		
-	3. �ο�����
-		1. pushlet������ص�ַ: https://sourceforge.net/projects/pushlets/files/
-		2. pushlet��ܼ�ʹ��˵��: http://cuisuqiang.iteye.com/blog/1416771
-		3. pushlet�Զ���ʹ�� http://blog.csdn.net/houpengfei111/article/details/7498481
+	3. 参考资料
+		1. pushlet框架下载地址: https://sourceforge.net/projects/pushlets/files/
+		2. pushlet框架简单使用说明: http://cuisuqiang.iteye.com/blog/1416771
+		3. pushlet自定义使用 http://blog.csdn.net/houpengfei111/article/details/7498481
 		4. http://blog.csdn.net/p793049488/article/details/20688573
 		5. https://www.cnblogs.com/linjiqin/archive/2011/12/30/2307788.html
 
 2017.10.31
-1. ��ΪMIME(Multipurpose Internet Mail Extensions), ����;�������ʼ���չ����, ����text/html, text/event-stream,
+1. 何为MIME(Multipurpose Internet Mail Extensions), 多用途互联网邮件扩展类型, 比如text/html, text/event-stream,
 multipart/form-data
 
-2. ����WebSocket
-	1. WebSocket��h5�Ƴ���һ�ֻ���TCP��һ���µ�����Э�顣��ʵ����������������ȫ˫��ͨ�ţ���������������������Ϣ��
-�ͻ��ˡ�
+2. 关于WebSocket
+	1. WebSocket是h5推出的一种基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工通信，允许服务器主动发送信息给
+客户端。
 
 	2. h5 websocket api
-		1. ��������var ws = new WebSocket("ws://localhost:...")��ע�������Э������ws���������һ���������ͻ��˾�
-	��ʼ��������˽�������;
+		1. 建立连接var ws = new WebSocket("ws://localhost:...")，注意这里的协议名是ws。这个对象一旦声明，客户端就
+	开始与服务器端建立连接;
 		
-		2. ���ӽ����󴥷�open�¼����յ����������͹�������Ϣʱ����message�¼������ӹر�ʱ����onclose�¼���ͨ��
-	����ʱ����error�¼�;
+		2. 连接建立后触发open事件。收到服务器发送过来的信息时触发message事件。连接关闭时触发onclose事件，通信
+	出错时触发error事件;
 
-		3. ws�����õ���send()������������������ݣ�����close()�����ر����ӡ����û�йر����Ӿ�ֱ�ӹر������������
-	�������ʱ�ᱨ�쳣��������ÿ�ε��ý�����close�ر�����
+		3. ws对象用调用send()方法向服务器发送数据，调用close()方法关闭连接。如果没有关闭连接就直接关闭浏览器，服务
+	器这边有时会报异常，因此最好每次调用结束后都close关闭连接
 
-	3. ������
-		1. java 7�Լ�tomcat7֮��֧��websocketЭ�顣�������ע�� @ServerEndpoit("/path")�����ϸ�ע���������
-	��ɨ����ࡣע������Ƕ����ģ�ÿ�η��ʶ������һ���µ���;
+	3. 服务器
+		1. java 7以及tomcat7之后都支持websocket协议。对类加上注解 @ServerEndpoit("/path")。加上该注解后程序会自
+	动扫描该类。注意该类是多例的，每次访问都会产生一个新的类;
 
-		2. ��ServerEndpointע������¸��������� @OnOpen, @OnClose, @OnMessage�ɷֱ����ڴ����������ӣ��ر����ӣ��ͽ���
-	��Ϣ�¼���ע�ⱻOnMessage��ע�ĺ����б������Session, String ������������ǰ�����ڹ����Ự�����߱�ʾ�ͻ��˴�������
-	��Ϣ��Ϣ�� @Open�����еĲ���ΪSession��ÿ����һ�����Ӿͻ���һ��Session�� @OnMessage�Ĳ�����Session��String��OnClose
-	������Session����������в������Ͳ���ȷ���п��ܷ����޷����������� @OnMessage�����������ڷ��ͺͽ�����Ϣ������
-	session.getAsyncRemote()�����õ�һAsync���󣬵��øö����sendText�������Է�������;
+		2. 在ServerEndpoint注解的类下给方法添加 @OnOpen, @OnClose, @OnMessage可分别用于处理开启连接，关闭连接，和接收
+	消息事件。注意被OnMessage标注的函数中必须包含Session, String 这两个参数。前者用于管理会话，后者表示客户端传过来的
+	消息信息。 @Open方法中的参数为Session，每产生一个连接就会多个一个Session。 @OnMessage的参数有Session和String。OnClose
+	参数有Session。如果方法中参数类型不正确，有可能服务无法正常启动。 @OnMessage方法可以用于发送和接收消息。调用
+	session.getAsyncRemote()方法得到一Async对象，调用该对象的sendText方法可以发送数据;
 
-		3. ��Ϊwebsocket�ķ������Ƕ����ģ��������Ҫʵ��һ�����������ҵĹ���ʱ�������ڸ���������һ����̬�ļ������
-	��������ػ�����������ͻ��˷�����Ϣ������: session.getBasicRemote(��getAsyncRemote), Ȼ�����remote�����sendText
-	������������Ϣ;
+		3. 因为websocket的服务类是多例的，所以如果要实现一个类似聊天室的功能时，可以在该类中声明一个静态的集合类对
+	象来保存回话。服务器向客户端发送消息步骤是: session.getBasicRemote(或getAsyncRemote), 然后调用remote对象的sendText
+	方法来发送信息;
 
-3. �ο�����
-	1. ����WebSocket �ȽϺ�: http://www.cnblogs.com/tohxyblog/p/7112917.html
-			 ��Ҫ: http://blog.csdn.net/qq_39809456/article/details/78219098?fps=1&locationNum=5
-			 �ϸ���: http://blog.csdn.net/leecho571/article/details/9707497
-			 ֪���Ļش�: https://www.zhihu.com/question/20215561 (����΢���ϲ���һ��С����)
-			 ��һ��: http://www.ruanyifeng.com/blog/2017/05/websocket.html
-	2. ����̳� http://www.runoob.com/html/html5-websocket.html
-	3. ��ҳ������ http://www.jb51.net/article/87659.htm
-	4. WebSocket��demo 
+3. 参考资料
+	1. 理解WebSocket 比较好: http://www.cnblogs.com/tohxyblog/p/7112917.html
+			 重要: http://blog.csdn.net/qq_39809456/article/details/78219098?fps=1&locationNum=5
+			 较复杂: http://blog.csdn.net/leecho571/article/details/9707497
+			 知乎的回答: https://www.zhihu.com/question/20215561 (包含微信上部署一个小程序)
+			 阮一峰: http://www.ruanyifeng.com/blog/2017/05/websocket.html
+	2. 菜鸟教程 http://www.runoob.com/html/html5-websocket.html
+	3. 网页聊天室 http://www.jb51.net/article/87659.htm
+	4. WebSocket简单demo 
 		1. java: http://blog.csdn.net/lipei1220/article/details/49098111
 		2. http://blog.csdn.net/huitoukest/article/details/51437982
-	5. WebSocket����ʵʱ���� http://blog.csdn.net/qq_23994787/article/details/77543277 (����׽���)
-	6. WebSocket����Spring MVC
-		1. ��ʹ����: http://blog.csdn.net/qq_33415017/article/details/53907115
-		2. ��Ե㼴ʱ���� http://blog.csdn.net/qq_35992956/article/details/77992410?skintest=skin3-template-test
-	7. WebSocket��ʱ���� http://blog.csdn.net/ihchenchen/article/details/71440760
-	8. ws��ʹ�ö�ý�� https://www.cnblogs.com/shizhouyu/p/4975409.html
+	5. WebSocket多人实时聊天 http://blog.csdn.net/qq_23994787/article/details/77543277 (结合套接字)
+	6. WebSocket整合Spring MVC
+		1. 即使聊天: http://blog.csdn.net/qq_33415017/article/details/53907115
+		2. 点对点即时聊天 http://blog.csdn.net/qq_35992956/article/details/77992410?skintest=skin3-template-test
+	7. WebSocket即时聊天 http://blog.csdn.net/ihchenchen/article/details/71440760
+	8. ws中使用多媒体 https://www.cnblogs.com/shizhouyu/p/4975409.html
 	
-4. ajxa, comet,websocket���ߵ����� http://www.cnblogs.com/tingshuo/archive/2013/02/26/2933408.html
+4. ajxa, comet,websocket三者的区别 http://www.cnblogs.com/tingshuo/archive/2013/02/26/2933408.html
 
-5. ����map������ http://www.importnew.com/19685.html
+5. 各种map的区别 http://www.importnew.com/19685.html
 	
 2017.11.01
-1. java��ʹ��ServerEndPoint����עwebsocket����˵��ࡣ���������Ҫ�������������ֱ���OnMessage, OnOpen, OnClose����ע��
-��OnMessage��ע�ķ�����ѡ����Session session��String message������������һ��������ͻ��˷�����Ϣ��һ�����ڽ��տͻ���
-���͹�������Ϣ;
+1. java中使用ServerEndPoint来标注websocket服务端的类。这个类中主要有三个方法，分别用OnMessage, OnOpen, OnClose来标注。
+被OnMessage标注的方法必选包含Session session和String message这两个参数，一个用于向客户端发送信息，一个用于接收客户端
+发送过来的信息;
 
-2. Timer�Ĺ��캯��new Timer(boolean)�У��������Ϊtrue��������һ���ػ��̣߳����û�������߳�ִ��������ֹ��ʹ��Timer��
-��schedule�������Զ�ʱѭ��ִ��ĳһ��������schedule�����ĵ�һ��������һ���̳���TimerTask����������һ���ࡣע�����
-shedule����ʱ����ֻ��������������ڶ���������ʾdelayʱ���ִ��run����������������ʱ���ڶ���������ʾ�Ӻ�೤ʱ��ִ�У�
-����������period��ʾÿ���೤ʱ��ִ��һ��run��������ķ������ڶ���������������һ��date�ͱ�������ʾ�����ʱ���֮��೤ʱ��
-ִ��;
+2. Timer的构造函数new Timer(boolean)中，如果参数为true，则它是一个守护线程，如果没有其他线程执行它将终止。使用Timer类
+的schedule方法可以定时循环执行某一个方法。schedule方法的第一个参数是一个继承了TimerTask这个抽象类的一个类。注意调用
+shedule方法时，若只有两个参数，则第二个参数表示delay时间后执行run方法。有三个参数时，第二个参数表示延后多长时间执行，
+第三个参数period表示每隔多长时间执行一次run函数里面的方法。第二个参数还可以是一个date型变量，表示在这个时间段之后多长时间
+执行;
 
-3. ������ͨ��ѯ�ͳ���ѯ
-	1. ��ͨ��ѯ���ͻ�������������Ϸ���Ajax�������۷�������û����Ӧ���ͻ��˶�����ڶ������󡣿ͻ��˲��˷�������
-��Ӧ�����Ϸ�������Ƶ������������д�������õģ��˷Ѵ�������Դ;
+3. 关于普通轮询和长轮询
+	1. 普通轮询：客户端向服务器不断发送Ajax请求，无论服务器有没有响应，客户端都发起第二次请求。客户端不顾服务器的
+响应而不断发送请求，频繁发起的请求中大半是无用的，浪费带宽和资源;
 
-	2. ����ѯ���ͻ��˷���Ajax���󣬵�ֻ�з����������ݸ���ʱ����Ӧ�������holdס���ӡ���������δ��Ӧʱ���ͻ���
-���ᷢ����һ������ֻ�еڶ������󷵻�����֮�󣬵���������Ż����̷���������ѯ�ŵ���������Ϣ������²���Ƶ�������󣬺ķ�
-��ԴС;
+	2. 长轮询：客户端发起Ajax请求，但只有服务器有数据更新时才响应，否则就hold住连接。而服务器未响应时，客户端
+不会发起下一次请求，只有第二次请求返回数据之后，第三次请求才会立刻发出。长轮询优点是在无消息的情况下不会频繁的请求，耗费
+资源小;
 
-	3. ͨ����ͨ��ѯ��������������������ַ�ʽ��һ���ǽ�xhr����д��ȫ�ֱ�����һ���ǽ�����Ϊ�ֲ�������
-		1. ��Ϊȫ�ֱ���ʱ�ͻ���ÿ�ζԷ������������ǻ���ͬһ��xhr���������ǰһ������û�еõ���������
-	Ӧʱ�ͻ������Ϸ���ڶ���������ǰһ������ͻᱻֹͣ��������������£�����ͻ��˷��������Ƶ�ʱȷ���������Ӧ�ٶ�
-	��Ҫ�죬��������Զ����õ�����Ľ������Ϊÿ�����µ�����ʱǰһ��������������Ӧ�ͱ���ֹ��;
+	3. 通过普通轮询向服务器发送请求有两种方式，一种是将xhr对象写作全局变量，一种是将其作为局部变量。
+		1. 作为全局变量时客户端每次对服务器的请求都是基于同一个xhr对象，如果当前一个请求还没有得到服务器响
+	应时客户端马上发起第二次请求，则前一次请求就会被停止掉。在这种情况下，如果客户端发起请求的频率比服务器的响应速度
+	还要快，则会出现永远不会得到请求的结果。因为每发起新的请求时前一次请求还来不及响应就被中止了;
 
-		2. ��xhr��Ϊ�ֲ�����д�ں�����ʱ, ÿ����һ�ξʹ���һ��xhr����ÿһ�����󻥲����š���ǰһ������û�еõ���
-	Ӧʱ���ڶ���xhr�Ѿ���ʼ�����������һ��xhr������ȴ�����������Ӧ�������п������������ť����һ�η���һ��������
-	�滻ʹ��setInterval���Ϸ�������ĳ����������ַ�ʽ�£��������������Ӧʱ���ǲ�һ���ģ��п����ȷ�������󷴶�
-	��õ���Ӧ����Ȼ���Ǻܺ���;
+		2. 将xhr作为局部变量写在函数中时, 每请求一次就创建一个xhr对象，每一个请求互不干扰。当前一个请求没有得到响
+	应时，第二个xhr已经开始发送请求，则第一个xhr会继续等待服务器的响应。程序中可以设计两个按钮，点一次发送一个请求来
+	替换使用setInterval不断发起请求的场景。在这种方式下，如果服务器的响应时间是不一定的，有可能先发起的请求反而
+	后得到响应，显然不是很合理;
 
-		3. ע�����ʹ��jquery��ajax����ʹ�õĲ���ͬһ��xhr���󣬶��Ƕ��;
+		3. 注意如果使用jquery的ajax，它使用的不是同一个xhr对象，而是多个;
 	
-	4. ʹ�ó���ѯ, ���Ķ��ǵݹ�:
-		1. ��ͨxhr: http://www.cnblogs.com/zhaowinter/p/5332681.html
-		2. ajax����ѯ: http://www.cnblogs.com/hoojo/p/longPolling_comet_jquery_iframe_ajax.html (д�ķǳ���)
+	4. 使用长轮询, 核心都是递归:
+		1. 普通xhr: http://www.cnblogs.com/zhaowinter/p/5332681.html
+		2. ajax长轮询: http://www.cnblogs.com/hoojo/p/longPolling_comet_jquery_iframe_ajax.html (写的非常好)
 
-	5. �ο����ϣ�
+	5. 参考资料：
 		1. https://segmentfault.com/a/1190000005032908
 		2. http://web.jobbole.com/85541/
 
-4. ��servlet����ͻ��˷�������ʱ��������service�����С�writer.print����һ����������service����������ʱ��Ż�ִ�С�
-����service��������һ����ѭ����������һ�������̣߳�ֻҪservice����û��ִ����ϣ�writer.print�����Ͳ���ִ��;
+4. 在servlet中向客户端发送数据时，例如在service方法中。writer.print方法一定会在整个service方法结束的时候才会执行。
+比如service方法中有一个死循环，或者有一个阻塞线程，只要service方法没有执行完毕，writer.print方法就不会执行;
 
 2017.11.03
-1. �ϴ��ļ��߼�
-	1. ǰ̨ͨ��type=file�ϴ��ļ�, �ύ����ʱͷ�����ƺ���������һ����Ϊʵ�屻�ύ�����������������õ�����ͼƬ��·����(������
-fakepath)��Ȼ�����ݿ�洢���ʵ�塣�洢ʵ����service�з������洢֮����ܵõ�id����ʱ�����޸����ݿ��иոմ��ȥ����һ�����ݣ�
-��ͼƬ·��ȡ����ֻ������׺��Ȼ������ָ�Ϊ�ոյõ���id;
+1. 上传文件逻辑
+	1. 前台通过type=file上传文件, 提交数据时头像名称和其他数据一起作为实体被提交给控制器，控制器得到的是图片的路径名(可能是
+fakepath)。然后数据库存储这个实体。存储实体在service中发生，存储之后才能得到id。此时立即修改数据库中刚刚存进去的这一条数据，
+将图片路径取出，只保留后缀，然后把名字改为刚刚得到的id;
 
-	2. ���⣬�����ݿⱣ��ʵ��ʱ����һ�����������𽫿ͻ����ύ��ͼƬ���ݱ��浽һ��ָ���ļ�����, ����Ϊid+��׺����Ϊ�ڱ���
-�����ݿ�֮��Ŵ洢ͼ�����ݣ������Ѿ���id;
+	2. 另外，当数据库保存实体时，另一个控制器负责将客户端提交的图片数据保存到一个指定文件夹中, 命名为id+后缀。因为在保存
+到数据库之后才存储图像数据，所以已经有id;
 
-	3. ��ʵ���Կ�������һ�ַ�ʽ������ͼƬ����
+	3. 其实可以考虑用另一种方式来命名图片数据
 
 2017.11.07
-1. EventSource��Websocket������
-	1. websocket����һ��xhr�����һֱ����ͨ�����ӣ���eventsource�᲻�ϵķ���xhr����;
+1. EventSource和Websocket的区别
+	1. websocket发起一起xhr请求后一直保持通道连接，而eventsource会不断的发起xhr请求;
 
 2017.11.09
 1. http://edu.csdn.net/topic/web1?utm_source=blog10
 
-2. ��webSocket�ķ���ˣ�sessionͨ��getRequestParameterMap���Ի��url��ַ�еĲ���, ͨ��getPathParameters���Ի��{}��Ĳ�����
-�ͻ���ÿ����һ��ws������ʵ���Ϸ���������������һ��webSocket����(ͨ����ӡthis����ÿһ���ͻ��˷������Ӻ�this��ֵ��һ��֤��)��
-�����޷���webSocket����ͨ��һ����ͨ�ı���list���������е�session�����ǿ���ʹ��һ����̬�ı���list���������еĿͻ��˷����
-ws����;
+2. 在webSocket的服务端，session通过getRequestParameterMap可以获得url地址中的参数, 通过getPathParameters可以获得{}里的参数。
+客户端每发起一个ws的请求，实际上服务器都新生成了一个webSocket对象(通过打印this发现每一个客户端发起连接后this的值不一样证明)，
+所以无法在webSocket类中通过一个普通的比如list来保存所有的session，但是可以使用一个静态的比如list来保存所有的客户端发起的
+ws连接;
 
 2017.11.10
 1. comet https://www.ibm.com/developerworks/cn/web/wa-lo-comet/
 
 2017.11.13
-1. ��ǿ���߳�ͬ����һЩ����, ��Դ: http://www.cnblogs.com/skywang12345/p/3479202.html
+1. 加强对线程同步的一些理解, 来源: http://www.cnblogs.com/skywang12345/p/3479202.html
 
-	1. ��һ���̷߳���ĳ�������synchronized������synchronized�����ʱ:
-		1. �����̶߳Ըö����--synchronized����������--�ķ���--�ᱻ--����;
-		2. �����̶߳Ըö����--��synchronized����������--�ķ���--����--������;
-		3. �����̶߳Ըö����--����synchronized����������--�ķ���--�ᱻ--����;
+	1. 当一个线程访问某个对象的synchronized方法或synchronized代码块时:
+		1. 其他线程对该对象的--synchronized方法或代码块--的访问--会被--阻塞;
+		2. 其他线程对该对象的--非synchronized方法或代码块--的访问--不会--被阻塞;
+		3. 其他线程对该对象的--其他synchronized方法或代码块--的访问--会被--阻塞;
 
-	2. �����ϼ���Ĳ���˵��:
-		1. ͬ����ֻ��Ӱ��ͬ�����ڵĲ��֣�ͬ���������Դ���п��ܱ���ռ;
+	2. 对以上几点的补充说明:
+		1. 同步锁只能影响同步锁内的部分，同步锁外的资源仍有可能被抢占;
 
-		2. ͬ����ֻ��Ӱ��������ͬ��ʹ����ͬ�����Ĳ��֡�������ס����Դs��λ�ڲ�ͬ�߳��ڵĿ�A�Ϳ�Bһ��������
-	����ִ�У�����֮��һ��������һ��ȫ��ִ����ɺ����ִ����һ������������һͬ��ʹ������Դs��û��ʹ��ͬ����
-	���߳��еķ���ȴ�п����ڿ�A��Bʹ����Դs��ʱ��ʹ����;
+		2. 同步锁只能影响其他的同样使用了同步锁的部分。例如锁住了资源s的位于不同线程内的块A和块B一定不可能
+	交替执行，他们之中一定是其中一个全部执行完成后才能执行另一个。但是另个一同样使用了资源s，没有使用同步锁
+	的线程中的方法却有可能在块A或B使用资源s的时候使用它;
 		
-		3. ����1�еĵ����㣬һ����synchronized���εķ������ȴ������������ζ���Ŀ�򷽷�ִ����Ϻ�Ż�ִ�У�
-	һ���������˵Ŀ�Ҳ�ᱻ���б������˵ķ����Ϳ����������ǣ���ס��ͬ����Ŀ�֮���ǲ����໥������;
+		3. 根据1中的第三点，一个被synchronized修饰的方法将等待其他所有修饰对象的块或方法执行完毕后才会执行，
+	一个被修饰了的块也会被所有被修饰了的方法和块阻塞。但是，锁住不同对象的块之间是不会相互阻塞的;
 
-		4. ע�⣬�����synchronized���ε���һ����̬��������ô�������������εĿ��ǻ���Ӱ���,
-	��̬�ķ�����ʵ������֮��Ҳ�����໥����;
+		4. 注意，如果被synchronized修饰的是一个静态方法，那么它和其他被修饰的块是互不影响的,
+	静态的方法和实例方法之间也不会相互阻塞;
 
-2. ��ͼ�����������: https://www.cnblogs.com/olvo/archive/2012/05/03/2481014.html
+2. 类图各种术语解释: https://www.cnblogs.com/olvo/archive/2012/05/03/2481014.html
 
 2017.11.14
-1. java�����븸�����
-	1. ���� �̳� �� ��д ���صȻ�������
-		1. ��������implementһ���ӿں���Բ���ʵ���κη������ӿ��е�default����Ҳ���Բ���Ҫ�κ���ȥʵ����;
+1. java子类与父类详解
+	1. 关于 继承 和 重写 重载等基本概念
+		1. 抽象类在implement一个接口后可以不用实现任何方法。接口中的default方法也可以不需要任何类去实现它;
 
 		2. Father {
 			protected void name() {// do some work}
 		}
 		Son {
 			public void useParentMethod() {
-				// ��name����ֻ�����ڸ�����ʱ
-				// super.name��this.name���ǵ��õ�ͬһ������
+				// 当name函数只存在于父类中时
+				// super.name和this.name都是调用的同一个函数
 				
-				// ����������һ���͸��ຯ��ǩ����ȫһ����name����ʱ��super.���ø���ģ�this.���������
+				// 当子类中有一个和父类函数签名完全一样的name函数时，super.调用父类的，this.调用子类的
 				super.name();
 				this.name();
 			}
-			// "��д"����ĳ�Աʱ��ֻ�������η�Χ���ڵ��ڸ�������δ�������
-			// ������protected�������ֻ��ʹ��protected��public������
+			// "重写"父类的成员时，只能用修饰范围大于等于父类的修饰词来修饰
+			// 父类是protected，子类就只能使用protected或public来修饰
 			/*@Override
 			protected void name() {
-				System.out.println("�����name����");
+				System.out.println("子类的name函数");
 			}*/
 			
-			// �������"����"�����ͬ�����������"����"�ĺ�����������ָ�����δ�
+			// 子类可以"重载"父类的同名函数，这个"重载"的函数可以任意指定修饰词
 			private void name(String s) {
 			
 			}
@@ -1081,44 +1081,44 @@ ws����;
 				
 			}
 			
-			// ��������ͼͨ��ֻ�ı亯������ֵ�����͵������ظ����ͬ������
-			// �����ķ���ֵ�����ں����ķ���ǩ��
-			// �������д����ͬһ���൱��д������ͬ��������ֵ��һ���ķ�����һ���ģ��ǷǷ���
+			// 不可以试图通过只改变函数返回值的类型的来重载父类的同名函数
+			// 函数的返回值不属于函数的方法签名
+			// 因此这样写跟在同一个类当中写了两个同名但返回值不一样的方法是一样的，是非法的
 			/*public int name() {
 				return 1;
 			}*/
 		}
 	
-		3. �������͸�����ͬ������, �������������˸���ĺ���, ���ಢ���Ǹ����˸���ĳ�Ա, ���������ˡ������Ա��Ȼռ��ջ�ڴ档
+		3. 如果子类和父类有同名属性, 或者子类重载了父类的函数, 子类并不是覆盖了父类的成员, 而是隐藏了。父类成员仍然占用栈内存。
 
-		4. ����͸���Ĺ��캯��
+		4. 子类和父类的构造函数
 			1. public SubClass {
 					// super();
-					1. �����ÿһ�����캯���ڲ���ȷָ�����ø�����ĸ����캯��ʱ, ����Ĭ�ϵ��ø���Ĳ��������Ĺ��캯�����൱������
-				���캯���ĵ�һ�����Ĭ��Ϊ super(), �������û�в���������Ĭ�Ϲ��캯��, ������Ĺ��캯����, ������ʽָ���ǵ�����
-				�������һ�����캯��, ��
+					1. 子类的每一个构造函数在不明确指定调用父类的哪个构造函数时, 都会默认调用父类的不带参数的构造函数。相当于子类
+				构造函数的第一条语句默认为 super(), 如果父类没有不带参数的默认构造函数, 则子类的构造函数中, 必须显式指定是调用了
+				父类的哪一个构造函数, 如
 					// super("strParam");
-					ÿһ������Ĺ��캯����������ֻ�ܵ���һ�θ��������һ�����캯��
+					每一个子类的构造函数都必须且只能调用一次父类的任意一个构造函数
 
-					2. ���Ҫд��ʽ��дsuper()����super(param...), ��super()���������๹�캯���ĵ�һ����䡣��ˣ���Ȼ��������
-				һ�����캯���г�������super(param...), ��
+					2. 如果要写显式的写super()或者super(param...), 则super()必须是子类构造函数的第一条语句。因此，当然不可能在
+				一个构造函数中出现两个super(param...), 如
 					// super(param...); 
 					// super();
-					��Ϊ�����൱�ڵڶ���superΥ����super()���������๹�캯����һ������ԭ��
+					因为这样相当于第二个super违反了super()必须是子类构造函数第一条语句的原则
 
-					3. ��һ�����캯����, ���������this()���������Ĺ��캯��, �򲻿���super()��this()ͬʱ����, ������������д
+					3. 在一个构造函数中, 如果还想用this()调用自身的构造函数, 则不可以super()和this()同时出现, 即不可以这样写
 					// super(param...); 
 					// this(param...)
-					��Ϊʵ���ϣ����Ҫʹ��this()���������Ĺ��캯������ôthis()���Ҳ���������������this�����๹�캯��"��ʽ"���õ�
-				��һ�����, ����thisҲֻ�ܵ���һ��
-					������1, 2������˵�������ÿһ�����캯����������ø���Ĺ��캯��, ������Ϊ���������Ǹ����캯��һ��������
-				super���, ���Ժ�����ͨ��this�������������๹�캯���Ϳ��Բ����ٵ��ø��๹�캯����
+					因为实际上，如果要使用this()调用自身的构造函数，那么this()语句也必须是这个调用了this的子类构造函数"显式"调用的
+				第一条语句, 而且this也只能调用一次
+					但是在1, 2中我们说了子类的每一个构造函数都必须调用父类的构造函数, 这是因为子类最顶层的那个构造函数一定调用了
+				super语句, 所以后来的通过this调用了它的子类构造函数就可以不用再调用父类构造函数了
 					
-					4. ���캯��ִ��˳��
-						��ִ�и��๹�캯��(�������ʼ��, ������ʵ��������), Ȼ��һ��һ��ִ��ͨ��this���õ����๹�캯��
+					4. 构造函数执行顺序
+						先执行父类构造函数(子类想初始化, 必须先实例化父类), 然后一级一级执行通过this调用的子类构造函数
 				}
 
-	2. ��������
+	2. 两个例子
 		1. 
 			class A {
 				public void fun(A a) {sout(1);}
@@ -1128,32 +1128,32 @@ ws����;
 				public void fun(B b) {sout(3);}
 			}
 			A a = new B();
-			a.f(new B()); // ��������2
+			a.f(new B()); // 输出结果是2
 
-		����ԭ��: 
-			1. a��һ��A���͵Ķ���, ���϶������ܵ�����������B��ӵ�еķ���f(B b), ����������������Ϊ3�����fһ���ǵ��õ�class A 
-		�����ķ���fun(A a);
+		分析原因: 
+			1. a是一个A类型的对象, 它肯定不可能调用它的子类B才拥有的方法f(B b), 所以输出结果不可能为3。这个f一定是调用的class A 
+		自身的方法fun(A a);
 
-			2. ����a����һ��B��Ķ�������ת�͵���, ���class A�ķ���f(A a)ʵ���ϱ�class B�����ط���f(A a)�����ˡ�����������Ӧ��Ϊ2��
-		������ΪB����A�����࣬���Է���f(A a)ʵ����Ҳ���Խ���B���͵Ĳ���
+			2. 对象a是由一个B类的对象向上转型得来, 因此class A的方法f(A a)实际上被class B的重载方法f(A a)覆盖了。所以输出结果应该为2。
+		这里因为B类是A的子类，所以方法f(A a)实际上也可以接受B类型的参数
 
 	2. 
 	public static void main(String[] args) {
 		SuperClass superClass = new SubClass();
-		/* �����
-			���๹�캯��--super class
-			null ����fun����
-			���๹�캯��--sub class
-			sub class ����fun����
+		/* 结果是
+			父类构造函数--super class
+			null 子类fun方法
+			子类构造函数--sub class
+			sub class 子类fun方法
 		*/
     }
     static class SuperClass {
         private String name = "super class";
         protected void fun() {
-            System.out.println(name + " ����fun����");
+            System.out.println(name + " 父类fun方法");
         }
         public SuperClass() {
-            System.out.println("���๹�캯��" + "--" + name);
+            System.out.println("父类构造函数" + "--" + name);
             fun();
         }
     }
@@ -1161,183 +1161,183 @@ ws����;
         private String name = "sub class";
         @Override
         public void fun() {
-            System.out.println(name + " ����fun����");
+            System.out.println(name + " 子类fun方法");
         }
         public SubClass() {
-            System.out.println("���๹�캯��" + "--" + name);
+            System.out.println("子类构造函数" + "--" + name);
             fun();
         }
     }
-	ԭ�������
-		����ʵ����ʱ�����Ȼ�����еı���������ջ�ռ���(�������)�������еĴ洢�ռ�����֮��ſ�ʼ��ֵ(��ֵ�������)����ˣ���ʼ��
-	�������ʱ�����ȸ������name����ռ䣬Ȼ�������name����ռ䡣��ʱջ�ռ�����Ѿ���ɣ���ʼ��ֵ�����ȸ�����name��ֵ�����ŵ���
-	���๹�캯�������ڸ��๹�캯���е�fun�Ѿ����������أ���˵��������fun������nameָ���Ҳ�������name������ʱ�����name����û
-	�и�ֵ��������Ϊnull
+	原因分析：
+		对象实例化时，首先会给所有的变量都存入栈空间中(存放引用)。当所有的存储空间分配好之后才开始赋值(将值存入堆中)。因此，初始化
+	子类对象时，首先给子类的name分配空间，然后给父类name分配空间。此时栈空间分配已经完成，开始赋值。首先给父类name赋值，接着调用
+	父类构造函数，由于父类构造函数中的fun已经被子类重载，因此调用子类的fun函数，name指向的也是子类的name。但此时子类的name尚且没
+	有赋值，因此输出为null
 
-2. java����Դ�����: http://blog.csdn.net/column/details/collection.html
-   �߳����: http://blog.csdn.net/ns_code/article/details/17539599
+2. java集合源码分析: http://blog.csdn.net/column/details/collection.html
+   线程详解: http://blog.csdn.net/ns_code/article/details/17539599
 
-3. �����߳�
-	1. һ���߳���sleep�б����ʱ������̲߳��ᱻ��ֹ�������׳��쳣Ȼ�����ִ��catch������ͺ�������ݡ�һ���߳����û��
-start()���򲻹��Ƿ����t.interrupt(), ��t.isInterrupted()�Ľ����Ϊfalse;
+3. 关于线程
+	1. 一个线程在sleep中被打断时，这个线程不会被终止，它会抛出异常然后继续执行catch块里面和后面的内容。一个线程如果没有
+start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	
-4. ͨ��������װ����HttpServletRequestWrapper��һ��������Ϊ�ڲ�����ڹ������У�Ȼ���ڹ������н�request�ð�װ���װ�󴫵���ȥ;
+4. 通常都将包装类如HttpServletRequestWrapper的一个子类作为内部类放在过滤器中，然后在过滤器中将request用包装类包装后传递下去;
 
 2017.11.15
-1. dns��ѯ http://tool.chinaz.com/dns
+1. dns查询 http://tool.chinaz.com/dns
 
-2. git�����̳�, http://www.runoob.com/w3cnote/git-guide.html
-	1. ��¡�ֿ�
-		1. ������¡���˵Ĳֿ⣬ֻ��Ҫ���Լ����ļ����ڴ�git bash��Ȼ�����git clone url�Ϳ��Խ�����Ŀ��¡������
-	����Ҫ�����κ�ָ��.���� git clone https://github.com/liqiyuanbetter/myNote.git ����liqiyuanbetter������û����û���,
-	myNote�����Ĳֿ���;
+2. git简明教程, http://www.runoob.com/w3cnote/git-guide.html
+	1. 克隆仓库
+		1. 如果想克隆别人的仓库，只需要在自己的文件夹内打开git bash，然后键入git clone url就可以将该项目克隆下来，
+	不需要其他任何指令.例如 git clone https://github.com/liqiyuanbetter/myNote.git 其中liqiyuanbetter是这个用户的用户名,
+	myNote是他的仓库名;
 
-		2. Ҳ���Կ�¡�Լ��Ĳֿ�, ��ָ���ļ���������git clone·�������ˣ���git clone /C/Users/017548/Desktop/�ĵ�/mine��
-	����Ҫע��, ���·������Ҫ��һ��git�ֿ⣬Ҳ����git init��������·���ķָ�������/
+		2. 也可以克隆自己的仓库, 在指定文件夹内输入git clone路径就行了，如git clone /C/Users/017548/Desktop/文档/mine，
+	但是要注意, 这个路径必须要是一个git仓库，也就是git init过。而且路径的分隔符都是/
 
-	2. ��ν��Լ�����Ŀ(���ļ�)�ϴ���github��
-		1. ������github�ϴ���һ���˺�, Ȼ���½�һ���ֿ⡣
+	2. 如何将自己的项目(或文件)上传到github上
+		1. 首先在github上创建一个账号, 然后新建一个仓库。
 
-		2. ����git
-			1. �Ҽ�git bash(����������λ��), Ȼ������ssh-keygen -t rsa -C "your_email@youremail.com", �������
-		���Լ�ע���õ������˺š���������������ȷ�����ɵ������ļ���·��������(��������ںϲ��ֿ���ϴ��ļ�ʱ�����õ�)��
-		��ָ����·��(Ĭ��·����C:\Users\Liqiyuan\.ssh)�»�����git��git.pub�����ļ����Ҽ��༭git.pub�ļ������������key��
-		Ȼ�����Լ���github�˻���ѡ��settings-SSH and GPG keys��ѡ��new SSH key, ���Ӹղ����ɵ�ssh, ����������ȡ;
+		2. 配置git
+			1. 右键git bash(可以在任意位置), 然后输入ssh-keygen -t rsa -C "your_email@youremail.com", 这个邮箱
+		是自己注册用的邮箱账号。接下来会让我们确定生成的配置文件的路径和密码(这个密码在合并仓库或上传文件时都会用到)。
+		在指定的路径(默认路径在C:\Users\Liqiyuan\.ssh)下会生成git和git.pub两个文件。右键编辑git.pub文件，复制里面的key，
+		然后在自己的github账户中选择settings-SSH and GPG keys，选择new SSH key, 添加刚才生成的ssh, 标题可以随便取;
 
-			2. ���ڿ��Կ�ʼ�ϴ������Լ�����Ŀ�ļ�������������Ҫ����Ŀ�����ļ�����ִ��git init���������ļ���
-		��Ϊһ��git�ֿ⡣Ȼ��ִ��git remote add origin git@github.com:yourName/yourRepo.git �������������һ��Զ��
-		���ӡ�yourName���û���(��������û����Լ�����Ϊ�����ߣ�Ҳ����д�����˵�), youRepo��ʾҪͬ����git�ϵĲֿ�����
+			2. 现在可以开始上传我们自己的项目文件，但是首先需要在项目所在文件夹中执行git init命令，让这个文件夹
+		成为一个git仓库。然后执行git remote add origin git@github.com:yourName/yourRepo.git 命令，这样添加了一个远程
+		连接。yourName是用户名(如果其他用户把自己邀请为贡献者，也可以写其他人的), youRepo表示要同步的git上的仓库名。
 
-			��Ҫע����ǣ�
-				1. origin��������ǿ������ȡ�ģ�ÿ����һԶ�����ӣ���config�ļ��оͻ��һ��remote ��������
-			����ʵ����ÿһ����������Ӧ������Ӧ�Ĳֿ�����֡���������push�����ʱ��ʵ������ָ����push���ֿ���
-			���ĸ���֧���档
+			需要注意的是：
+				1. origin这个名字是可以随便取的，每增加一远程连接，在config文件中就会多一个remote 连接名。
+			所以实际上每一个连接名对应的是相应的仓库的名字。而我们在push代码的时候，实际上是指定了push到仓库里
+			的哪个分支上面。
 		
-				2. git�л�������ָ���Զ�ֿ̲�
-					1. ʹ������ git remote set-url origin yourUrl
+				2. git切换连接所指向的远程仓库
+					1. 使用命令 git remote set-url origin yourUrl
 
-					2. ֱ���޸�config�ļ��е�url��ַ
+					2. 直接修改config文件中的url地址
 
-				���������޸ĺ��ʹ��ssh��ԿʧЧ, ÿ�ζ�Ҫ��������git���˺������������push;����ɾ�����Զ��
-			����Ȼ����������add;
+				做了这种修改后会使得ssh秘钥失效, 每次都要重新输入git的账号名和密码才能push;除非删除这个远程
+			连接然后再重新在add;
 
-				3. ���������Զ�����ӵ�ʱ����ʾ�Ѵ��ڣ�����ͨ������git remote rm origin(������)��ɾ������;
+				3. 如果在添加远程连接的时候显示已存在，可以通过命令git remote rm origin(连接名)来删除连接;
 
-			3. ���������ݵ�������֮ǰ�����ǻ�Ӧִ��git pull origin master�������������ǵı��زֿ��Ժͷ������İ汾
-		����һ�¡���Ϊ������git���½��ֿ��ʱ��������һЩ������˵���ļ�����Щ�ļ������ǵı��زֿ�û�еġ���ʵ������ÿ
-		���ύ�Ķ�֮ǰ��Ӧ���ȸ������Ǳ��صĲֿ���ȷ�����Ѿ������µİ汾
+			3. 在推送内容到服务器之前，我们还应执行git pull origin master命令来更新我们的本地仓库以和服务器的版本
+		保持一致。因为我们在git上新建仓库的时候生成了一些其他的说明文件，这些文件是我们的本地仓库没有的。事实上我们每
+		次提交改动之前都应该先更新我们本地的仓库来确保它已经是最新的版本
 
-			4. ����������ִ����������, git add fileName ��git add *, git commit -m "�����ύע��"������git�Ļ���
-		�������̡����زֿ���gitά������������ɣ���һ�������ǵĹ���Ŀ¼��������ʵ���ļ����ڶ������ݴ���(index)������
-		�������ƻ���������ʱ�������������ĸĶ�(��add����ļ�)�������Head����ָ�����������ύ�Ľ��, ��commit���
-		�ļ�;
+			4. 接下来依次执行以下命令, git add fileName 或git add *, git commit -m "本次提交注释"。这是git的基本
+		工作流程。本地仓库由git维护的三棵树组成，第一个是我们的工作目录，它持有实际文件。第二个是暂存区(index)，它的
+		作用类似缓存区域，临时保存我们所作的改动(即add后的文件)。最后是Head，它指向我们最终提交的结果, 即commit后的
+		文件;
 
-			5. ��ִ��commit����֮��, ���������ĸĶ��Ѿ��ύ����HEAD���ǻ�û���ύ��Զ�˲ֿ⡣ִ��
-		git push origin master��������Щ�Ķ�������ˡ�ע�⣬������pull�����push���������ͨ��origin banch-name��
-		ָ������һ����֧�����ǵ�ȻҲ����ѡ���master֮���������֧;
+			5. 在执行commit命令之后, 我们所作的改动已经提交到了HEAD但是还没有提交到远端仓库。执行
+		git push origin master来推送这些改动到服务端。注意，不论是pull命令还是push命令，都必须通过origin banch-name来
+		指定是哪一个分支。我们当然也可以选择除master之外的其他分支;
 
-	3. �汾��ͻʱ
-		1. ǿ���ñ����ļ�����Զ�ֿ̲�git push -f origin master, ������һ��-f��ʾǿ��
+	3. 版本冲突时
+		1. 强制用本地文件覆盖远程仓库git push -f origin master, 加上了一个-f表示强制
 
-		2. pullʱ�����汾��ͻʱ��ִ����������
-			1. git stash(�ݴ汾���޸�), ��ͨ��git stash list�����������Ϣ;
+		2. pull时发生版本冲突时，执行以下命令
+			1. git stash(暂存本地修改), 可通过git stash list看到保存的信息;
 
-			2. ��ʱ��ִ��git pull origin ban_name���ܳɹ�ִ����, ��ʱ�൱����Զ�˰汾�����˱��ذ汾��Ȼ��ͨ��
-		git stash pop stash@{0} ����ԭ�ݴ��������ʱϵͳ����ʾ�г�ͻ
+			2. 这时再执行git pull origin ban_name就能成功执行了, 这时相当于用远端版本覆盖了本地版本。然后通过
+		git stash pop stash@{0} 来还原暂存的内容这时系统会提示有冲突
 
-			3. �򿪳�ͻ�ļ����ֶ�ȥ�޸ġ�Updated upstream ��=====֮������ݾ���pull���������ݣ�
-		====��stashed changes֮������ݾ��Ǳ����޸ĵ����ݡ��޸���Ϻ���add, commit�Ϳ����������ύ��
+			3. 打开冲突文件，手动去修改。Updated upstream 和=====之间的内容就是pull下来的内容，
+		====和stashed changes之间的内容就是本地修改的内容。修改完毕后在add, commit就可以正常的提交了
 
-	4. git���������޸�����˰汾
-		1. ����û��add�ı����޸���git checkout fileName, ����ֱ�ӽ��ļ���ԭ�������һ��addʱ״̬
+	4. git撤销本地修改与回退版本
+		1. 撤销没有add的本地修改用git checkout fileName, 可以直接将文件还原到最近的一次add时状态
 
-		2. �ӱ��زֿ��б�ɾ�����ļ���������shift + delete����ִ������rm fileNameɾ�����ļ�������ͨ��
-	git checkout filename���ָ���add����ļ���ɾ���˾Ϳ���ͨ����������һ�
+		2. 从本地仓库中被删除的文件，不管是shift + delete还是执行命令rm fileName删除的文件都可以通过
+	git checkout filename来恢复。add后的文件被删除了就可以通过这个命令找回
 		
-		3. ����û��commit�ı����޸���git reset --hard���������Ὣ�ļ���ԭ�������һ��commit��״̬, ע�⣬���ֻ
-	add���ļ�����û��commit, ��ôreset����Щadd��������Ҳ����ʧ��Ҳ����˵resetֻ�ᱣ��commit������;��������һ�add�˵�
-	�Ƕ�ʧ�˵��ļ���ô�죬����ִ��: git fsck --lost-found�������, Ȼ����.git/lost-found/other���·���¿����ҵ�����add
-	�����ļ���reset���Ի����ĳһ�̵�commit������ͨ��git reflog�鿴�ύ����־, ��־���������ύʱд��ע�͵ģ�����д��ע��
-	���б�Ҫ����git reset --hard 90e79f8, ���ָ���90e79f8���commit�������;ע�������û��commitҲû��add, ����Щ�޸�
-	��ԶҲ�Ҳ�������������ʱcommit�Ǻ�ϰ��;
+		3. 撤销没有commit的本地修改用git reset --hard，这个命令会将文件还原到最近的一次commit的状态, 注意，如果只
+	add了文件但是没有commit, 那么reset后那些add过的内容也会消失，也就是说reset只会保留commit的内容;那如果想找回add了但
+	是丢失了的文件怎么办，可以执行: git fsck --lost-found这个命令, 然后在.git/lost-found/other这个路径下可以找到所有add
+	过的文件。reset可以会滚到某一刻的commit，可以通过git reflog查看提交的日志, 日志里面是有提交时写的注释的，所有写好注释
+	很有必要。如git reset --hard 90e79f8, 这会恢复到90e79f8这次commit后的样子;注意如果既没有commit也没有add, 则那些修改
+	永远也找不回来，所以随时commit是好习惯;
 
-	5. ��֧ https://blog.zengrong.net/post/1746.html
-		1. git checkout -b branch_name���Դ�����֧��git checkout branch_name�����л���֧, git branch -d branch_name
-	����ɾ�����ط�֧, git push origin branch_name����֧���͵�Զ�ֿ̲⣬�����֧���ɼ�, ��ֻ��һ�����ط�֧;
+	5. 分支 https://blog.zengrong.net/post/1746.html
+		1. git checkout -b branch_name可以创建分支，git checkout branch_name可以切换分支, git branch -d branch_name
+	可以删除本地分支, git push origin branch_name将分支推送到远程仓库，否则分支不可见, 它只是一个本地分支;
 
-		2. ����ͨ��git branch -a ���鿴���б��صĺ�Զ�̷�֧, ��ɫ���Ǳ��صģ���ɫ���ǵ�ǰʹ�õı��ط�֧����ɫ����Զ��
-	��֧, ���غ���ֻ�ܿ������Լ����͵�Զ�̷�֧�������Կ�����github��ҳ�Ͽ������еķ�֧��Ȼ���ڱ���������ɾ����֧
+		2. 可以通过git branch -a 来查看所有本地的和远程分支, 白色的是本地的，绿色的是当前使用的本地分支，红色的是远程
+	分支, 本地好像只能看到的自己推送的远程分支。但是仍可以在github网页上看到所有的分支，然后在本地用命令删除分支
 		
-		3. ɾ��Զ�̷�֧�����ַ���: git push origin :branch_name�� git push origin --delete branch_name
+		3. 删除远程分支有两种方法: git push origin :branch_name和 git push origin --delete branch_name
 
-	6. ɾ��Զ�ֿ̲��ļ�
+	6. 删除远程仓库文件
 		1. git rm -r --cached fileName
-		2. git commmit -m "ɾ��fileName"
-		3. ���޸��ύ��Զ�ֿ̲� git push origin master
+		2. git commmit -m "删除fileName"
+		3. 将修改提交到远程仓库 git push origin master
 
-	7. git�û������˺�
-		1. git config user.name �� git config user.email�ֱ���Կ�����ǰ�ֿ��µ�git�˻����û��������䡣ע����ʵ�ϲ�ͬ�Ĳֿ⣬
-	����˵��ͬ����Ŀ���Զ�Ӧ��ͬ���˻�������ͨ��git config --global user.name/email���鿴ȫ�ֵ����ã�Ĭ����ʹ�õ�ȫ�����á�
-	ͨ��git�����޸���Щ����ʱ, ֻ��git config --global user.name "��������д�µ�git�˻���"����ʹ��sourceTreeʱ��Ҫע����㣬��
-	Ϊ�п��ܷ����ϴ����˻�����;
+	7. git用户名和账号
+		1. git config user.name 和 git config user.email分别可以看到当前仓库下的git账户的用户名和邮箱。注意事实上不同的仓库，
+	或者说不同的项目可以对应不同的账户。可以通过git config --global user.name/email来查看全局的配置，默认是使用的全局配置。
+	通过git命令修改这些配置时, 只需git config --global user.name "引号里面写新的git账户名"。在使用sourceTree时需要注意这点，因
+	为有可能发现上传者账户不对;
 
-		2. ͨ��git config user.email���޸ĵ�ǰ�û�ʱ��������email��Ӧ��github�ϵ�һ���˺��� user.name���޸�����Ч
-	�ģ������ߵ�����ʼ����ʾΪ���email��Ӧ���û�����������������һ��δע������䣬�����߻���ʾuser.name;
+		2. 通过git config user.email来修改当前用户时，如果这个email对应着github上的一个账号则 user.name的修改是无效
+	的，贡献者的姓名始终显示为这个email对应的用户名。如果这个邮箱是一个未注册的邮箱，则贡献者会显示user.name;
 
-		3. ȫ���˺ŵ�Ĭ�������ļ���C:\Users\��ǰ�û�������ļ����£���Ҳ��linux��Ŀ¼, ��~������ֱ��������ļ������޸��û����ã�
-	��
+		3. 全局账号的默认配置文件在C:\Users\当前用户名这个文件夹下，这也是linux根目录, 即~。可以直接在这个文件夹中修改用户配置，
+	即
 		[user]
 			name = liqiyuan
 			email = dota2fordota2@163.com
 
-	8. ����ָ�����ļ�
-		1. �ڲֿ��и�Ŀ¼�¼���.gitignore�ļ�����ָ��������Щ�ļ�, ע�����gitignore�ļ���û���ļ����ġ�windows���޷�����û��
-	���ֵ��ļ���������������git���������� touch .gitignore;
+	8. 忽略指定的文件
+		1. 在仓库中根目录下加入.gitignore文件可以指定忽略哪些文件, 注意这个gitignore文件是没有文件名的。windows下无法创建没有
+	名字的文件，创建方法是在git命令行输入 touch .gitignore;
 		
-		2. ����ģʽ���������Щ�ļ����ļ���
-			1. ����ָ�������ļ� *.zip, *.txt
-			2. �����ļ��� /directoryName
-			3. ����ָ���ļ� /directoryName/fileName.fileType
+		2. 开放模式负责过滤哪些文件和文件夹
+			1. 忽略指定类型文件 *.zip, *.txt
+			2. 过滤文件夹 /directoryName
+			3. 过滤指定文件 /directoryName/fileName.fileType
 
-		3. ����ģʽ���𲻹�����Щ�ļ���, ��������Щ�ļ�, ֻ����ǰ�����һ��!, ��!*.zip
+		3. 保守模式负责不过滤哪些文件夹, 即跟踪那些文件, 只需在前面加上一个!, 如!*.zip
 	
-	9. ʹ��eclipseʵ���ϴ�������
-		1. ��eclipse�ϴ���Ŀ��git http://blog.csdn.net/ymfwj/article/details/52491194
-		2. ��eclipse��pull���� https://www.cnblogs.com/qlong8807/p/6098406.html
+	9. 使用eclipse实现上传与下载
+		1. 用eclipse上传项目到git http://blog.csdn.net/ymfwj/article/details/52491194
+		2. 用eclipse来pull代码 https://www.cnblogs.com/qlong8807/p/6098406.html
 
 2017.11.16
-1. ������ڰ汾���� https://ftp.mozilla.org/pub/firefox/releases/56.0/win64/zh-CN/ 
+1. 火狐早期版本下载 https://ftp.mozilla.org/pub/firefox/releases/56.0/win64/zh-CN/ 
 
-2. ��ô��eclipse��Ŀ�ϴ���git
+2. 怎么把eclipse项目上传到git
 
-3. list���Ե����Լ���list.sort(Comparator<T>)����������Ҳ����ʹ��Collections.sort(list, Comparator<T>)��������, Collections
-Ĭ���Դ�һ����������Collections.sort(list)��ע��Comparator�ӿ���ֻ��һ�����󷽷�compare(T, T)
+3. list可以调用自己的list.sort(Comparator<T>)方法来排序，也可以使用Collections.sort(list, Comparator<T>)方法排序, Collections
+默认自带一个排序器，Collections.sort(list)，注意Comparator接口中只有一个抽象方法compare(T, T)
 
 2017.11.20
-1. ���� getResource("")
-	1. ע����maven��Ŀ��, ����src/main/resources�µ��ļ���ֱ�ӷ���src/main/java�µ��ļ��ڱ�����λ�ö���һ���ģ����Ƕ�
-λ����Ŀ��Ŀ¼�µ�/target/classes���Ŀ¼���Ʋ�֮���Ե�����һ��resources��Ϊ�˷����������Ϊֱ�ӷ���java�¾��Ǹ������İ���
-ͬһ������������ļ����Եû��ҡ��������maven:clean��ɾ��target�ļ��м���������Ŀ¼��
+1. 关于 getResource("")
+	1. 注意在maven项目中, 放在src/main/resources下的文件跟直接放在src/main/java下的文件在编译后的位置都是一样的，它们都
+位于项目根目录下的/target/classes这个目录，推测之所以单独有一个resources是为了方便管理。因为直接放在java下就是跟最外层的包在
+同一级，如果配置文件多显得混乱。如果运行maven:clean会删除target文件夹及其所有子目录。
 
-	2. ���д---this.getClass().getClassLoader().getResource("").getFile()��ô�õ�������������������ļ����ڵĸ�Ŀ¼, 
-��maven��Ŀ�����·����/target/classes/; �������getClassLoaderֻд---this.getClass().getResource().getFile()����ô�õ���·����
-�����������ڵİ���·������/target/classes/package_name/����������Ϊ�����������������๫�õ�; �����ܽ�Ϊ���ڸ������µ�����
-�ļ���Ҫ��classLoader���������ܵ������ļ���ģ�����˵���������ͬһ��Ŀ¼�������ļ���Ҫ��getClassLoader����������������ļ���
-resources���½���һ����ĳ������ͬ�����ļ��У���ô��������Ƿ�������ļ����µ������ļ��ͻ�͸ð��е���ͬһ��
+	2. 如果写---this.getClass().getClassLoader().getResource("").getFile()那么得到的是所有类编译后的类文件所在的根目录, 
+在maven项目中这个路径是/target/classes/; 如果不加getClassLoader只写---this.getClass().getResource().getFile()，那么得到的路径会
+包括该类所在的包的路径，如/target/classes/package_name/。可以理解为这个类加载器是所有类公用的; 可以总结为放在各个包下的配置
+文件不要用classLoader，而放在总的配置文件里的，或者说跟顶层包在同一级目录的配置文件需要用getClassLoader。如果我们在配置文件夹
+resources下新建了一个和某个包名同名的文件夹，那么编译后我们发现这个文件夹下的配置文件就会和该包中的类同一级
 
-	3. �������ȡ�ļ�ʱҪ���������ɵ�.class�ļ���·����Ϊ���ֵ㣬������.java��·����Ϊ���ֵ�
+	3. 我们想获取文件时要以最终生成的.class文件的路径作为着手点，不能以.java的路径作为着手点
 
-	4. ����this.getClass.getResource()��ClassName.class.getResource()�õ��Ľ����һ����
+	4. 调用this.getClass.getResource()和ClassName.class.getResource()得到的结果是一样的
 
-	5. getPath()��bug
-		����getRecource(pathName).getPath()ʱ�����pathName���пո�, ��f f.properties, ��õ����ַ�������f%20f.proerties, ���
-	��ʱ��new File("")�ͻ�������, ���ͨ��������һ������ new File(url.getPath().replaceAll("%20", " "))
+	5. getPath()的bug
+		调用getRecource(pathName).getPath()时，如果pathName中有空格, 如f f.properties, 则得到的字符串会变成f%20f.proerties, 如果
+	此时用new File("")就会有问题, 因此通常做这样一个处理 new File(url.getPath().replaceAll("%20", " "))
 
-	6. getResource��getResources������ https://blog.csdn.net/gzuimis/article/details/44198737
+	6. getResource和getResources的区别 https://blog.csdn.net/gzuimis/article/details/44198737
 
-2. idea��eclipse maven��Ŀ�½������ļ�������
-	1. ����λ��java�������������Դ�ļ���(��resources)�µ������ļ�, eclipse�������Զ�������뵽��Ӧ�İ������档��idea����, 
-Ϊ����idea���ڱ���������ļ����뵽target��, ��Ҫ��pom�ļ��м�����������
+2. idea和eclipse maven项目新建配置文件的区别
+	1. 对于位于java包下面而不在资源文件夹(即resources)下的配置文件, eclipse编译后会自动将其加入到相应的包的下面。而idea不会, 
+为了让idea能在编译后将配置文件加入到target中, 需要在pom文件中加上以下配置
 		<build>
 			<resources>
 			  <resource>
@@ -1349,158 +1349,161 @@ resources���½���һ����ĳ������ͬ�����ļ��У���ô��������Ƿ�������ļ����µ����
 			  </resource>
 			</resources>
 		</build>
-	����${basedir}��MAVEN���ñ���, ��ʾ��Ŀ��Ŀ¼
+	其中${basedir}是MAVEN内置变量, 表示项目根目录
 
-	2. ����idea, resources�ļ���λ�ñ�����src/main/javaͬ��, ��λ��main�ļ��е���һ��
+	2. 对于idea, resources文件的位置必须在src/main/java同级, 即位于main文件夹的下一级
 
-3. ��̬����import static
-	1. ���ǿ���ʹ��import static com...className.*�����ʾ����������className�еľ�̬��Ա��ʹ��ʱ�Ϳ���ֱ��д��̬��Ա��
-������д����������д*��ʾ���еľ�̬��Ա��Ҳ����ֻ����ĳһ����̬��Ա
+3. 静态导入import static
+	1. 我们可以使用import static com...className.*，这表示将导入所有className中的静态成员，使用时就可以直接写静态成员名
+而不用写类名，可以写*表示所有的静态成员，也可以只导入某一个静态成员
 
-4. SSLSocket���������
+4. SSLSocket及其相关类
 	1. http://blog.csdn.net/zdx1515888659/article/details/44593967
 
 2017.11.21
-1. �����ӿڣ��ֽ�SAM, single abstract method interfaces
-	1. java�ĺ����ӿ���ָֻ����һ�����󷽷��Ľӿڣ���jdk1.8�У�����ʹ�� @FunctionalInterface�����ӿ�����ע�⡣ע�⣬
-�����ӿڿ��԰������Ĭ�Ϸ���, Ҳ���԰��������̬��������Ϊ���Ƕ����ǳ��󷽷�����̬������Ĭ�Ϸ����������ڽӿ��и���ʵ��;
+1. jdk8新特性
+	1.1. 函数接口，又叫SAM, single abstract method interfaces
+		1.1.1 java的函数接口是指只包含一个抽象方法的接口，在jdk1.8中，可以使用 @FunctionalInterface来给接口添加注解。注意，
+	函数接口可以包含多个默认方法, 也可以包含多个静态方法，因为他们都不是抽象方法。静态方法和默认方法都必须在接口中给出实现;
 
-2. lambdab����ʽ�����÷�
-	1. ��ĳ�������Ĳ����к���"�����ӿ�"ʱ����ͳ�����ǵ��øú���ʱ����һ��ʵ�ֽӿڵ������࣬���ڿ�����lambda����ʽ�滻������
-����foo(MyInterface i) �Ĳ���������һ�������ӿڣ���ô�ڵ��õ�ʱ���������дfoo( (Params...) -> {// code} ) );MyInterface
-�еķ����м�������, params���м���������code�з�������ҲҪ�ͽӿ��з���һ�¡����ʵ�ִ���ֻ��һ�п��Բ��Ӵ����ţ����Ҳ���üӷ�
-������Ҳ����дreturn, ��(a, b) -> a + b������return��һ��Ҫ�Ӵ����źͷֺ�;�������ֻ��һ���������Ҳ���ü����ţ�����: 
-a -> // code
+	1.2. lambdab表达式基本用法
+		1.2.1. 当某个函数的参数中含有"函数接口"时，传统做法是调用该函数时传入一个实现接口的匿名类，现在可以用lambda表达式替换。例如
+	函数foo(MyInterface i) 的参数类型是一个函数接口，那么在调用的时候可以这样写foo( (Params...) -> {// code} ) );MyInterface
+	中的方法有几个参数, params就有几个参数，code中返回类型也要和接口中方法一致。如果实现代码只有一行可以不加大括号，最后也不用加分
+	号甚至也不用写return, 如(a, b) -> a + b。用了return则一定要加大括号和分号;另外如果只有一个参数左边也不用加括号，例如: 
+	a -> // code
 
-	2. ֱ������һ��ʵ�ֺ����ӿڵ�������, MyInterface i = (prarmas..) -> // code; ����
-Predicate<String> condition = str -> str.length() <= 4;
+		1.2.2. 直接声明一个实现函数接口的匿名类, MyInterface i = (prarmas..) -> // code; 例如
+	Predicate<String> condition = str -> str.length() <= 4;
 
-	3. lambda����ʽֻ������final���εı�����Ҳ����˵������lambda�ڲ��޸Ķ������ⲿ�ı�������: int a = 3; 
-list.forEach(x -> {a += 1}); �����޷�����ͨ����, ������������������ڲ���;
+		1.2.3. lambda表达式只能引用final修饰的变量，也就是说不能在lambda内部修改定义在外部的变量，如: int a = 3; 
+	list.forEach(x -> {a += 1}); 这是无法编译通过的, 这个特性类似于匿名内部类;
 
-	4. �����Ϊlambda����ʽ�Ĳ����������ͣ���ôҪôΪ���еĲ���������Ҫôȥ�����в�������������;
+		1.2.4. 如果想为lambda表达式的参数声明类型，那么要么为所有的参数声明，要么去掉所有参数的类型声明;
 
-3. function��
-	1. Consumer�ӿڣ�����ӿ���һ�����󷽷� void accept(T t) ��һ��Ĭ�Ϸ��� Consumer<T> andThen(Consumer<? super T> after)
-����ͨ��������List�ӿڵ�forEach(Consumer<T> action)��, ���forEach�����Ὣlist�е�ÿһ��Ԫ�ش���action�е�accept����������
-accept������andThen(Consumer<? super T> after) ��������һ��Cosumer�����������������ִ�е�ǰConsumer�����accept������after
-�����accept����;
-	
-	2. Predicate�ӿڷǳ��ʺ�������������, ��ֻ��һ�����󷽷�boolean test(T t), ������Ĭ�Ϸ���and(), or(), negate(), 
-isEqual(), ���ǵ����ú�����һ���������������ʹ��, 
-	list.stream().filter(con1.and(con2)).forEach(t -> // do some code ��������Consumer)��
-	����list.stream().filter(str -> str.length() <= 4)��Ҳ�������Լ��Ĺ������ж���һ��filter������:
-	public void filter(List<String> list, Predicate condition) {
-		for (String s : list) {
-			if (condition.test(s)) {
-				sysout(s);
+	1.3. function包
+		1.3.1. Consumer接口，这个接口有一个抽象方法 void accept(T t) 和一个默认方法 Consumer<T> andThen(Consumer<? super T> after)
+	。它通常用在如List接口的forEach(Consumer<T> action)中, 这个forEach方法会将list中的每一个元素传入action中的accept方法并调用
+	accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法会连续执行当前Consumer对象的accept方法和after
+	对象的accept方法;
+		
+		1.3.2. Predicate接口非常适合用于做过滤器, 它只有一个抽象方法boolean test(T t), 和若干默认方法and(), or(), negate(), 
+	isEqual(), 他们的作用和名字一样，例如可以这样使用, 
+		list.stream().filter(con1.and(con2)).forEach(t -> // do some code 这类型是Consumer)，
+		或者list.stream().filter(str -> str.length() <= 4)。也可以在自己的工具类中定义一个filter方法如:
+		public void filter(List<String> list, Predicate condition) {
+			for (String s : list) {
+				if (condition.test(s)) {
+					sysout(s);
+				}
 			}
-		}
-	}�������õı�׼��ʽ�ǣ�����::����������ע�⣺ֻ��Ҫд������������Ҫд���ţ�
-	filter(list, str -> str.length() <= 4)
+		}方法引用的标准形式是：类名::方法名。（注意：只需要写方法名，不需要写括号）
+		filter(list, str -> str.length() <= 4)
 
-	3. Function�ӿ�����һ�����󷽷�apply, ����ӿڳ�����list.stream().map()�У����ڶ�list���и���;Function�Ķ�����
-Function<T, R>, apply�Ķ��巽ʽ��R apply(T t)���������T��list.stream()�õ���Stream<T>�������������R�ǿ����Լ�����ָ����;
-	
-	4. Supplier<T>�ӿ�����һ�����󷽷�get, ��û�в���������һ��T�ͽ��;
+		1.3.3. Function接口中有一个抽象方法apply, 这个接口常用于list.stream().map()中，用于对list进行改造;Function的定义是
+	Function<T, R>, apply的定义方式是R apply(T t)。这里面的T由list.stream()得到的Stream<T>决定，但是这个R是可以自己任意指定的;
+		
+		1.3.4. Supplier<T>接口中有一个抽象方法get, 它没有参数，返回一个T型结果;
 
-	5. stream()����ؽӿڷ���ʹ��
-		1. list.stream()�ķ���������һ��stream�������stream�ķ�����������list�ķ������;�����, 
-	����List<String> list, list.stream()���ص���Stream<String>����������������κ��޸Ķ�����Ӱ�쵽ԭ����list����;
+		1.3.5. stream()中相关接口方法使用
+			1.3.5.1. list.stream()的返回类型是一个stream流，这个stream的泛型类型是由list的泛型类型决定的, 
+		例如List<String> list, list.stream()返回的是Stream<String>。对这个流所做的任何修改都不会影响到原来的list对象;
 
-		2. list.stream().map����˼�ǽ�list�е�ÿ��Ԫ�ض��ŵ�map�е�Function�ӿ��е�apply�иı�һ����̬, ����
-	map(x -> x * 2), ��ô�õ���list�е�ÿ��Ԫ�ض�������һ����mapֻ�Ƕ�list�е�Ԫ�ص�һ�ּӹ�, ����ı�����Ԫ�ص�����;
-			1. �������Եõ�map, ���ǻ�����ͨ��mapToInt�������õ�һ��IntStream, IntStream�е�.summaryStatistics
-		�������Եõ�һ��IntSummaryStatitics������������з�װ�˺ܶ������ƽ��ֵ�������Сֵ�ȷ���;
+			1.3.5.2. list.stream().map的意思是将list中的每个元素都放到map中的Function接口中的apply中改变一次形态, 比如
+		map(x -> x * 2), 那么得到的list中的每个元素都扩大了一倍。map只是对list中的元素的一种加工, 不会改变流中元素的数量;
+				1.3.5.2.1. 不仅可以得到map, 我们还可以通过mapToInt方法来得到一个IntStream, IntStream中的.summaryStatistics
+			方法可以得到一个IntSummaryStatitics对象，这个对象中封装了很多比如求平均值，最大最小值等方法;
+				
+				1.3.5.2.2. map对这个流的改造可能是巨大的。map的返回类型是一个stream流，但是这个stream的泛型类型是
+			由Function接口中的R决定的(Function中的T，也就是apply中的T都是由list.stream()的泛型决定, 根本就是list的
+			泛型类型)。即.map返回的是Stream<R>, 而不再是Stream<T>。而这个R我们可以指定成任意的类型。比如我们可以这样写:
+
+				List<String> list = Arrays.asList("Java", "Python");
+				Stream<List<String>> stream 
+					= list.stream().map(s -> Arrays.asList(s));// list.stream().map(Arrays::asList)
 			
-			2. .map��������ĸ�������Ǿ޴�ġ�map�ķ���������һ��stream�����������stream�ķ���������
-		��Function�ӿ��е�R������(Function�е�T��Ҳ����apply�е�T������list.stream()�ķ��;���, ��������list��
-		��������)����.map���ص���Stream<R>, ��������Stream<T>�������R���ǿ���ָ������������͡��������ǿ�������д:
+			在这个lambda表达式中，没有显式使用匿名类Function的对象，因此这里的Function<T, R>中的R实际上由lambda表达式
+		中的返回类型来决定了，也就是R为list。这里相当于将Stream<String>转化成了Stream<List<String>>。
 
-			List<String> list = Arrays.asList("Java", "Python");
-			Stream<List<String>> stream 
-				= list.stream().map(s -> Arrays.asList(s));// list.stream().map(Arrays::asList)
-		
-		�����lambda����ʽ�У�û����ʽʹ��������Function�Ķ�����������Function<T, R>�е�Rʵ������lambda����ʽ
-	�еķ��������������ˣ�Ҳ����RΪlist�������൱�ڽ�Stream<String>ת������Stream<List<String>>��
+			1.3.5.3. list.stream().filter字面意思是过滤器，它的参数是一个Predicate，这个接口中有一个返回布尔型变量的函数
+		accept(T t)，list中的每一个元素也都会经过它的检验，只有返回ture的才被保留在stream中。也就是说filter之后元素的
+		个数可能会减少;
 
-		3. list.stream().filter������˼�ǹ����������Ĳ�����һ��Predicate������ӿ�����һ�����ز����ͱ����ĺ���
-	accept(T t)��list�е�ÿһ��Ԫ��Ҳ���ᾭ�����ļ��飬ֻ�з���ture�Ĳű�������stream�С�Ҳ����˵filter֮��Ԫ�ص�
-	�������ܻ����;
+			1.3.5.4. 无论是map还是filter，返回类型都是Stream。因此都可以用forEach我们最后都可以调用forEach来遍历所有的
+		stream中的值，forEach是Stream接口中的方法。list中也有一个forEach函数。这两个forEach的参数类型都是Consumer接口，
+		而且这个Consumer接口的泛型都是由他们自己的泛型<T>决定的;
+			
+			1.3.5.5. Stream类型也可以通过.collect方法来转换这个流，比如.collect(Collectors.toList())方法来将这个Stream转换
+		成一个list。返回的这个List中的<T>就是Stream中的这个<T>。前面说了对stream的操作不会影响启本身，而使用collect可以
+		得到我们改变过后的list;
 
-		4. ������map����filter���������Ͷ���Stream����˶�������forEach������󶼿��Ե���forEach���������е�
-	stream�е�ֵ��forEach��Stream�ӿ��еķ�����list��Ҳ��һ��forEach������������forEach�Ĳ������Ͷ���Consumer�ӿڣ�
-	�������Consumer�ӿڵķ��Ͷ����������Լ��ķ���<T>������;
-		
-		5. Stream����Ҳ����ͨ��.collect������ת�������������.collect(Collectors.toList())�����������Streamת��
-	��һ��list�����ص����List�е�<T>����Stream�е����<T>��ǰ��˵�˶�stream�Ĳ�������Ӱ������������ʹ��collect����
-	�õ����Ǹı�����list;
+			1.3.5.6. Stream中的reduce方法具有将Stream中的元素两两迭代的功能。reduce方法中的参数是一个BinaryOperator<T>接口，
+		reduce方法的返回类型是是Optional<T>，<T>的类型和Stream中的<T>一致。BinaryOperator接口中有一个方法apply，它的返回
+		类型是<T>，形式参数有两个，类型都是<T>; 在这个T apply(T t, T u)方法中，将Stream中的元素两个为一组进行操作，如果
+		只有两个元素，则直接返回结果。如果有三个元素，则它将前两个元素apply的结果与第三个元素一起传入apply中。例如有e1,
+		e2, e3三个元素，则最后结果为apply(apply(e1, e2), e3)。apply的执行结果被保存在Optional的value值中，可以通过Optional
+		的get()方法获取这个value的值。这个方法可以用在计算一个列表的所有元素的和等;
 
-		6. Stream�е�reduce�������н�Stream�е�Ԫ�����������Ĺ��ܡ�reduce�����еĲ�����һ��BinaryOperator<T>�ӿڣ�
-	reduce�����ķ�����������Optional<T>��<T>�����ͺ�Stream�е�<T>һ�¡�BinaryOperator�ӿ�����һ������apply�����ķ���
-	������<T>����ʽ���������������Ͷ���<T>; �����T apply(T t, T u)�����У���Stream�е�Ԫ������Ϊһ����в��������
-	ֻ������Ԫ�أ���ֱ�ӷ��ؽ�������������Ԫ�أ�������ǰ����Ԫ��apply�Ľ���������Ԫ��һ����apply�С�������e1,
-	e2, e3����Ԫ�أ��������Ϊapply(apply(e1, e2), e3)��apply��ִ�н����������Optional��valueֵ�У�����ͨ��Optional
-	��get()������ȡ���value��ֵ����������������ڼ���һ���б�������Ԫ�صĺ͵�;
+			1.3.5.7. 参考
+			http://baijiahao.baidu.com/s?id=1580787969948497458&wfr=spider&for=pc
+			http://www.importnew.com/14841.html
+			http://www.importnew.com/11908.html#streams
+			http://www.importnew.com/16436.html
+	
+	1.4 
 
-		7. �ο�
-		http://baijiahao.baidu.com/s?id=1580787969948497458&wfr=spider&for=pc
-		http://www.importnew.com/14841.html
-		http://www.importnew.com/11908.html#streams
-		http://www.importnew.com/16436.html
+4. 方法引用
+	1. 方法引用用于简写lambda表达式中已经存在的方法，注意方法引用只能用在lambda表达式中;
 
-4. ��������
-	1. �����������ڼ�дlambda����ʽ���Ѿ����ڵķ�����ע�ⷽ������ֻ������lambda����ʽ��;
+	2. 它的引用形式是: 类名::静态方法名, 或者对象::实例方法名, 注意方法名不能写括号, 也不能再写参数在里面，例如
+list.forEach(System.out::println)，也不能写s ->等;
 
-	2. ����������ʽ��: ����::��̬������, ���߶���::ʵ��������, ע�ⷽ��������д����, Ҳ������д���������棬����
-list.forEach(System.out::println)��Ҳ����дs ->��;
+	3. 被引用的方法的参数的类型一定要和接口中方法的参数类型顺序一致
 
-	3. �����õķ����Ĳ���������һ��Ҫ�ͽӿ��з����Ĳ�������˳��һ��
-
-5. ̰���㷨 https://baike.baidu.com/item/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/5411800
+5. 贪心算法 https://baike.baidu.com/item/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/5411800
 
 2017.11.22
-1. ����
-	1. �������������Ŀ����Ͳ��ԣ�ɾ�����Բ������󣬳���Ӧ�����κα仯�����ܽ����Ե��������е�һ��������ʹ��;
+1. 断言
+	1. 断言用于软件的开发和测试，删除断言部分语句后，程序不应当有任何变化。不能将断言当做程序中的一个功能来使用;
 
-	2. �����������÷�
-		1. assert boolExpre; boolExpre��һ����������ʽ���������ʽΪfalse������׳��쳣���ҳ����ֱ���˳���
-		2. assert boolExpre : expression; �������ʽΪfalse��������׳����쳣��ϢΪexpression��
+	2. 断言有两种用法
+		1. assert boolExpre; boolExpre是一个布尔表达式，如果表达式为false则程序抛出异常并且程序会直接退出；
+		2. assert boolExpre : expression; 如果表达式为false，则程序抛出的异常信息为expression；
 	
 2017.11.23
-1. ��Ԫ�������Ҫ����ֵ��x = a ? b : c, b��c������void����
+1. 三元运算符需要返回值，x = a ? b : c, b和c不能是void类型
 
-2. ���л�
+2. 序列化
 
-3. Comparator�ӿں�Comparable�ӿڵ�����
-	1. Comparator�ӿ��еıȽϷ���������compare(T o1, T o2), ���ķ�������Ϊint�������������������, List��Collections��
-��sort������Ĳ�����Comparator���͵�;
+3. Comparator接口和Comparable接口的区别
+	1. Comparator接口中的比较方法名称是compare(T o1, T o2), 他的返回类型为int，这个方法有两个参数, List或Collections中
+的sort方法里的参数是Comparator类型的;
 
-	2. Comparable�ӿ��еıȽϷ�����compareTo(T o)����������Ҳ��int������ֻ��һ������;
+	2. Comparable接口中的比较方法是compareTo(T o)，返回类型也是int，但是只有一个参数;
 
-	3. Comparator����������򼯺ϵ���������Arrays��Collections����һ��Ĭ�ϵ�sort����������Ҳ���������Լ���sort������
-Collection������listҲ���Ե���sort����������һ���Լ�����������Comparable��ֻ��һ������compareTo, ����Ҫ���ڵ�������֮���
-�Ƚϣ�����String�����ʵ��������ӿڣ�String�����compareTo�������ԱȽ������ַ������ֵ�˳�򡣽��lambda����ʽ���ǿ�������
-д: list.sort((s1, s2) -> s1.compareTo(s2)); ����list��ʵ����������String�����s1��s2������Ҳ��String, list��compare����
-ʵ������ȥ������String�����Լ���compareTo������Ϊ���list����;
+	3. Comparator常用于数组或集合的排序，例如Arrays和Collections都有一个默认的sort方法，我们也可以重载自己的sort方法。
+Collection对象如list也可以调用sort方法并传入一个自己的排序器。Comparable中只有一个方法compareTo, 它主要用于单个对象之间的
+比较，例如String对象就实现了这个接口，String对象的compareTo方法可以比较两个字符串的字典顺序。结合lambda表达式我们可以这样
+写: list.sort((s1, s2) -> s1.compareTo(s2)); 这里list的实例化类型是String，因此s1和s2的类型也是String, list的compare方法
+实际上是去调用了String对象自己的compareTo方法来为这个list排序;
 
-4. lambda������
+4. lambda反编译
 	1. http://blog.csdn.net/wwwsssaaaddd/article/details/24212693
-	2. Eclipse�������� http://blog.csdn.net/silentmuh/article/details/46787625
+	2. Eclipse反编译插件 http://blog.csdn.net/silentmuh/article/details/46787625
 
-5. accumulator: �ۼ���
+5. accumulator: 累加器
 
 2017.11.24
-1. ʲô�ǻص�����
-	1. �ص������Ĳ�������������A�Ķ���ֱ�ӵ��ã�������A��ĳ����ԱB���á�B��ĳ��������һ��������������A��Ȼ�������������
-��ʹ������ص�����������:
+1. 什么是回调函数
+	1. 回调函数的不由它所属的类A的对象直接调用，而是由A的某个成员B调用。B的某个方法有一个参数的类型是A，然后利用这个方法
+来使用这个回调函数。例如:
 	interface I {
 		void fun();
 	}
 	class A implements I {
 		B b;
 		A (B b) {this.b = b;}
-		// ����������ǻص�����
+		// 这个方法就是回调方法
 		fun() {}
 		work(Para para) {
 			b.doWork(this, para);
@@ -1517,53 +1520,53 @@ Collection������listҲ���Ե���sort����������һ���Լ�����������Comparable��ֻ��һ
 	}
 
 2017.11.28
-1. �ϴ��ļ�������
+1. 上传文件进度条
 
 2017.11.29
-1. oracle�α�
+1. oracle游标
 	1. https://www.cnblogs.com/huyong/archive/2011/05/04/2036377.html
 	2. https://www.cnblogs.com/sc-xx/archive/2011/12/03/2275084.html
 
-2. MySql�﷨
-	1. �ӳ���
-		1. ��������
-			1. declare��������ֻ������begin-end֮�䣬�൱�ھֲ���������Щ�������������ڵ�endΪֹ������������ֻ����begin���
-		�Ŀ�ͷ����������;������������ʱҪָ���������������͡� @�����������ı�����ȫ�ֱ������������Ự�ж���Ч������Ҫָ��������
-		��;
-			2. �����ĸ�ֵ��������: set @v(��V) = 3; set @v(��V) := 3; select col into @v(��V) from t where expre; ��Ҫͬʱ��
-		���������ֵʱֻ��дһ��into�ؼ��֣�д������: select k1, k2 into @v, V������дselect k1 into @v, k2 into V; ʹ�ò�ѯ���
-		��ֵʱ�����ѯ�����ֹһ���������һ�������ֵ��������;
+2. MySql语法
+	1. 子程序
+		1. 声明变量
+			1. declare声明变量只能用在begin-end之间，相当于局部变量，这些变量的声明周期到end为止，且声明变量只能在begin语句
+		的开头，不能再中途声明。且声明时要指定变量的数据类型。 @变量名声明的变量是全局变量，在整个会话中都有效，不需要指定数据类
+		型;
+			2. 变量的赋值方法如下: set @v(或V) = 3; set @v(或V) := 3; select col into @v(或V) from t where expre; 当要同时给
+		多个变量赋值时只能写一个into关键字，写法如下: select k1, k2 into @v, V，不能写select k1 into @v, k2 into V; 使用查询语句
+		赋值时如果查询结果不止一条，则将最后一条结果的值赋给变量;
 
-		2. ������
-			1. �﷨
-			CREATE TRIGGER <����������>  --���������������֣����64���ַ������ܺ���ḽ�зָ���.
-		����MySQL�����������������ʽ��������.
-			{ BEFORE | AFTER }  --��������ִ�е�ʱ�����ã���������Ϊ�¼�����ǰ���
-			{ INSERT | UPDATE | DELETE }  --ͬ��Ҳ���趨�������¼������ǿ�����ִ��insert��update��delete�Ĺ����д�����
-			ON <������>  --������������ĳһ������:�����������ִ�в��롢 ���»�ɾ��������ʱ��͵��´������ļ��
-		���ǲ��ܸ�ͬһ�ű���ͬһ���¼�����������������
-			FOR EACH ROW  --��������ִ�м����FOR EACH ROW�Ӿ�֪ͨ������ ÿ��һ��ִ��һ�ζ����������Ƕ�������ִ��һ�Ρ�
-			<������SQL���>  --������������Ҫ������SQL��䣺��������������κκϷ�����䣬����������䣬
-		�������������ܵ����ƺͺ�����һ����
+		2. 触发器
+			1. 语法
+			CREATE TRIGGER <触发器名称>  --触发器必须有名字，最多64个字符，可能后面会附有分隔符.
+		它和MySQL中其他对象的命名方式基本相象.
+			{ BEFORE | AFTER }  --触发器有执行的时间设置：可以设置为事件发生前或后。
+			{ INSERT | UPDATE | DELETE }  --同样也能设定触发的事件：它们可以在执行insert、update或delete的过程中触发。
+			ON <表名称>  --触发器是属于某一个表的:当在这个表上执行插入、 更新或删除操作的时候就导致触发器的激活。
+		我们不能给同一张表的同一个事件安排两个触发器。
+			FOR EACH ROW  --触发器的执行间隔：FOR EACH ROW子句通知触发器 每隔一行执行一次动作，而不是对整个表执行一次。
+			<触发器SQL语句>  --触发器包含所要触发的SQL语句：这里的语句可以是任何合法的语句，包括复合语句，
+		但是这里的语句受的限制和函数的一样。
 			
-			2. ������������ݵĲ��룬���£�ɾ���¼����������������ĳһ�ű��ģ����ܸ�һ�ű���ͬһ�¼���������������;
-		�Ҳ��ܽ�����¼�д��ͬһ����������;
+			2. 触发器针对数据的插入，更新，删除事件。触发器都是针对某一张表的，不能给一张表的同一事件设置两个触发器;
+		且不能将多个事件写在同一个触发器内;
 
-			3. �鿴ĳ�ű��ϵĴ�������SHOW TRIGGERS LIKE 'TABLE_NAME';
+			3. 查看某张表上的触发器用SHOW TRIGGERS LIKE 'TABLE_NAME';
 
-		3. ����
-			1. ���ú�����ȫ https://www.cnblogs.com/kissdodog/p/4168721.html;
+		3. 函数
+			1. 内置函数大全 https://www.cnblogs.com/kissdodog/p/4168721.html;
 
-			2. ʱ��: DATE_FORMAT(d, f)������, f����ʽ�%Y��ʾ���, �ұ���4λ, ��yyyy��%y������λ, ��17��
-		%m��ʾ�·ݣ�%M����ʾΪ�·ݵ�Ӣ�ĵ���; %h��Сʱ����д��ʾΪ24Сʱ�ơ�%i��ʾΪ��������%s��ʾ����;%r��ֱ�ӱ�ʾ
-		Ϊ��AM��PM��ʱ����;
+			2. 时间: DATE_FORMAT(d, f)函数中, f表达式里，%Y表示年份, 且保留4位, 即yyyy。%y保留两位, 如17。
+		%m表示月份，%M会显示为月份的英文单词; %h是小时，大写表示为24小时制。%i表示为分钟数。%s表示秒数;%r则直接表示
+		为带AM或PM的时间数;
 
-			3. �Զ��庯���﷨Ϊ 
-				CREATE FUNCTION FUNCTION_NAME(PARAMS...) RETURNS(��s) TYPE(û�зֺ�)
+			3. 自定义函数语法为 
+				CREATE FUNCTION FUNCTION_NAME(PARAMS...) RETURNS(有s) TYPE(没有分号)
 				BEGIN END;
 	
-	2. ���̿���
-		1. IF .. THEN .. ELSE(û��THEN).. END IF;
+	2. 流程控制
+		1. IF .. THEN .. ELSE(没有THEN).. END IF;
 		
 		2. CASE .. WHEN .. THEN .. END CASE;
 
@@ -1571,35 +1574,35 @@ Collection������listҲ���Ե���sort����������һ���Լ�����������Comparable��ֻ��һ
 
 		4. WHILE .. DO .. END WHILE;
 	
-	3. �ڲ�ѯ������ʹ��exists�ؼ���
-		1. ��ʹ��select * from t where exists (select ..)ʱ���Ὣt�е�ÿһ������ȡ������ֻҪselect�������Ϊ�գ�
-	��exists�ͻ᷵��true��t���������ݾͻᱻ��ѯ����������select * from t where exists(select null)
-	��select * from t�Ľ����һ���ġ��������exists���÷��ǽ�������ĳһ������ȥ���Ӳ�ѯ�е���������ȥ���Ƚϡ�����
-	select * from t where exists (select * from t2 where t2.id = t.id)��ע�����ﲻ��дt2.id = id����Ϊ������Ӳ�ѯ�У�
-	id����t2��id�����Բ�ѯ�����н�������t���������ݶ��ᱻ��ѯ�������������
-	select * from t where id in (select id from t2)�Ľ����һ���ġ�
+	3. 在查询条件中使用exists关键字
+		1. 在使用select * from t where exists (select ..)时，会将t中的每一条数据取出来，只要select结果集不为空，
+	则exists就会返回true，t中则条数据就会被查询出来。比如select * from t where exists(select null)
+	和select * from t的结果是一样的。所以这个exists的用法是将父表的某一条数据去和子查询中的所有数据去做比较。比如
+	select * from t where exists (select * from t2 where t2.id = t.id)。注意这里不能写t2.id = id，因为在这个子查询中，
+	id就是t2的id，所以查询总是有结果，因此t中所有数据都会被查询出来。这个语句和
+	select * from t where id in (select id from t2)的结果是一样的。
 
-		2. ��ΪexistsֻҪ��ѯ�н���ͷ���true������Ӳ�ѯ����д��*�������κ��ֶζ�����
+		2. 因为exists只要查询有结果就返回true，因此子查询内容写成*，或者任何字段都可以
 
 		3. https://www.cnblogs.com/glory-jzx/archive/2012/07/19/2599215.html
 
-	4. �α�
+	4. 游标
 		1. https://www.cnblogs.com/mqxs/p/6018766.html
 		2. https://www.cnblogs.com/trying/p/3296793.html
 
 2017.12.04
-1. H5�¼�
-	1. �ı����onchange�¼���ʧȥ�������ı����ݷ����仯ʱ������onblurֻҪʧȥ����ͻᴥ����oninput�����ݸı�ʱ����, 
-���м�ʱ��;
+1. H5事件
+	1. 文本框的onchange事件在失去焦点且文本内容发生变化时触发，onblur只要失去焦点就会触发，oninput在内容改变时触发, 
+具有即时性;
 
 2017.12.05
-1. �϶�
+1. 拖动
 	1. https://code.ziqiangxuetang.com/jsref/event-ondrag.html
 	2. http://www.runoob.com/html/html5-draganddrop.html
 	3. http://www.runoob.com/try/try.php?filename=tryjsref_ondrag
 	4. http://www.runoob.com/jsref/event-ondrag.html
 
-2. �ļ��ϴ�
+2. 文件上传
 	1. https://www.zhihu.com/question/54553750
 	2. http://www.ruanyifeng.com/blog/2012/08/file_upload.html
 	3. https://www.zhuwenlong.com/blog/article/52d6769f93dcae3050000003
@@ -1611,49 +1614,49 @@ Collection������listҲ���Ե���sort����������һ���Լ�����������Comparable��ֻ��һ
 	2. https://www.cnblogs.com/syfwhu/p/6116323.html
 
 2017.12.27
-1. java�еĽ�������
-	1. ��java�У�0xff��һ��������ͳ���һ��������0xff����ʮ���Ƶ�255�����Ǳ�ʾ���泣����ֻ����0xff����ʮ�����Ʊ�ʾ�ģ�
-��255ʹ��ʮ���Ʊ�ʾ�ģ����泣����û�з��ŵġ���ʱ�����ڽ���λ����ʱ��������ʮ�����Ʊ�ʾ�ĳ����������ǵĴ�����������⡣����
-byte a = 34; a & 0xf0�����Ծ���Ҫȡa�ĸ�4λ��ֵ;
+1. java中的进制问题
+	1. 在java中，0xff和一般的数字型常量一样，例如0xff就是十进制的255，都是表示字面常量，只不过0xff是用十六进制表示的，
+而255使用十进制表示的，字面常量是没有符号的。有时我们在进行位运算时，这种用十六进制表示的常量会让我们的代码更容易理解。比如
+byte a = 34; a & 0xf0很明显就是要取a的高4位的值;
 
-	2. Ϊʲôbyte�����ݵ���ֵ��Χ��-128~127����Ϊjava��byte������ռ8λ�������λ��ʾ����λ����������ò��뱣����ֵ��
-�����Ĳ������䱾������Ȼbyte���������ֵΪ0111 1111�����ֵ��127�������Ĳ��������ľ���ֵȡ����1����˸��������ֵӦ�ý�
-����λ�����λ��д��0����1000 0000���Ժ��沿��000 0000ȡ����1�õ�1000 0000��ע������һ����ֵ���������λ���Ƿ���λ�����
-��ֵ��128������1000 0000��ʾ����-128;
+	2. 为什么byte型数据的数值范围是-128~127。因为java中byte型数据占8位，且最高位表示符号位。计算机中用补码保存数值，
+整数的补码是其本身，显然byte型数据最大值为0111 1111，这个值是127。负数的补码是它的绝对值取反加1，因此负数的最大值应该将
+符号位以外的位都写成0，即1000 0000，对后面部分000 0000取反加1得到1000 0000，注意这是一个数值，所以最高位不是符号位，这个
+数值是128，所以1000 0000表示的是-128;
 
-	3. Ϊʲôbyte��������ת����16�����ַ���ʱ��Ҫ����0xff��byte��8λ2���ƣ�0xffת��Ϊ8λ2���ƾ���1111 1111������byte��
-������˵, ����0xff֮����������������java��ת��16�����ַ����ķ�����Integer���У�������toHexString��������һ��int�Ͳ�����
-�ڽ�byte b = - 10ֱ��ת��Ϊint i = bʱ����Ϊint��������32λ�����ʣ���24λ��ȫ����1����ȫ����ʱi��b��java�е�ʮ������ֵ��
-Ȼһ�����������ǵĶ����Ʊ�ʾ�Ͳ�һ���ˡ�b�Ķ����Ʊ�ʾΪ1111 0110, ��iȴ��1111 1111 1111 1111 1111 1111 1111 0110���ڵ���
-toHexString����ʱ���÷������Ƚ�����ת����һ��int�����ݣ���ôֱ��дtoHexString(b)�Ľ������ffff fff6������byte����������0xff
-������ԭ����byte��8λ������λ��0��ȫ����b & 0xff��ʾΪ������Ϊ0000 0000 0000 0000 0000 0000 1111 0110, �����ת����16����
-Ϊf6, �������ȷ�Ľ������& 0xff��֤��byte������ת����int��ʱ�����Ķ�������ֵ���䡣���⣬��������һ��int������ȥ��0xff����
-����ʱ��0xff�Ὣ����λ��ȫ����Ϊ0������32λ����˸���int�����ݻᱻת��������;
+	3. 为什么byte型数据在转换成16进制字符串时，要与上0xff。byte是8位2进制，0xff转换为8位2进制就是1111 1111。对于byte型
+数据来说, 与上0xff之后还是它本身。但是java中转换16进制字符串的方法在Integer类中，这个类的toHexString方法接收一个int型参数。
+在将byte b = - 10直接转换为int i = b时，因为int型数据有32位，因此剩余的24位会全部用1来补全，此时i和b在java中的十进制数值虽
+然一样，但是他们的二进制表示就不一样了。b的二进制表示为1111 0110, 而i却是1111 1111 1111 1111 1111 1111 1111 0110。在调用
+toHexString方法时，该方法会先将参数转化成一个int型数据，那么直接写toHexString(b)的结果就是ffff fff6。而将byte型数据与上0xff
+后保留了原本的byte的8位，而高位由0补全，即b & 0xff表示为二进制为0000 0000 0000 0000 0000 0000 1111 0110, 这个数转化成16进制
+为f6, 这才是正确的结果。即& 0xff保证了byte型数据转换成int型时，它的二进制数值不变。另外，当我们用一个int型数据去和0xff作与
+运算时，0xff会将其他位置全部补为0来补齐32位，因此负的int型数据会被转化成正数;
 	
-	5. ����Ҫ�ľ�����������byte a = -128, int b = a & 0xf0��ʱ�򣬻��Ƚ�byte������aת����int�����ݺ����������㣬������
-������������ת����int�����ݡ�a������1000 0000, ת����int��֮����1111 1111 1111 1111 1111 1111 1000 0000, Ȼ���0xff��
-0000 .... 1111 0000(����32λ��ȫ����0)�õ��Ľ����0000 .... 1000 0000, ���������������128�������������������ת��������
-�Ļ���Ӧ�û���-128��Ҳ�������ԭ���������Ҫȡ-128�ĸ�8λ��1000 = 8��ʱ��Ҫ��������������λ�����������λ����Ϊ��λ
-���㲹��ķ���λ��������byte������ת����intʱ��Ϊ1111 .... 1111 1111 1000, Ȼ����������֮���Ϊ0000 .... 1111 0000, ���
-ֵ�ͱ�Ϊ��240��ͬ���ģ���λ����Ҳ���Ƚ�byte������ת��Ϊint�����ݣ���ʹ��>>>�����õ���0����䣬���a >>> 4�Ľ����
-0000 1111 .... 1111 1000, ����0xf0֮����Ȼ��240��
+	5. 最重要的就是我们在做byte a = -128, int b = a & 0xf0的时候，会先将byte型数据a转换成int型数据后再做与运算，而不是
+先做与运算再转换成int型数据。a本来是1000 0000, 转换成int型之后是1111 1111 1111 1111 1111 1111 1000 0000, 然后和0xff即
+0000 .... 1111 0000(不足32位的全部补0)得到的结果是0000 .... 1000 0000, 结果反而成了正的128。如果是先作与运算再转换成整型
+的话就应该还是-128。也正是这个原因，我们如果要取-128的高8位即1000 = 8的时候，要先做与运算再移位。如果是先移位，因为移位
+运算补充的符号位，因此这个byte型数据转换成int时变为1111 .... 1111 1111 1000, 然后作与运算之后变为0000 .... 1111 0000, 这个
+值就变为了240。同样的，移位运算也是先将byte型数据转换为int型数据，若使用>>>，都用的是0来填充，因此a >>> 4的结果是
+0000 1111 .... 1111 1000, 与上0xf0之后依然是240。
 
-	6. ����ת����16�����ַ���ʱ��һ��byte�����������Ҫһ����λ16��������ʾ��С��16ʱҪ��ǰ�油0��������λһ�飬��15Ӧд
-Ϊ0f������Ȼbyteת���ɵ�16�����ַ��������Ǵ���7f(��127)�Ķ���ʾ���byte�Ǹ���;
+	6. 另外转换成16进制字符串时，一个byte型数据最多需要一个两位16进制数表示。小于16时要在前面补0来保持两位一组，即15应写
+为0f。很显然byte转换成的16进制字符串，凡是大于7f(即127)的都表示这个byte是负数;
 
-	7. ��java�е���getBytes()����ʱ��java���ַ����еĺ��ֵ��������ת�����byte����ĳ����ǲ�ȷ���ģ�������뷽ʽ�й�;
-����һ��Ӣ����ĸת���ɵ�byte���鳤��һ��ֻ��1, ����"d".getBytes() �� "d".getBytes("UTF-8")�Ľ������[100];
+	7. 在java中调用getBytes()方法时，java将字符串中的汉字等特殊符号转换后的byte数组的长度是不确定的，这跟编码方式有关;
+但是一个英文字母转换成的byte数组长度一定只有1, 例如"d".getBytes() 或 "d".getBytes("UTF-8")的结果都是[100];
 
-3. �ַ�����ʮ�������ַ���֮����໥ת��
-	1. �������ַ���ת��Ϊʮ�������ַ���
-		// ��Integer�ķ���
+3. 字符串和十六进制字符串之间的相互转换
+	1. 将任意字符串转换为十六进制字符串
+		// 用Integer的方法
 		1. String string2HexString1(String str) {
-			// ����һ��Ҫָ����������, ����ת��ʱҲҪָ������
+			// 这里一定要指定编码类型, 反向转换时也要指定类型
 			Byte[] b = str.getBytes("UTF-8");
 			StringBuilder sb = new StringBuilder();
 
 			for (int i = 0; i < b.length; i++) {
-				// Ϊ�˱�֤��8λ��һ�£��������Ҫ& 0xff
+				// 为了保证低8位的一致，这里必须要& 0xff
 				int t = b[i] & 0xff;
 				String s = Integer.toHexString(t);
 				if (t <= 0x0f) {
@@ -1665,18 +1668,18 @@ toHexString����ʱ���÷������Ƚ�����ת����һ��int�����ݣ���ôֱ��дtoHexString(b)
 			return sb.toString();
 		}
 
-		// �Լ��ֶ�ת��
+		// 自己手动转换
 		2. String string2HexString2(String str) {
-			// �����������������ص�hexDights[i] == i
+			// 这个数组具有这样的特点hexDights[i] == i
 			char[] hexDigits = {'0', '1', '2', '3', '4', '5', ... ,'a', 'b', ... , 'f'};
 			byte[] b = str.getBytes("UTF-8");
 			StringBuilder sb = new StringBuilder();
 
 			for (int i = 0; i < b.length; i++) {
-				// �κ�һ��b[i]�����Ա�ʾΪ xxxx xxxx
-				// �õ���4λ��ֵ
+				// 任何一个b[i]都可以表示为 xxxx xxxx
+				// 得到高4位的值
 				int high = (b[i] & 0xf0) >> 4;
-				// �õ���4λ��ֵ
+				// 得到低4位的值
 				int low = b[i] & 0x0f;
 				
 				sb.append(String.valueOf(hexDigits[high]) + String.valueOf(hexDigits[low]));
@@ -1685,255 +1688,255 @@ toHexString����ʱ���÷������Ƚ�����ת����һ��int�����ݣ���ôֱ��дtoHexString(b)
 			return sb.toString();
 		}
 	
-	2. ��ʮ�������ַ���ת��Ϊ�ַ���
+	2. 将十六进制字符串转换为字符串
 		String hexStringToString(String hex) {
 			byte[] b = new byte[hex.length / 2];
 
 			for (int i = 0; i < b.length; i++) {
-				// ��16���ƽ����ַ�����ֱ�ӽ��õ���int������ת����byte����, ��Ϊ������ȻΪ��
+				// 以16进制解析字符串。直接将得到的int型数据转化成byte即可, 该为负的自然为负
 				b[i] = (byte) Integer.parseInt(hex.subString(i * 2, i * 2 + 2), 16);
 			}
 			return new String(b, "UTF-8");
 		}
 		
-	3. �������ַ��� http://www.jb51.net/article/18146.htm
+	3. 进制与字符串 http://www.jb51.net/article/18146.htm
 
-4. java�еı��� https://www.cnblogs.com/lslk89/p/6898526.html
+4. java中的编码 https://www.cnblogs.com/lslk89/p/6898526.html
 
-5. editplus����
+5. editplus换行
 	1. Document->Word-wrap;
 
-	2. ��������Ϊ�����л����Զ��廻�е�����: tool->preferences->setting&syntax->word wrap, �ý���ѡ���Ե���л���
-�Զ��廻�е�����;
+	2. 可以设置为定格换行还是自定义换行的列数: tool->preferences->setting&syntax->word wrap, 该界面选择边缘换行还是
+自定义换行的行数;
 
-6. >>��>>>������
-	1. ע���κ�λ�������&��|��>>, >>>�ȶ����Ƚ���ת����int�������ٲ���, �õ���Ҳ��int�����ݡ�
-����byte a = -5; int b = a >> 2 �� byte b = (byte)(a >> 2);
+6. >>与>>>的区别
+	1. 注意任何位运算包括&，|，>>, >>>等都会先将数转换成int型数据再操作, 得到的也是int型数据。
+例如byte a = -5; int b = a >> 2 或 byte b = (byte)(a >> 2);
 	
-	2. ��������>>��>>>��һ���ģ����ǽ��������������ƣ���λ��0��ȫ
+	2. 对于正数>>和>>>是一样的，都是将二进制数向右移，空位用0补全
 
-	3. ���ڸ�����>>�������ǲ�1����>>>�������ǲ�0�����仰˵>>>�Ὣ����ת��������1���Ѿ��ᵽ����Щ�����������int�����ݵģ�
-����
+	3. 对于负数，>>操作都是补1。而>>>操作符是补0。换句话说>>>会将负数转正。但是1中已经提到过这些操作都是针对int型数据的，
+例如
 	byte a = -5; // 1111 1011 
 	int b = a >>> 2; 
 
-	��b��ֵΪ1073741822��������Ϊ1111 1011�ȱ�ת��Ϊint�����ݣ�ռ32λ����
-1111 1111 1111 1111 1111 1111 1111 1011Ȼ�����Ʋ�0�õ�0011 1111 1111 1111 1111 1111 1111 1110, ������Ĵ�СΪ2^30 - 2��
-���ǿ��ת��byte c = (byte) b����c�൱����b���int��ȡ��8λ��1111 1110�����ֵΪ-2
+	则b的值为1073741822。这是因为1111 1011先被转化为int型数据，占32位，即
+1111 1111 1111 1111 1111 1111 1111 1011然后右移补0得到0011 1111 1111 1111 1111 1111 1111 1110, 这个数的大小为2^30 - 2。
+如果强制转型byte c = (byte) b，则c相当于是b这个int型取低8位即1111 1110，这个值为-2
 
 2017.12.08
-1. �鿴�˿ڱ��ĸ�����ռ��: https://jingyan.baidu.com/article/3c48dd34491d47e10be358b8.html
+1. 查看端口被哪个进程占用: https://jingyan.baidu.com/article/3c48dd34491d47e10be358b8.html
 
-2. bat �������ļ�
-	1. ͨ�����������ļ��ĵ�һ�м���echo off, ����������ԣ�����ִ���������ļ�ʱ���ļ���������������·����
-C:\Users\017548\Desktop>��������ʾ�������������ˬ�������Ҫecho off��������Ҳ����ʾ����echo offǰ����� @���������ֻ��
-��ĳһ��������ԣ���������������ǰ��@ ������echo�Ĺ��ܾ�������Ļ�ϴ�ӡ��Ϣ����Щ��Ϣ�ỻ�С�������echo.��echo offģʽ��
-���һ������;
+2. bat 批处理文件
+	1. 通常在批处理文件的第一行加上echo off, 设置命令不回显，这样执行批处理文件时，文件里的所有命令包括路径如
+C:\Users\017548\Desktop>都不会显示，这样界面更清爽。如果想要echo off这条命令也不显示，在echo off前面加上 @。另外如果只想
+让某一条命令不回显，可以在这条命令前加@ 。另外echo的功能就是在屏幕上打印信息，这些信息会换行。常常用echo.在echo off模式下
+输出一个换行;
 
-	2. ע��
-		1. :: ˫ð�ź�Ķ���ע��
+	2. 注释
+		1. :: 双冒号后的都是注释
 
-		2. rem rem��Ķ���ע��
+		2. rem rem后的都是注释
 
-		3. �����﷨����
+		3. 利用语法规则
 			goto comment
 			***
 			***
 			:comment
-		����ִ��ʱֱ������comment����Ȼ��֮��Ĳ��ܶԴ�����ִ�У�������ע�͵Ĺ���
+		程序执行时直接跳到comment，显然这之间的不管对错都不执行，可以起到注释的功能
 	
-	3. �����������ļ��ı���, �ڵ�һ��дtitle title_name ����
+	3. 设置批处理文件的标题, 在第一行写title title_name 即可
 
-	4. goto�����call����
-		1. ��bat�ļ����ӱ�ǩ�ķ�����:label_name, ע����ð����ǰ�棬��ǩ���ں���; 
+	4. goto命令和call命令
+		1. 给bat文件添加标签的方法是:label_name, 注意是冒号在前面，标签名在后面; 
 
-		2. goto label_name �����ó����ĳһ����ǩ����ʼִ��;
+		2. goto label_name 命令让程序从某一个标签处开始执行;
 		
-		3. call������Կ�ʼִ����һ��bat�ļ�����call another.bat, Ҳ������goto����������ʼִ��ĳһ����ǩ������ݣ�
-	ע��call������ִ��ĳһ��ǩ��������ʱ����ǩǰ��Ҫ��ð��, �� call :label_name�����⣬call��goto����Ҫ��������call��
-	ִ�����֮������ִ��֮������ݣ�goto��ֱ��������ǩ��;
+		3. call命令可以开始执行另一个bat文件，如call another.bat, 也可以向goto命令那样开始执行某一个标签后的内容，
+	注意call命令在执行某一标签后面内容时，标签前面要加冒号, 如 call :label_name。另外，call和goto的重要区别在于call在
+	执行完毕之后会继续执行之后的内容，goto是直接跳到标签处;
 
-		4. ����call����ִ��ʱ���Դ�������ȥ, ��call :label_name1 "value", ��ô��label_name1�����ͨ��echo %1����ӡ
-	"value"��ֵ, �������������ӡ%~1��ô��ӡ����value����ȥ�������š����ǰ����������ȥ�������ֻ�к�������ȥ;
+		4. 此外call命令执行时可以传参数过去, 如call :label_name1 "value", 那么在label_name1里可以通过echo %1来打印
+	"value"的值, 另外这里如果打印%~1那么打印的是value，即去掉了引号。如果前面有引号则都去掉，如果只有后面有则不去;
 
-		5. ��ӡϵͳʱ������ϵͳ������%date%��ʾ���ڣ���ʾΪ2017/12/08 ���壬%time%��ʾʱ�䣬��ʾΪ11:46:56.56��
-	���ǿ����Զ���ʱ���ʽ������Ϊ%date:~ 0, 4%�������Ľ����2017, ����ʾ��ȡdate�ַ���0��ʼ�İ���0���ڵ�һ��4���ַ���
-	ע���Ǳ�����:~��%date%��%time%��ϵͳ�������鿴����ϵͳ���� http://www.jb51.net/article/49196.htm ;
+		5. 打印系统时间利用系统变量，%date%表示日期，显示为2017/12/08 周五，%time%表示时间，显示为11:46:56.56。
+	我们可以自定义时间格式，方法为%date:~ 0, 4%这条语句的结果是2017, 它表示截取date字符串0开始的包括0在内的一共4个字符。
+	注意是变量名:~。%date%和%time%是系统变量，查看其它系统变量 http://www.jb51.net/article/49196.htm ;
 
-	5. ���ñ�����set, ��set number=9, Ȼ�����echo %number%���鿴number��ֵ��
-		1. ֱ��дset���Կ������еĿ��ñ������������е�ϵͳ������path, classpath�ȡ�set X���Բ鿴����
-	��X��ͷ��ϵͳ�������൱��һ��ģ����ѯ;
+	5. 设置变量用set, 如set number=9, 然后可用echo %number%来查看number的值。
+		1. 直接写set可以看到所有的可用变量，包括所有的系统变量如path, classpath等。set X可以查看所有
+	以X开头的系统变量，相当于一个模糊查询;
 
-		2. ��set��ʹ�ñ���ʽ��set /a b = 1 + 3, echo %b%, ���Ϊ��ע�⾡����Ҫд����Ŀո�
+		2. 在set中使用表达式如set /a b = 1 + 3, echo %b%, 结果为。注意尽量不要写多余的空格。
 
-		3. ����set�������û������ֵ����set /p in="XXX"����������ʾ���Ϊ:XXX:����ʱ���ǿ�������һ��ֵ��Ȼ��
-	echo %in%���ܿ������Ǹղ������ֵ;
+		3. 利用set来接收用户输入的值，如set /p in="XXX"这条语句的显示结果为:XXX:，此时我们可以输入一个值，然后
+	echo %in%就能看到我们刚才输入的值;
 
-		4. ��������set������һ����������Ķ�����Ȼ����forѭ����������:
+		4. 还可以用set来声明一个类似数组的东西，然后用for循环遍历，如:
 			set array = a, b, c
 			for %%i in (%array%) do (
 				echo %%i
 			)
-		%%i�������ȡ, �������ı���һ��Ҫ��(), ע��forѭ������Ҫ��һ��do�ؼ��֣�����Ҳ�����ţ�if�жϲ��ø�do
+		%%i名字随便取, 被遍历的变量一定要加(), 注意for循环后面要跟一个do关键字，后面也有括号，if判断不用跟do
 
-		5. ��set���滻�ַ����е�ֵ: set new = %old:cc=11%��������old�еĵ�һ��cc�滻Ϊ11��ע��ֻ���滻��һ��ƥ�䵽
-	��λ�ò����滻����;
+		5. 用set来替换字符串中的值: set new = %old:cc=11%，将变量old中的第一个cc替换为11，注意只会替换第一次匹配到
+	的位置不会替换所有;
 		
-		6. ��ȡ�ַ�����:~start, len(��0��ʼ)��ֻдһ��������ʾ�Ӹò�����ʼ��������ж��ᱻ��ȡ��:~-len����ʾ��ȡ��
-	����λ����set a=01234567, %a:~-3Ϊ%567, %a:~1,-3%λ����֮���ľ��Ǵ���������; 
+		6. 截取字符串用:~start, len(从0开始)。只写一个参数表示从该参数开始后面的所有都会被截取。:~-len，表示截取倒
+	数几位，如set a=01234567, %a:~-3为%567, %a:~1,-3%位。总之负的就是从右往左数; 
 
-	6. if����
-		1. �ж���ֵ��С�����¼����ؼ���EQU���ڣ�NEQ�����ڣ�LSSС�ڣ�LEQС�ڻ���ڣ�GTR���ڣ�GEQ���ڻ����, ����
+	6. if命令
+		1. 判断数值大小有以下几个关键字EQU等于，NEQ不等于，LSS小于，LEQ小于或等于，GTR大于，GEQ大于或等于, 例如
 		set a=3
 		if %a% gtr 3 (
-			echo ����3
+			echo 大于3
 		) else (
-			echo С��3
+			echo 小于3
 		)
-		ע��elseһ��Ҫ����if�������ź��棬���ܲ�д���ž�дelse��ע���ж��ַ����Ĵ�С������==��
+		注意else一定要跟在if语句的括号后面，不能不写括号就写else。注意判断字符串的大小还是用==。
 
-		2. ������if var ���ж�var�Ƿ񱻶����, var���߲����ټ�%
+		2. 可以用if var 来判断var是否被定义过, var两边不用再加%
 	
-	7. choice�����������ָ��ѡ������û���ѡ��
-		1. �����÷�Ϊchoice /c:xyz /m "word comment"��������ڿ���̨��ӡword comment [X,Y,Z]?�����xyzѡ���Ǳ���Ϊ
-	�����ַ�����ʾ�ģ�ÿһ���ַ���Ӧһ��ѡ�����set /p a=..��һ������������choice����Ҫ�ûس�;
+	7. choice命令可以用于指定选项并接收用户的选择
+		1. 基本用法为choice /c:xyz /m "word comment"，这个会在控制台打印word comment [X,Y,Z]?这里的xyz选项是被作为
+	单个字符来显示的，每一个字符对应一个选项。它和set /p a=..的一个显著区别是choice不需要敲回车;
 
-		2. ��if errorlevel 3(2, 1) goto tag���������벢������Ӧ���������ִ����Ų�����˳�򣬴�1��ʼ��һ��Ҫ�������
-	������ͨ����Ҫ����goto��䣬�����ִ�ж��ѡ��;
+		2. 用if errorlevel 3(2, 1) goto tag来接收输入并作出相应处理，数字代表着参数的顺序，从1开始。一定要倒序进行
+	处理且通常都要搭配goto语句，否则会执行多个选项;
 
-	8. pause��pause>nul��ȴ������ǰ�߻���ʾ����������������߲�����ʾ�κζ�����>nul�������ڲ���ʾ��������Ľ��������
-echo a�����Ľ����a, ���Ǽ���echo a>nul ���ʲôҲ������ʾ��ע����nul����null�����д��>null���ʾ�������������null���
-�ļ�;
+	8. pause和pause>nul的却别在于前者会显示按任意键继续，后者不会显示任何东西，>nul经常用于不显示命令输出的结果。例如
+echo a本来的结果是a, 但是加上echo a>nul 后就什么也不会显示。注意是nul不是null，如果写成>null则表示将输出结果输出到null这个
+文件;
 	
-	9. &, &&, |, ||����
-		1. &���ڷָ�һ���������еĶ�������echo a & echo b, ���ȴ�ӡa�ڴ�ӡb, ��ǰ�����������ִ��;
+	9. &, &&, |, ||解释
+		1. &用于分隔一个命令行中的多个命令，如echo a & echo b, 会先打印a在打印b, 即前后两个命令都会执行;
 
-		2. &&��ʾ��һ��ִ�гɹ��Ż�ִ����һ��, �磬xcopy f:\t.txt d:\ && echo ���Ƴɹ������Ƴɹ�����ӡ���Ƴɹ�;
-	xcopy���ڸ����ļ�, ��������Ϊxcopy sourcedir targetdir�������������ͨ��xcopy /?�鿴��
+		2. &&表示上一句执行成功才会执行下一句, 如，xcopy f:\t.txt d:\ && echo 复制成功。则复制成功后会打印复制成功;
+	xcopy用于复制文件, 基本命令为xcopy sourcedir targetdir。具体参数可以通过xcopy /?查看。
 
-		3. ||��ʾ��һ��ִ��ʧ�ܲ�ִ����һ�䣬| ��ʾ����һ��������Ϊ��һ������룬��
-	echo 123 | find "a" && echo find a || echo can't find a������ִ��find "a"����ʧ�ܺ󲻻�ִ�д�ӡfind a���
-	�������ִ�д�ӡfind a����ͻ�ִ�д�ӡcan't find a����
+		3. ||表示上一句执行失败才执行下一句，| 表示用上一句的输出作为下一句的输入，如
+	echo 123 | find "a" && echo find a || echo can't find a，这里执行find "a"命令失败后不会执行打印find a命令。
+	而如果不执行打印find a命令就会执行打印can't find a命令
 
-	10. �ļ����ļ��е�ɾ��(��������ɾ��)
-		1. ɾ���ļ��м������е���Ŀ¼���ļ���rd /s /q f:\s1 �⽫ɾ��s1����ļ��м������е���Ŀ¼���ļ���/sɾ����Ŀ¼,
-	����/q����Ҫ��yȷ�Ͼͻ�ɾ��;
+	10. 文件或文件夹的删除(都是永久删除)
+		1. 删除文件夹及其所有的子目录和文件用rd /s /q f:\s1 这将删除s1这个文件夹及其所有的子目录和文件。/s删除子目录,
+	加上/q后不需要按y确认就会删除;
 
-		2. ɾ���ļ���del�������ͨ��del /s f:\s1\1.jpg���s1��s1���е���Ŀ¼�е���Ϊ1.jpg���ļ���ɾ�����������/sֻ
-	��ɾ��s1����ļ����µ��ļ���Ҳ����ͨ��ͨ���ɾ��ĳһ���͵��ļ�, ��del /s f:\s1\*.jpg
+		2. 删除文件用del命令。例如通过del /s f:\s1\1.jpg会把s1及s1所有的子目录中的名为1.jpg的文件都删除，如果不加/s只
+	会删除s1这个文件夹下的文件。也可以通过通配符删除某一类型的文件, 如del /s f:\s1\*.jpg
 
-	11. forѭ���л��кܶ࿪�طǳ�ʵ��
-		1. ����for /l %%var in (start, step, end), �ü���ʾ����������ʽ�ӿ�ʼ��������һ���������У�
-	����(1, 1, 5)��������1, 2, 3, 4, 5����(5, -1, 1)��ʾ5, 4, 3, 2, 1;
+	11. for循环中还有很多开关非常实用
+		1. 比如for /l %%var in (start, step, end), 该集表示以增量的形式从开始到结束的一个数字序列，
+	例如(1, 1, 5)产生序列1, 2, 3, 4, 5。而(5, -1, 1)表示5, 4, 3, 2, 1;
 
-		2. /fͨ�����ڴ����ļ���һЩ������������������÷�Ϊ for /f %%i in (file.txt) do (echo %%i)�����������ӡ
-	file�ļ��е��������ݡ�
+		2. /f通常用于处理文件和一些命令的输出结果。基本用法为 for /f %%i in (file.txt) do (echo %%i)，这条命令将打印
+	file文件中的所有内容。
 
-		3. for /f �����һ��һ�еĶ�ȡ�ļ������ݣ����������������delims������ηָ�ÿһ�С�tokens�����ó��ָ���
-	��Щ���֡�skip��������������������eol��������������Щ�С�����a.txt��������
-				��1�е�1�� ��1�е�2�� ��1�е�3��
-				��2�е�1�� ��2�е�2�� ��2�е�3��
-				��3�е�1�� ��3�е�2�� ��3�е�3��
+		3. for /f 命令会一行一行的读取文件的内容，它还有许多参数。delims决定如何分割每一行。tokens决定拿出分割后的
+	哪些部分。skip参数决定跳过的行数，eol参数决定跳过哪些行。例如a.txt的内容是
+				第1行第1列 第1行第2列 第1行第3列
+				第2行第1列 第2行第2列 第2行第3列
+				第3行第1列 第3行第2列 第3行第3列
 
-			1. delimsĬ�ϵķָ���ǿո���Ʊ��������for /f "delims= " in (a.txt)��for /f %%i in (a.txt) ��Ч��
-		��һ���ģ������Ϊ
-				��1�е�1��
-				��2�е�1��
-				��3�е�1��
+			1. delims默认的分割符是空格和制表符，因此for /f "delims= " in (a.txt)和for /f %%i in (a.txt) 的效果
+		是一样的，结果都为
+				第1行第1列
+				第2行第1列
+				第3行第1列
 
-			2. tokens=*��ʾȡ���еķָ�֣�tokens=2,3��2-3��ʾȡ��2����3����, ����
-		for /f "tokens=2-3" %%a in (a.txt) do (echo %%a echo %%b), ������Ϊ
-				��1�е�2�� ��1�е�3��
-				��2�е�2�� ��2�е�3��
-				��3�е�2�� ��3�е�3��
-			����������%%b�ǵڶ������ֵ���˼���������дb����Ϊb��a�ĺ�һ����ĸ�����⣬tokens=1* ��ʾֻ�ָ�1�Σ�
-		ȡ��1�У��������е��ַ����ָ��Ϊ��2�С�
+			2. tokens=*表示取所有的分割部分，tokens=2,3或2-3表示取第2到第3部分, 例如
+		for /f "tokens=2-3" %%a in (a.txt) do (echo %%a echo %%b), 输出结果为
+				第1行第2列 第1行第3列
+				第2行第2列 第2行第3列
+				第3行第2列 第3行第3列
+			这里多出来的%%b是第二个部分的意思，这里必须写b，因为b是a的后一个字母。另外，tokens=1* 表示只分割1次，
+		取第1列，后面所有的字符不分割，作为第2列。
 
-			3. skip��ʾ�����ļ���ǰ�����У�eol��ʾ��ʲô���ſ�ͷ���У���eol=#
+			3. skip表示忽略文件的前多少行，eol表示以什么符号开头的行，如eol=#
 		
-			4. ������forѭ������ȡ����ִ�н��������д��in�������е��������Ҫ�����ţ������ʾ�Ҳ����ļ����磺
-		for /f "tokens=2 delims=:" %%i in ('ipconfig ^| find /i "ipv4"') do echo %%i�������^��ת�������Ϊ|����һ
-		����ͨ�ַ�����Ȼ����д���ַ������棬���ｫ��ת������ͨ��|�ַ���Ȼ�������ȥִ���������ַ��������������
+			4. 可以用for循环来读取命令执行结果，但是写在in后括号中的命令必须要加引号，则会显示找不到文件。如：
+		for /f "tokens=2 delims=:" %%i in ('ipconfig ^| find /i "ipv4"') do echo %%i。这里的^是转义符，因为|不是一
+		个普通字符，显然不能写在字符串里面，这里将其转换成普通的|字符，然后程序再去执行这整个字符串所代表的命令。
 
-	12. cmd�����е��ӳٻ���������չ
-		1. cmd��ִ��һ������ʱ������ʶ������%�������ı���������ֵ�����滻��Ȼ����ִ�������������������չ��������
-	��һ���Ⱥ�˳����̣����滻�����֮������ͷ��β����ִ������, ��һ�����ǿ���ͨ�����½ű�����
+	12. cmd命令中的延迟环境变量扩展
+		1. cmd在执行一行命令时，会先识别两个%括起来的变量并对其值进行替换，然后在执行这个命令，这叫做变量扩展。这里面
+	有一个先后顺序过程，即替换完变量之后再重头到尾整行执行命令, 这一点我们可以通过如下脚本看到
 		set var = test
 		echo %var%
-	ִ�н��ΪC:\Documents and Settings\Administrator\����\ln\temp\bat>set var = test 
-		  C:\Documents and Settings\Administrator\����\ln\temp\bat>echo test 
+	执行结果为C:\Documents and Settings\Administrator\桌面\ln\temp\bat>set var = test 
+		  C:\Documents and Settings\Administrator\桌面\ln\temp\bat>echo test 
                   test
-	���һ����ִ�н����ǰ����������䡣��������ǲ�û��дecho test��д����echo %var%����˵����ִ����������֮ǰ�Ѿ��Ƚ�
-%var%�滻Ϊ����Ӧ��ֵ���ٿ�һ������set var=2 set var=3 & echo %var%�Ľ����2��������Ϊ��&���ӵ���һ������䣬����ִ�е�ʵ��
-����set var=3 & echo 2��
+	最后一行是执行结果，前面两句是语句。语句中我们并没有写echo test而写的是echo %var%，这说明在执行这条命令之前已经先将
+%var%替换为了相应的值。再看一个例子set var=2 set var=3 & echo %var%的结果是2。这是因为用&连接的是一整条语句，这里执行的实际
+上是set var=3 & echo 2。
 	
-		2. cmd�У�for, if�Ȱ����������������Ĳ��ֶ�����Ϊһ������&���ӵ���䣬���
+		2. cmd中，for, if等包括用括号括起来的部分都被视为一整行用&链接的语句，因此
 		for /l %%i in (1, 1, 5) do (
-			:: ע������Ⱥ����Ҳ����пո�
+			:: 注意这里等号左右不能有空格
 			set var=%%i
 			echo %var%
 		)
-		�൱��set var = %%i & echo %var% & set var = %%i & echo %var%���ӡ������������Ϊ�Ҳ�������var��Ӧ��ֵ��
+		相当于set var = %%i & echo %var% & set var = %%i & echo %var%会打印出错，这是因为找不到变量var对应的值。
 
-		3. ͨ��setlocal enabledelayedexpansion�����ÿ����ӳٻ���������������ὫǶ�׵�����һ��һ����ִ�к��ڽ���ƥ��
-	������forѭ����echo !var!�Ľ������1, 2, 3, 4, 5��������Ҫע�⿪���������!�����ñ����������԰�һ���������;
+		3. 通过setlocal enabledelayedexpansion来设置开启延迟环境变量。开启后会将嵌套的命令一条一条的执行后在进行匹配
+	操作。for循环中echo !var!的结果就是1, 2, 3, 4, 5。但是需要注意开启后必须用!来引用变量，否则仍按一般变量处理;
 
-	����������ϵͳ���� http://blog.csdn.net/peng790/article/details/52503489
-	������������ http://www.jb51.net/article/30074.htm
-	�Ƚ���ֵ��С https://wenku.baidu.com/view/ac147286ec3a87c24028c419.html
+	批处理设置系统变量 http://blog.csdn.net/peng790/article/details/52503489
+	批处理计算器 http://www.jb51.net/article/30074.htm
+	比较数值大小 https://wenku.baidu.com/view/ac147286ec3a87c24028c419.html
 	http://www.jb51.net/article/49196.htm
-	���������÷����������� https://zhidao.baidu.com/question/1886262090305732908.html
-	set��� http://www.jb51.net/article/18973_all.htm http://blog.csdn.net/fw0124/article/details/39996265
+	批处理设置服务启动类型 https://zhidao.baidu.com/question/1886262090305732908.html
+	set详解 http://www.jb51.net/article/18973_all.htm http://blog.csdn.net/fw0124/article/details/39996265
 	if http://www.jb51.net/article/14986.htm
 	choice http://blog.sina.com.cn/s/blog_67d923ed0100ivxh.html
-	�������̳�: http://www.jb51.net/article/7131_all.htm
+	批处理教程: http://www.jb51.net/article/7131_all.htm
 	
 2017.12.11
-1. php�����̳� http://www.php.cn/code/39.html
+1. php基础教程 http://www.php.cn/code/39.html
 
 2017.12.13
-1. discuz�����ֵ� http://discuzt.cr180.com/discuzcode-db.html
+1. discuz数据字典 http://discuzt.cr180.com/discuzcode-db.html
 
-2. ucenter�����¼ http://blog.csdn.net/doegoo/article/details/50748182
+2. ucenter单点登录 http://blog.csdn.net/doegoo/article/details/50748182
 
 2017.12.19
-1. ��eclipse����Ŀ�ϴ���git�� http://blog.csdn.net/ymfwj/article/details/52491194
+1. 将eclipse上项目上传到git上 http://blog.csdn.net/ymfwj/article/details/52491194
 
-2. ��git����Ŀ������eclipse��
-	1. ��Git Repository��ͼ��Ȼ��ѡ��clone a git repository, Ȼ������git��ַ�Ϳ������ĸ�·���¡���һ��������������
-git clone��һ���ģ��൱��ֻ��ͨ��eclipse��һ��git��Ŀ�����˱��أ����Ǹ���Ŀ��eclipse��û�в����κ���ϵ;
+2. 将git上项目拷贝到eclipse上
+	1. 打开Git Repository视图，然后选择clone a git repository, 然后输入git地址和拷贝到哪个路径下。这一步跟在命令行里
+git clone是一样的，相当于只是通过eclipse将一个git项目拉到了本地，但是该项目和eclipse还没有产生任何联系;
 
-	2. ��eclipse��������ͨ��Ŀһ������ղ��������ص���Ŀ����Ҫע����������maven��Ŀ����Ҫע��ֿ�����á���ʱ��û��
-��git������ϵ����Ҫͨ��team-share project������ϵ
+	2. 在eclipse中像导入普通项目一样导入刚才拉到本地的项目，需要注意的是如果是maven项目可能要注意仓库的配置。此时仍没有
+和git产生联系，需要通过team-share project建立联系
 
-3. pullʧЧ�취 ��git�������ļ��м���: 
+3. pull失效办法 在git的配置文件中加上: 
 		[branch "master"]
 			remote = origin
 			merge = refs/heads/master
 			rebase = false
 		[remote "origin"] 
-			url = https://github.com/liqiyuanbetter/�ֿ���.git
+			url = https://github.com/liqiyuanbetter/仓库名.git
 			fetch = +refs/heads/*:refs/remotes/origin/*
 			push = +refs/heads/master:refs/heads/master
 
 2017.12.20
-1. ��ͨ������ 
+1. 普通话考试 
 	https://wenku.baidu.com/view/91afd41669dc5022aaea00fe.html
 	http://www.51test.net/show/8653714.html
 
-��ͨ������ʱ�� http://www.51test.net/pthsp/baoming/
+普通话报名时间 http://www.51test.net/pthsp/baoming/
 
 2017.12.21
-1. jsonת��
-	1. ʹ�� fastjson
-		1. ����תjson�ַ���--JSON.toJSONString(Object o)���Խ�����oת����һ��json�ַ��������������������пյ�����ֵ����ֱ����
-	�������ԡ������Ҫ����ĳЩ���ԣ������¼��ַ���
-			1. ����ע�� @JSONField(serialize = false), ���ȼ����ڹ�����
+1. json转化
+	1. 使用 fastjson
+		1. 对象转json字符串--JSON.toJSONString(Object o)可以将对象o转换成一个json字符串，如果这个对象里面有空的属性值，则直接略
+	过该属性。如果想要忽略某些属性，有以下几种方法
+			1. 加上注解 @JSONField(serialize = false), 优先级高于过滤器
 
-			2. ʹ��SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Class<?>, String...);��ֻ��ָ���Ĳ������������
-		JSON.toJSONString(obj, filter)���÷�������Ӱ�� @JSONField(serialize = false)������
+			2. 使用SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Class<?>, String...);则只有指定的参数才能输出。
+		JSON.toJSONString(obj, filter)。该方法不能影响 @JSONField(serialize = false)的属性
 
-			3. ʹ�����Թ�����PropertyFilter��Ϊ���������Ը������������˻����Ը����������ֵ����, ��
+			3. 使用属性过滤器PropertyFilter最为灵活，不仅可以根据属性名过滤还可以根据类和属性值过滤, 如
 				PropertyFilter filter = new PropertyFilter() {
 					public boolean apply(Object object, String propertyName, Object propertyValue) {
 						if (propertyName.equals("id") && Integer.parseInt(propertyValue.toString) == 1)
@@ -1942,47 +1945,47 @@ git clone��һ���ģ��൱��ֻ��ͨ��eclipse��һ��git��Ŀ�����˱��أ����Ǹ���Ŀ��ecl
 					}
 				};
 				JSON.toJSONString(myObj, filter);
-			ֻ��apply�����з���Ϊtrue�ĲŻᱻת��
+			只有apply方法中返回为true的才会被转化
 
-		2. JSON.parseObject(String json)�������Խ�һ��json�ַ���ת����һ��JSONObject��������������ͨ��
-	getString("keyName")�ȷ�������ȡjson�ַ����������ֵ����һ�����ط���JSON.parseObject(String json, class<T>)
-	���Խ�json�ַ���ת������Ӧ��ʵ�������
-			1. ��ʹ��JSON.parseObject(String, class<T>)��json�ַ���ֱ��ת��Ϊ����ʱ, ��������������json�ַ����е�����һһ��Ӧ��
-		����������ֲ�һ�£�����ͨ�� @JSONField(name = "propertyName")��ת������json�ַ��� {user-name: "liqiyuan"}, ��Ȼ���������
-		������-, ���Կ�������
+		2. JSON.parseObject(String json)方法可以将一个json字符串转换成一个JSONObject对象，这个对象可以通过
+	getString("keyName")等方法来获取json字符串里的属性值。另一个重载方法JSON.parseObject(String json, class<T>)
+	可以将json字符串转化成相应的实体类对象
+			1. 在使用JSON.parseObject(String, class<T>)将json字符串直接转化为对象时, 对象的属性名会和json字符串中的属性一一对应，
+		但是如果名字不一致，可以通过 @JSONField(name = "propertyName")来转化。如json字符串 {user-name: "liqiyuan"}, 显然类的属性名
+		不能有-, 所以可以这样
 			class User {
 				@JSONField(name = "user-name")
 				private String userName;
 			}
 			User user = Json.parseObject(json, User.class);
-			ʹ�� @JSONFieldע��ͬ����Ӱ�����JSON.toJSONString����
+			使用 @JSONField注解同样会影响调用JSON.toJSONString方法
 
-	2. ǰֱ̨�������÷���
-		1. ��json����(js����)ת����json�ַ�������var str = JSON.stringify(obj), ע�����Ҫʹ��obj.toJSONString, 
-	����Ҫ����https://github.com/douglascrockford/JSON-js/blob/master/json.js�����÷�������Ե������еĺ���;
+	2. 前台直接用内置方法
+		1. 将json对象(js对象)转换成json字符串，用var str = JSON.stringify(obj), 注意如果要使用obj.toJSONString, 
+	必须要引入https://github.com/douglascrockford/JSON-js/blob/master/json.js包。该方法会忽略掉对象中的函数;
 		
-		2. ��json�ַ���ת��Ϊjson������var obj = JSON.parse(str)��ʹ��str.parseJsonͬ��Ҫ����json.js��;
+		2. 将json字符串转化为json对象用var obj = JSON.parse(str)。使用str.parseJson同样要引入json.js包;
 
-		3. stringifyʵ��������������
-			1. �ڶ����������ڹ��ˣ������Ǻ�����Ҳ����������
-				1. ����������ʱ����ֻ���������е��������λᱻ���л������յ�JSON�ַ�����, ��:
+		3. stringify实际上有三个参数
+			1. 第二个参数用于过滤，可以是函数，也可以是数组
+				1. 当它是数组时，则只有在数组中的属性名参会被序列化到最终的JSON字符串中, 如:
 					var data = {k1: "v1", "k2", "v2"};
 					console.log(JSON.stringify(data, ["k1"])); // {"k1": "v1"}
 			
-				2. �ڶ��������Ǻ���ʱ 
+				2. 第二个参数是函数时 
 			https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
 
-			2. �������������ڿ���ÿһ�������һ��������������ո���JSON.stringify(data, 2);
+			2. 第三个参数用于控制每一级别比上一级别多缩进几个空格，如JSON.stringify(data, 2);
 
-			3. ע�⣬stingify�ĵ�һ�������ĸ�ʽ������{"k1":"v1"..}���ַ�����������ֵ���߶�����Ҫ��˫��
-		�Ŷ����ǵ�����;
+			3. 注意，stingify的第一个参数的格式必须是{"k1":"v1"..}的字符串，即键和值两边都必须要有双引
+		号而不是单引号;
 
-2. js����������
-	1. js��7����������, Undefined, Null, Boolean, String, Number, Object, ES6������һ���µ�ԭʼ����Symbol;
+2. js的数据类型
+	1. js有7中数据类型, Undefined, Null, Boolean, String, Number, Object, ES6引入了一种新的原始数据Symbol;
 
-3. ==��===�����߻�Ƚ������Ƿ���ͬ����"55" == 55// true, "55" === 55 // false
+3. ==和===，后者会比较类型是否相同。如"55" == 55// true, "55" === 55 // false
 
-4. console.log("a", "b")�൱�����a b;
+4. console.log("a", "b")相当于输出a b;
 result		array<object>	
     area		object	
         id		string	
@@ -2005,7 +2008,7 @@ var data = {
 		}
 	]
 }
-5. json�������ݸ�ʽ�����������������������Ԫ�ػ��Ƕ���ʱ��Ҫ��д[], ��д{}, ��
+5. json对象数据格式，当数据里有数组且数组的元素还是对象时，要先写[], 再写{}, 如
 	var data = {
 		name: "liqiyuan",
 		age:[1, 2, 3],
@@ -2014,63 +2017,63 @@ var data = {
 			{id: "002", name: "nchu"}
 		]
 	}
-	ע��, ����json�ַ���, ���ֻ��һ��������������������ַ������飬����д{}��ֻ��Ҫд[]����, ��
-	["s1", "s2"], [1, 3, 4], ֻ�ж����������Ҫд{}
+	注意, 对于json字符串, 如果只是一个单纯的数字数组或者字符串数组，不能写{}，只需要写[]即可, 如
+	["s1", "s2"], [1, 3, 4], 只有对象数组才需要写{}
 
-6. ʹ��$.ajax()��ǰ��̨��������ʱ
-	1. typeָ��ΪPOSTʱ��������ݵ���js����ʱ����̨�ܹ�ͨ��getParameter(keyName)�ķ�ʽ��ȡ������ֵ�����js����Ϊ
-{name: "liqiyuan", pas: "liqiyuan"}, ����ʱ�����̨���������ж�ȡֵ����ȡ�����ַ����ĸ�ʽ��name=liqiyuan&pas=liqiyuan��
-url��ַ�еĲ���Ҳ����ͨ��get�ķ�ʽ�õ�����̨���ͨ��������������get�����ķ�ʽ��ȡ�����ݣ�������һ�ַ�ʽ����ʧЧ����
-��xhr��Щ��һ����xhr��send()������ݺ�?�е������ǻ��಻����ŵ�;
+6. 使用$.ajax()在前后台传送数据时
+	1. type指定为POST时，如果传递的是js对象时，后台能够通过getParameter(keyName)的方式获取参数的值。如果js对象为
+{name: "liqiyuan", pas: "liqiyuan"}, 但此时如果后台从输入流中读取值，读取到的字符串的格式是name=liqiyuan&pas=liqiyuan。
+url地址中的参数也可以通过get的方式得到，后台如果通过了输入流或者get参数的方式获取了数据，则另外一种方式都会失效。这
+和xhr有些不一样，xhr中send()里的数据和?中的数据是互相不会干扰的;
 
-	2. typeָ��ΪGETʱ, ��dataӦ������js���󣬺�̨����ͨ��getParameter(keyName)�ķ�ʽ��ȡǰ̨�����������ݡ����
-��ʱdata��һ���ַ���������js�������̨��ȡ���ľ���"�ַ���ֵ="��Ҳ���ǵõ�����һ���յ�ֵ������url��ַ�����ܹ�ͨ��?
-���ϲ�������̨Ҳ�ܹ�ͨ��getParameter�����ղ���;
+	2. type指定为GET时, 则data应该是是js对象，后台可以通过getParameter(keyName)的方式获取前台传过来的数据。如果
+此时data是一个字符串但不是js对象，则后台获取到的就是"字符串值="，也就是得到的是一个空的值，但是url地址中仍能够通过?
+带上参数，后台也能够通过getParameter来接收参数;
 	
-	3. Ҫ��һ��js����ת����json�ַ������͵������, ����ʹ��JSON.stringify��ע�����ﲻ��ָ��
-contentType: application/jsonҲ���ԡ�������ʱ����ָ��typeΪPOST�Һ�̨�����һ��servlet, ��ֻ��ͨ�����ķ�ʽ��ȡ���ݣ���ȡ
-������һ��json�ַ���;
+	3. 要将一个js对象转换成json字符串传送到服务端, 可以使用JSON.stringify。注意这里不用指定
+contentType: application/json也可以。不过此时必须指定type为POST且后台如果是一个servlet, 则只能通过流的方式读取数据，读取
+到的是一个json字符串;
 
-	4. ǰ̨��success�н��պ�̨������������ʱ�����������dataType���ԣ��򴫹����Ķ����ַ�������˿�����ǰ̨ͨ��
-var obj = JSON.parse(data)������ת����js����Ȼ��Ϳ���ͨ��obj.attrName����ȡ��Ӧ������ֵ�����������
-dataType: "json", �򵱺�̨����json���ݹ���ʱ��ǰ̨���յ���data�ͻ�ֱ�ӽ����ַ���ת����һ��js���󣬲�������ת������ʱ
-�����̨�����������ݲ���һ��json�ַ������������error: function() {}����;
+	4. 前台在success中接收后台传过来的数据时，如果不添加dataType属性，则传过来的都是字符串。因此可以在前台通过
+var obj = JSON.parse(data)将数据转换成js对象，然后就可以通过obj.attrName来获取响应的属性值。如果添加了
+dataType: "json", 则当后台传送json数据过来时，前台接收到的data就会直接将该字符串转化成一个js对象，不用再作转换。此时
+如果后台传过来的数据不是一个json字符串，则会跳到error: function() {}里面;
 
-7. java�ڸ�������»�ȡ����ip
+7. java在复杂情况下获取本机ip
 	1. https://www.cnblogs.com/xiaoBlog2016/p/7076230.html
 	2. http://www.jb51.net/article/93343.htm
 	3. http://blog.csdn.net/gjb724332682/article/details/52427032
 
-8. jqueryԪ��ѡ�����õ��˶��Ԫ��ʱ��������ԭ��js����д[0]�ȣ�Ҫд����.eq(0)����ʽ, ��$("img").eq(0).attr("src");
+8. jquery元素选择器得到了多个元素时，不能像原生js那样写[0]等，要写成如.eq(0)等形式, 如$("img").eq(0).attr("src");
 
 2017.12.25
-1. js��concat����������������������е�ֵ������a = [1, 2, 3], ��a.concat(4, 5)�����1, 2, 3, 4, 5������a = [1, 2, 3],
-b = [4, 5], a.concat(b)�����1, 2, 3, 4, 5��Ҳ����a.concat(a, a);
+1. js的concat用于连接数组或连接数组中的值，比如a = [1, 2, 3], 则a.concat(4, 5)结果是1, 2, 3, 4, 5。或者a = [1, 2, 3],
+b = [4, 5], a.concat(b)结果是1, 2, 3, 4, 5。也可以a.concat(a, a);
 
-2. ����js��addEventListener�¼�ʱ������.addEventListener("event", functionName())��functionName������дһ����������;
+2. 调用js的addEventListener事件时，可以.addEventListener("event", functionName())或functionName，不用写一个匿名函数;
 
 2017.12.26
-1. ����ajax����ѯ��һ����ҳ������
+1. 利用ajax长轮询作一个网页聊天室
 
-2. ����maven��Ϊbuild����ʱ����̨�����ӡ������Ϣ[WARNING] Using platform encoding (GBK actually) to copy..ֻ��Ҫ��
-pom.xml�ļ���project�ڵ�����������
-	<properties><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>����
+2. 利用maven作为build工具时控制台如果打印警告信息[WARNING] Using platform encoding (GBK actually) to copy..只需要在
+pom.xml文件的project节点下添加属性
+	<properties><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>即可
 
-3. ��ζ���һ�����ͷ���
-	1. ����÷������ڷ������У���ô��Ҫ�ڷ����ķ������ͺ����η�֮�����<T>(ע���ڷ�������ǰ��)�������������������
-����˭���Ƿ������������public static <T> returnType fun(T t){}, �綨��һ�����������ȫ����װ��һ��ArrayList�з��صĺ���
+3. 如何定义一个泛型方法
+	1. 如果该方法不在泛型类中，那么需要在方法的返回类型和修饰符之间加上<T>(注意在返回类型前面)，表明在这个方法作用
+域中谁才是泛型类参数，即public static <T> returnType fun(T t){}, 如定义一个将传入参数全部封装在一个ArrayList中返回的函数
 
 	public static <U> ArrayList<U> asArrayList(U... item) {}
 
-	<U>��������Ҫʹ��������ͣ�Ȼ���ں���ķ������ͺͲ����оͶ�����ʹ��U��U�������������������asArrayList
+	<U>表明了我要使用这个泛型，然后在后面的返回类型和参数中就都可以使用U，U的作用域就是整个方法asArrayList
 	
-	2. ���һ������һ�������˷��͵��࣬��
+	2. 如果一个类是一个定义了泛型的类，如
 		public class MyClass<T> {
 			
-			// ����ֱ���ڷ�����д����
-			public T foo1() {} �� public void foo2(T t) {}
+			// 可以直接在方法中写泛型
+			public T foo1() {} 或 public void foo2(T t) {}
 
-			// ����һ��ע�ⲻ���ھ�̬�����򷽷���ʹ���ඨ��ķ���
+			// 但是一定注意不能在静态变量或方法中使用类定义的泛型
 			// public static T foo3() {} Cannot make a static reference to the non-static type T
 			// public static T t; Cannot make a static reference to the non-static type T
 		}
@@ -2078,34 +2081,34 @@ pom.xml�ļ���project�ڵ�����������
 	2. https://www.cnblogs.com/csyuan/p/6908303.html
 
 2017.12.29
-1. webxml�е�һЩ��ǩ����
-	1. serlvet��ǩ����load-on-startup��ǩ
-		1. ���������Ǳ�������Ƿ���������ʱ��ͼ������servlet����ʵ������������init����;
+1. webxml中的一些标签解释
+	1. serlvet标签的下load-on-startup标签
+		1. 它的作用是标记容器是否在启动的时候就加载这个servlet，即实例化并调用其init方法;
 
-		2. ����ֵ������һ��������С��0��û��ָ��ʱ����ֻ�ڸ�servlet��ѡ��ʱ�Ż�ȥ���ء����ڵ���0ʱ��Ӧ������ʱ�ͻ�
-	���ز���ʼ�����servlet��������ֵԽС�����������ȼ���Խ�ߡ�<load-on-startup>�е���ֵ��ʾ���ȼ������������ӳ�ʱ�䡣
+		2. 它的值必须是一个整数，小于0或没有指定时容器只在该servlet被选择时才会去加载。大于等于0时在应用启动时就会
+	加载并初始化这个servlet。整数的值越小，启动的优先级就越高。<load-on-startup>中的数值表示优先级而不是启动延迟时间。
 
-	2. error-page��ǩ�����ڷ��ʳ���ʱ����ָ����ҳ�档����
+	2. error-page标签用于在访问出错时返回指定的页面。例如
 		<error-page>
 			<error-code>404</error-code>
 			<location>/error.html</location>
 		</error-page>
-	�����쳣�����Ҳ�ܲ����緢����ָ���쳣ʱ
+	发生异常的情况也能捕获，如发生空指针异常时
 	<error-page>
 	   <exception-type>java.lang.NullPointerException</exception-type>
 	   <location>/WEB-INF/jsp/errors/error.jsp</location>
 	</error-page>
 
 2018.01.02
-1. mysql�����ͽ���ļ���С����
-	1. ��������ע����comment 'ע��'��Ҫ�鿴�����е�ע�Ϳ�����show full columns from tb_rightmanage_user;
+1. mysql建表和建库的几个小问题
+	1. 给列增加注释用comment '注释'。要查看表中列的注释可以用show full columns from tb_rightmanage_user;
 
-	2. �����ݿ�ʱָ�����뷽ʽ�����������CREATE DATABASE db_name CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
-Ҫ�鿴���ݿ�ı��뷽ʽ��use db_name; show variables like 'character_set_database';
+	2. 建数据库时指定编码方式和排序规则用CREATE DATABASE db_name CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+要查看数据库的编码方式用use db_name; show variables like 'character_set_database';
 
 2018.01.03
-1. 쳲�������������㷨:
-	// aΪ��һ�bΪ�ڶ��nΪ��n������n��
+1. 斐波那契数列最佳算法:
+	// a为第一项，b为第二项，n为第n项，计算第n项
 	int fibonacci(a, b, n) {
 		if (n == 1) {
 			return a;
@@ -2116,41 +2119,41 @@ pom.xml�ļ���project�ڵ�����������
 		return fibonacci(b, a + b, n - 1);
 	}
 
-2. ע�����߳���this.currentThread().getName()��this.getName()��ֵ�ǲ�һ���ģ�ǰ�߱�ʾ��������ִ�еĴ�����߳���������
-��Thread��һ����������ʾ����̵߳����֡����û�и��߳�ָ�����֣����̵߳������п�����Thread-0
+2. 注意在线程中this.currentThread().getName()和this.getName()的值是不一样的，前者表示调用正在执行的代码的线程名，后者
+是Thread的一个方法，表示这个线程的名字。如果没有跟线程指定名字，则线程的名字有可能是Thread-0
 
 2018.01.04
 1. lombok
-	1. ��װlombok
-		1. ��eclipse�°�װ�������ڹ��� https://projectlombok.org/download.html ������lombok��jar������jar������Ŀ
-	¼ִ��cmd����java -jar lombok.jar����ʱ�ᵯ��һ����װ���ڣ����ܻ���ʾ�Ҳ���ide��·�������specific locationѡ����
-	����eclipse��װ·��Ȼ����ٰ�װ���ɡ���eclipse���Բ��ܱ��룬����eclipse.ini������ -Xbootclasspath/a:lombok.jar, 
-	���һ���Ҫ��lombok.jar��������Ŀ��, Ҳ����ͨ��maven����;
+	1. 安装lombok
+		1. 在eclipse下安装。首先在官网 https://projectlombok.org/download.html 上下载lombok的jar包，在jar包所在目
+	录执行cmd命令java -jar lombok.jar。这时会弹出一个安装窗口，可能会提示找不到ide的路径。点击specific location选择自
+	己的eclipse安装路径然后快速安装即可。若eclipse中仍不能编译，则在eclipse.ini中添加 -Xbootclasspath/a:lombok.jar, 
+	并且还需要将lombok.jar包引入项目中, 也可以通过maven引入;
 
-	2. lombok�г��õ�һЩע��, ����api�μ� https://projectlombok.org/api/
-		1. @Dataע�������ϣ������������Ե�getting, setting����, �����������Ե�toString()�����Լ�equals��hashCode
-	����, ���ע��ǳ�ǿ��ʵ��, ���൱������������ע��, @Setter/@Getter, @RequiredArgsConstrustor, @ToString�Լ�
+	2. lombok中常用的一些注解, 更多api参见 https://projectlombok.org/api/
+		1. @Data注解在类上，提类所有属性的getting, setting方法, 包含所有属性的toString()方法以及equals和hashCode
+	方法, 这个注解非常强大实用, 它相当于添加了以下注解, @Setter/@Getter, @RequiredArgsConstrustor, @ToString以及
 	@EqualsAndHashCode;
 		
-		2. @Setter�� @Getterע�������������Ҳ�����������ϣ������ṩgetting��setting;
+		2. @Setter和 @Getter注解既能用在类上也能用在属性上，用于提供getting和setting;
 
-		3. @Log(@Log4j)ע�⣬�൱��Ϊ���ṩ��һ����Ϊlog����־���󣬼�
+		3. @Log(@Log4j)注解，相当于为类提供了一个名为log的日志对象，即
 		public class LogExample {
 			private static final java.util.logging.Logger log 
 				= java.util.logging.Logger.getLogger(LogExample.class.getName());
 		}
-		��
+		或
 		public class LogExample {
 			private static final org.apache.log4j.Logger log 
 				= org.apache.log4j.Logger.getLogger(LogExample.class);
 		}
-		������Ҫע����ǣ�����apache��log4j��ʱ��Ҫ�����ⲿ��������log��util�����Դ��Ĳ��ö�������;
+		但是需要注意的是，引入apache的log4j包时需要引入外部包，但是log是util包中自带的不用额外引入;
 
-		4. @NoArgsConstructor, @RequiredArgsConstrustor, @AllArgsConstructor��ʾ�ṩ�����κʹ������Ĺ��캯��, 
-	���� @RequiredArgsConstructor ��ʾ���ǹ�������б��������Щ�� @NonNull ��ע�˵�����;
+		4. @NoArgsConstructor, @RequiredArgsConstrustor, @AllArgsConstructor表示提供不带参和带参数的构造函数, 
+	其中 @RequiredArgsConstructor 表示的是构造参数中必须带有那些被 @NonNull 标注了的属性;
 
-		5. @Cleanup ע��Ҳʮ��ǿ����������Ϊ����������ľֲ������ϣ�ʹ�ú󲻱����ֶ��ر���
-			ԭʼд��
+		5. @Cleanup 注解也十分强大，用在类型为输入输出流的局部变量上，使用后不必再手动关闭流
+			原始写法
 				InputSteam in = new FileInputStream("");
 				try {
 					// do something
@@ -2158,69 +2161,69 @@ pom.xml�ļ���project�ڵ�����������
 				} finally {
 					in.close();
 				}
-			ʹ�� @Cleanup
+			使用 @Cleanup
 				@Cleanup InputStream in = new FileInputStream("");
 				// do something
 
 2018.01.08
-1. idea���ų��� http://blog.csdn.net/qq_31655965/article/details/52788374
+1. idea入门程序 http://blog.csdn.net/qq_31655965/article/details/52788374
 
-2. Java������������
-	1. ���ӻ�������JAVA_HOME ·��Ϊjdk��װ��Ŀ¼����: C:\Program Files\Java\jdk1.8.0_144;
+2. Java环境变量配置
+	1. 添加环境变量JAVA_HOME 路径为jdk安装根目录，如: C:\Program Files\Java\jdk1.8.0_144;
 
-	2. �ڻ�������Pathĩβ����ֵ: ;%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;ע��Ҫ�ԷֺŸ���
+	2. 在环境变量Path末尾添加值: ;%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;注意要以分号隔开
 
-	3. �½���������CLASSPATHֵΪ: .;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar
+	3. 新建环境变量CLASSPATH值为: .;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar
 
 2018.01.09
-1. idea�½�һ��maven��Ŀ������tomcat�� 
-	1. ����: https://www.cnblogs.com/wql025/p/5215570.html ע��idea�ڲ�����һ��maven��Ŀ֮����ܻ��޸ĸ�Ŀ
-	2. ��̬ҳ���޷���ʱˢ�� http://blog.csdn.net/yuxxz/article/details/51318908
+1. idea新建一个maven项目并部署到tomcat上 
+	1. 总览: https://www.cnblogs.com/wql025/p/5215570.html 注意idea在部署了一个maven项目之后可能会修改根目
+	2. 静态页面无法及时刷新 http://blog.csdn.net/yuxxz/article/details/51318908
 				https://www.cnblogs.com/jeffen/p/6184299.html
-	4. idea����web��Ŀʱ�Ĳ���λ�� http://blog.csdn.net/joenqc/article/details/58044953
+	4. idea运行web项目时的部署位置 http://blog.csdn.net/joenqc/article/details/58044953
 				       http://blog.csdn.net/yangcheng33/article/details/53016764
 
-2. idea����ͨjava��Ŀ����jar���ķ��� http://blog.csdn.net/a153375250/article/details/50851049
+2. idea给普通java项目添加jar包的方法 http://blog.csdn.net/a153375250/article/details/50851049
 
-3. idea��װ���: file-settings-plugins-browse repositories
+3. idea安装插件: file-settings-plugins-browse repositories
 
-4. idea ��ݼ�
-	1. �����滻 contrl + r
-	2. �������� c + a + l
+4. idea 快捷键
+	1. 查找替换 contrl + r
+	2. 清除多余包 c + a + l
 
-5. �ر��ظ�������ʾ http://blog.csdn.net/ck4438707/article/details/52233968
+5. 关闭重复代码提示 http://blog.csdn.net/ck4438707/article/details/52233968
 
 2018.01.11
-1. jetty��ʹ��
-	1. ��jetty����������jettyѹ�������ѹ����jetty��Ŀ¼·�����ӵ���������JETTY_HOME��;
+1. jetty简单使用
+	1. 在jetty官网上下载jetty压缩包后解压，将jetty根目录路径添加到环境变量JETTY_HOME中;
 
-	2. jetty����tomcat������һ��startup.bat�������ļ�����ֱ����������Ҫ�Լ�����cmd����������
-cd %JETTY_HOME% java -jar start.jar�Ϳ�������jetty����������ʱ�������ַ������localhost:8080����Ϊwebapps��û���κ�Ӧ�ã����
-����ʾ404�����κ�һ��webӦ�û���war������webapps���¾��ܷ��ʸ�Ӧ��;
+	2. jetty不像tomcat那样有一个startup.bat批处理文件可以直接启动，需要自己利用cmd命令启动。
+cd %JETTY_HOME% java -jar start.jar就可以启动jetty服务器。这时浏览器地址栏输入localhost:8080，因为webapps下没有任何应用，因此
+会显示404。将任何一个web应用或者war包放入webapps包下就能访问该应用;
 
-	3. jetty�޸Ķ˿ں���start.ini�У�Ĭ��8080������jetty.http.port=�˿ںż��ɡ�
+	3. jetty修改端口号在start.ini中，默认8080。添加jetty.http.port=端口号即可。
 
- . jettyʹ�ý̳� https://www.cnblogs.com/yiwangzhibujian/p/5832597.html
+ . jetty使用教程 https://www.cnblogs.com/yiwangzhibujian/p/5832597.html
 
 2018.01.15
-1. intellij idea��ô��outline������Eclipse�е����ұ���ʾĳ��������з��� 
+1. intellij idea怎么打开outline，即像Eclipse中的在右边显示某个类的所有方法 
 	http://blog.csdn.net/ideality_hunter/article/details/53331700
 
-2. mybatis����springMVC����
-	1. ����dao��, manager��
-		��mapper����д���ֻ����ĵ������ݿ�Ľӿڣ���AMapper, ��Щ�ӿ��еķ������ƺ�AMapper.xml�ļ��ж����ÿһ������
-	���ݿ�ı�ǩ��idһһ��Ӧ��
+2. mybatis整合springMVC配置
+	1. 关于dao层, manager层
+		在mapper层中写各种基础的调用数据库的接口，如AMapper, 这些接口中的方法名称和AMapper.xml文件中定义的每一个操作
+	数据库的标签的id一一对应。
 
-		manager���൱��service�㣬manager����Ҳ��Žӿڣ�����ΪBManager����Щ�ӿڵķ���������ʵ�ʵ�ҵ���߼���Ҫ���õ�
-	���������ܻ���ö��mapper�еĶ��������BManager��ʵ��������manager.impl������У�����ΪBManagerImpl�������ʵ����
-	�У�������ͨ�� @Resource�ķ����Զ�ע��һ��mapper��ڵ�ʵ����, �� @Resource AMapper aMapper��Ȼ������ʵ�ֵ�BManager��
-	�ӿ��е������mapperʵ����ķ���, ��aMapper.getEntityById()
+		manager层相当于service层，manager层中也存放接口，命名为BManager。这些接口的方法是我们实际的业务逻辑需要调用的
+	方法，可能会调用多个mapper中的多个方法。BManager的实现类存放在manager.impl这个包中，命名为BManagerImpl。在这个实现类
+	中，它可能通过 @Resource的方法自动注入一个mapper借口的实现类, 如 @Resource AMapper aMapper。然后在它实现的BManager的
+	接口中调用这个mapper实现类的方法, 如aMapper.getEntityById()
 
-	2. ���������ļ���Ҫ��������
-		1. AMapper.xml�ļ��������˾���Ĳ������ݿ����䣬���ļ���mapper���еĽӿ�һһ��Ӧ�����Ҹ��ļ���
-	<mapper namespace="">, namespace���Ե�ֵ�����Ƕ�Ӧ��mapper�ӿڵ���������mapper.AMapper;
+	2. 关于配置文件主要配置两个
+		1. AMapper.xml文件中配置了具体的操作数据库的语句，该文件和mapper包中的接口一一对应。并且该文件中
+	<mapper namespace="">, namespace属性的值必须是对应的mapper接口的类名，如mapper.AMapper;
 
-		2. spring-mybatis-context.xml�ļ���������springmvc��Ҫɨ���mapper�����ļ���λ�ú�mapper�ӿ����ڵİ�������, �� 
+		2. spring-mybatis-context.xml文件中配置了springmvc需要扫描的mapper配置文件的位置和mapper接口所在的包的名字, 即 
 			<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 				<property name="dataSource" ref="defaultDataSource" />
 				<property name="mapperLocations" value="classpath*:mybatis/*.xml" />
@@ -2231,40 +2234,40 @@ cd %JETTY_HOME% java -jar start.jar�Ϳ�������jetty����������ʱ�������ַ������lo
 				<property name="basePackage" value="im.qingtui.sa.attendance.schedule.dao.mapper" />
 			</bean>
 	
-3. mysql�﷨
-	1. ����ɾ���޸��� http://blog.csdn.net/ws84643557/article/details/6939846
+3. mysql语法
+	1. 添加删除修改列 http://blog.csdn.net/ws84643557/article/details/6939846
 
-	2. limit�ؼ��� select * from table limit 5, 10 ��ʾ���ǲ�ѯ6��15�У���Ϊ�Ǵ�0�п�ʼ���, �ο�����
+	2. limit关键字 select * from table limit 5, 10 表示的是查询6到15行，因为是从0行开始算的, 参考资料
 http://blog.csdn.net/zhqingyun163/article/details/5053579/
 
-	3. IFNULL�Ŀ� ע��select IFNULL(id, 0) from..�������ifnullֻ���жϲ�ѯ���Ľ������һ���Ƿ�id��Ϊ�գ��������ж�
-�����ҲΪ�յ����;
+	3. IFNULL的坑 注意select IFNULL(id, 0) from..，这里的ifnull只能判断查询出的结果中这一行是否id列为空，而不能判断
+结果集也为空的情况;
 
 2018.01.16
-1. ö��
-	1. ö���������ֱ��дö�ٵ����ƣ�ö����������ö�ٵĵ�һ���֣�ö��ǰ�治��������������������Щö����Ҳ���Դ��в�����
-������Ҫע�����һ��ָ���˲������ͱ����ö���������캯����ע��ö���еĹ��캯��Ĭ�϶���˽�еģ���Ϊö�ٶ�����ͨ�����캯������
-�Ķ���ֱ�� EnumName e1 = EnumName.enum1("���ܴ��е�һЩ����")
+1. 枚举
+	1. 枚举下面可以直接写枚举的名称，枚举名必须是枚举的第一部分，枚举前面不可以有其他的声明。这些枚举中也可以带有参数，
+但是需要注意的是一旦指定了参数，就必须给枚举声明构造函数。注意枚举中的构造函数默认都是私有的，因为枚举对象不是通过构造函数生成
+的而是直接 EnumName e1 = EnumName.enum1("可能带有的一些参数")
 
-	2. ö����Ҳ�����������������Ե�����ͨ�����Ǹ�ö�������˴������Ĺ��캯��ʱ����ҪΪ���캯���е�ÿһ��������ָ��һ������
-��Ա��ָ��public getter, ������Щ���캯���е������ⲿ��ȡ������û������;
+	2. 枚举中也可以有类似类中属性的声明通常我们给枚举声明了带参数的构造函数时，需要为构造函数中的每一个参数都指定一个属性
+成员并指定public getter, 否则这些构造函数中的属性外部获取不到就没有意义;
 
-	3. ö����Ҳ������������һЩ��̬���߷Ǿ�̬�ĺ�������Щ������һ����
+	3. 枚举中也可以有其他的一些静态或者非静态的函数，这些和类是一样的
 
 	public enum WeekConstants {
 
 		SUNDAY("Sunday", 0), MONDAY("Monday", 1);
 		
-		// Ϊ����ָ�����е�getter����
+		// 为属性指定公有的getter方法
 		private @Getter String weekdayName;
 		private @Getter String weekdayNumber;
 
-		// ���캯��, �����ö�٣���SUNDAY��ָ���˲�������һ����Ҫ���캯��
+		// 构造函数, 如果在枚举，即SUNDAY中指定了参数，则一定需要构造函数
 		WeekConstants(String weekdayName, int weekdayNumber) {this.weekdayName = weekdayName;// ...}
 
-		// ö�ٿ������Լ��ľ�̬���߷Ǿ�̬�ķ���
+		// 枚举可以有自己的静态或者非静态的方法
 		public static getWeekDayNumber(String weekdayName) {
-			// WeekConstants.values()���ص�������ö�ٵ�����
+			// WeekConstants.values()返回的是所有枚举的数组
 			for (WeekConstants week : WeekConstants.values()) {
 				if (week.getWeekdayName.equals(weekdayName)) {
 					return week.getWeekdayNumber;
@@ -2275,26 +2278,26 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 		}
 	}
 
-	4. ע�⼴ʹ��ö�ٵ����Ը���ö���Լ���ö�����������£���WeekConstants week = WeekConstants.SUNDAY;
-	sysout(week.getWeekdayName);// ���ΪSunday sysout(week); // ���ΪSUNDAY
+	4. 注意即使该枚举的属性跟该枚举自己的枚举名是两回事，如WeekConstants week = WeekConstants.SUNDAY;
+	sysout(week.getWeekdayName);// 结果为Sunday sysout(week); // 结果为SUNDAY
 
 2018.01.22
-1. list������foreachѭ���н���add��remove����ԭ�� https://www.cnblogs.com/luyu1993/p/7148765.html
+1. list不能在foreach循环中进行add或remove操作原因 https://www.cnblogs.com/luyu1993/p/7148765.html
 
 2018.01.24
-1. mybatis�﷨
-	1. mybatis jdbcType��java type ��Ӧ��ϵ http://blog.csdn.net/jljf_hh/article/details/49535097
+1. mybatis语法
+	1. mybatis jdbcType和java type 对应关系 http://blog.csdn.net/jljf_hh/article/details/49535097
 
-	2. ע������
-		1. ��mybatis��ӳ���ļ���select����в���дע��--������Ҫ����;
+	2. 注意事项
+		1. 在mybatis的映射文件的select语句中不能写注释--，否则要报错;
 
-		2. insert, update, delete�ķ���ֵ 
-			1. ����mybatis��update��䣬���ķ���ֵ��ƥ�䵽���������������޸ĵ�����������update set c=1 where c=1������������
-		10�е�c����1, ��ô��mysql��ֱ������������ʱ����ʾ��Ӱ�������Ϊ0��Ҳ����˵mysql�����ǰ��ֵһ�����н����޸ġ�������
-		�������mybatis�з��ص���10����Ȼ��ʵ�������ǲ������������޸ģ�����Ҳ������Ϊƥ�䵽����������ʵ���޸ĵ�������insert��
-		delete���صĶ��ǲ�����޸ĵ�����
+		2. insert, update, delete的返回值 
+			1. 对于mybatis的update语句，它的返回值是匹配到的行数，而不是修改的行数。例如update set c=1 where c=1。如果这个表有
+		10行的c等于1, 那么在mysql中直接运行这个语句时会显示受影响的行数为0。也就是说mysql不会对前后值一样的列进行修改。但是这
+		条语句在mybatis中返回的是10。当然在实际中我们不会做这样的修改，所以也可以认为匹配到的行数就是实际修改的行数。insert和
+		delete返回的都是插入或修改的行数
 			
-			2. insertͨ����������ʱ�᷵��һ������1��ֵ��foreach��trim, if����
+			2. insert通过批量插入时会返回一个大于1的值。foreach和trim, if联用
 				<insert id="testBatchInsert" parameterType="java.util.List">
 					INSERT INTO attendance_statistic(account_id) VALUES
 					<foreach collection="list" item="item" index="index" separator=",">
@@ -2306,18 +2309,18 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 					</foreach>
 				</insert>
 
-			3. ����foreach��ǩ
-				1. foreachԪ�ص�������Ҫ�� item��index��collection��open��separator��close
-					item��ʾ������ÿһ��Ԫ�ؽ��е���ʱ�ı�����
-					indexָ ��һ�����֣����ڱ�ʾ�ڵ��������У�ÿ�ε�������λ�ã�
-					open��ʾ�������ʲô��ʼ��
-					separator��ʾ��ÿ�ν��е���֮����ʲô������Ϊ�ָ� ����
-					close��ʾ��ʲô������
-					collection�����Ǳ���ָ���ģ�����ֵ�����¼���
-						1. ���������ǵ������Ҳ���������һ��List��ʱ��collection����ֵΪlist
-						2. ���������ǵ������Ҳ���������һ��array�����ʱ��collection������ֵΪarray 
-						3. ����������һ����Ķ���������ֵӦ��Ϊ�������������������һ������ΪList<String>������ids��������
-					ʹ�õĲ�ѯ����inʱ��Ӧ������д
+			3. 关于foreach标签
+				1. foreach元素的属性主要有 item，index，collection，open，separator，close
+					item表示集合中每一个元素进行迭代时的别名，
+					index指 定一个名字，用于表示在迭代过程中，每次迭代到的位置，
+					open表示该语句以什么开始，
+					separator表示在每次进行迭代之间以什么符号作为分隔 符，
+					close表示以什么结束。
+					collection属性是必须指定的，它的值有以下几种
+						1. 如果传入的是单参数且参数类型是一个List的时候，collection属性值为list
+						2. 如果传入的是单参数且参数类型是一个array数组的时候，collection的属性值为array 
+						3. 如果传入的是一个类的对象，则它的值应该为属性名。例如该类中有一个类型为List<String>的属性ids。当我们
+					使用的查询中有in时，应该这样写
 					<select..>
 						select... where id in
 						<foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
@@ -2325,13 +2328,13 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 						</foreach>
 					</select>
 
-				2. ��������ʱ��һ��Ҫע�⴫���list����Ϊ�ջ��߳���Ϊ0������Ҫ����
+				2. 批量插入时，一定要注意传入的list不能为空或者长度为0，否则要报错
 
-			4. ����Ҫ�Ӳ�ѯ������浽һ������������ʱ
-				1. ������һ������address��һ����������һ������name�������ͨ��resultMapʹ��.��
+			4. 当需要加查询结果保存到一个复杂属性中时
+				1. 例如有一个属性address是一个对象，它有一个属性name。则可以通过resultMap使用.号
 			<resultMap id..><result property="address.name" column="columnName" jdbcType="VARCHAR" /></resultMap>
 			
-		3. ��������������������ڲ���һ�����ݺ������²�������ݵ�����id������д��
+		3. 对于自增的主键，如何在插入一条数据后获得最新插入的数据的自增id。这样写：
 		<insert id="testInsert" parameterType="im.qingtui.sa.attendance.schedule.model.AttendanceStatistic">
 			<selectKey resultType="int" order="AFTER" keyProperty="id">
 			  SELECT last_insert_id() as id
@@ -2348,27 +2351,27 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 			  </if>
 			</trim>
 		</insert>
-			�����keyProperty�Ƕ�Ӧ��ʵ������������������������ݵ�ʵ�����п϶���û��id��ֵ�ģ���Ϊ�������Ĳ���Ҫ��Ϊָ����
-		������java�����У�clazz.getId()���ܹ��õ����β����õ�������������ֵ��selectKey��ǩд��insert�������ǰ�棬�������
-		��������д
+			这里的keyProperty是对应的实体类的属性名，本来保存数据的实体类中肯定是没有id的值的，因为是自增的不需要认为指定。
+		这样在java程序中，clazz.getId()就能够得到本次插入后得到的自增主键的值。selectKey标签写在insert插入语句前面，插入语句
+		还是照样写
 	
-	mybatisѧϰ��
+	mybatis学习：
 		1. http://www.cnblogs.com/xdp-gacl/p/4262895.html
 		2. http://www.mybatis.org/mybatis-3/zh/getting-started.html
 
 
 2018.02.01
 1. java sdk
-	1. System.arraycopy��Arrays.copyOf
-		1. System.arraycopy(src, srcPos, dest, destPos, length)�����������ǽ�src�����srcPos(��0��ʼ, �Ұ�����λ��)��ʼ��length
-	��Ԫ�ظ��Ƶ�dest��destPos(����destPos)��ʼ��lengthԪ�أ��ú��������������Ҹ��ƣ���System.arraycopy(a1, 0, a1, 1, 3)��ע��
-	��������Ľ����destPos���ı��ˣ�������src���ı���;
+	1. System.arraycopy和Arrays.copyOf
+		1. System.arraycopy(src, srcPos, dest, destPos, length)。它的意义是将src数组从srcPos(从0开始, 且包括该位置)开始的length
+	个元素复制到dest从destPos(包括destPos)开始的length元素，该函数可以用于自我复制，即System.arraycopy(a1, 0, a1, 1, 3)。注意
+	这个函数的结果是destPos被改变了，而不是src被改变了;
 
-		2. Arrays.copyOf(arr, length)�÷�������һ���µ����顣ǰ����Ҫ�Ѿ���������ָ���˳��ȵ����飬�÷��������ֱ�ӷ���һ��
-	�µ����飬��int[] a = {1, 2, 3, 4}; int[] b = Arrays.copyOf(a, 10); ��b��ֵΪ{1, 2, 3, 4, 0...0};
+		2. Arrays.copyOf(arr, length)该方法返回一个新的数组。前者需要已经存在两个指定了长度的数组，该方法则可以直接返回一个
+	新的数组，如int[] a = {1, 2, 3, 4}; int[] b = Arrays.copyOf(a, 10); 则b的值为{1, 2, 3, 4, 0...0};
 
-2. Ϊʲô�����ڱ���list��ͬʱ��ɾ����������Ԫ�صĲ���
-	1. ����1
+2. 为什么不能在遍历list的同时做删除或者添加元素的操作
+	1. 现象1
 		ArrayList<String> list = new ArrayList<String>();
         list.add("1");
         list.add("2");
@@ -2379,10 +2382,10 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
                 list.remove(s);
             }
         }
-	��������1�Ҳ��ᱨ�������������if������Ϊ"2".equals(s), �������ȴ�ӡ1, 2Ȼ���׳�ConcurrentModificationException�쳣
-	�����remove��Ϊadd�����ӡ1�������׳�ConcurrentModificationException�쳣
+	输出结果是1且不会报错，但是如果将if条件改为"2".equals(s), 则程序会先打印1, 2然后抛出ConcurrentModificationException异常
+	如果将remove改为add，则打印1后马上抛出ConcurrentModificationException异常
 
-	����2
+	现象2
 		ArrayList<String> list = new ArrayList();
 		list.add("1");
 		list.add("2");
@@ -2392,15 +2395,15 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 			String s = (String)var2.next();
 			System.out.println(s);
 			if ("2".equals(s)) {
-				// add��removeλ�ÿ��Ի���
+				// add和remove位置可以互换
 				list.add("3");
 				list.remove(s);
 			}
 		}
-	��������1, 2 �Ҳ��ᱨ��
+	输出结果是1, 2 且不会报错
 
-	2. ԭ��
-		1. ����foreachѭ����jdk���ǽ������Ϊ���´���ִ��(��ͨ��������.class�ļ��鿴)
+	2. 原因
+		1. 对于foreach循环，jdk总是将其编译为以下代码执行(可通过反编译.class文件查看)
 			ArrayList<String> list = new ArrayList();
 			list.add("1");
 			list.add("2");
@@ -2414,153 +2417,153 @@ http://blog.csdn.net/zhqingyun163/article/details/5053579/
 					list.remove(s);
 				}
 			}
-		���.iterator()���ص���ArrayList<E>�ڲ���һ��ʵ����Iterator<E>�ӿڵ���ΪItr����(�ɲ鿴Դ��)����������һ������
-	expectedModCount�ı�����Itr��ʼ��(Ҳ����ִ��list.iterator())ʱ�Ѿ����̶�����������ֵ����ArrayList<E>�е�model���������
-	���������¼�˶�ArrayList��remove��add�Ȳ�����ÿ����ִ��.next����ʱ, Itr����ͨ��checkForComodification�������������
-	modelCount��ֵ�Ƿ���ͬ�����仰˵���������������ڱ�������ǰ��list���ֽ������޸ģ����е����������ݿ��������for update��
-	��ʵ���׳����쳣ConcurrentModificationExceptionҲ��һ���̰߳�ȫ��ص��쳣����hasNext�������ص��ǵ�ǰָ��cursorָ���λ��
-	�Ƿ�������������ĳ���size��ÿִ��һ��next����ͬ��Ҳ����cursor��ֵ��һ;
-		�ص������ϣ�������1��, �����"1".equals(s), ִ��removeʱ, cursor = 1��size = 1, model - expModel = 1��
-	���Ǵ�ʱѭ�����Ѿ���ֹ�ˣ����Բ���ȥִ��next�����Ӷ������׳��쳣�����������Ϊ"2".equals(s), ��ô��ִ����remove֮��,
-	cursor=2, ��ʱsize��ֵ��Ϊremove��Ϊ��1��hasNext������Ȼ���ص���true, ���Ի����ִ��next��������next�����м�⵽����
-	modelֵ��һ���׳��쳣��ͬ���������"1".equals(s)�����ִ����list.add("3"), ��ô��ʱcursor=1, size=3, hasNext�϶����ص���
-	true������ִ��next�����׳��쳣;
-		������2�У�if֮ǰcursor�Ѿ���2, if����size�ȱ�Ϊ3Ȼ���ٱ�Ϊ, ����hasNext����falseͬ������ִ��next���������׳��쳣
+		这个.iterator()返回的是ArrayList<E>内部的一个实现了Iterator<E>接口的名为Itr的类(可查看源码)。该类中有一个叫做
+	expectedModCount的变量在Itr初始化(也就是执行list.iterator())时已经被固定下来，它的值等于ArrayList<E>中的model这个变量。
+	这个变量记录了对ArrayList的remove或add等操作。每次在执行.next方法时, Itr都会通过checkForComodification方法检测这两个
+	modelCount的值是否相同，换句话说遍历操作不允许在遍历结束前对list表又进行了修改，这有点类似于数据库读操作的for update。
+	事实上抛出的异常ConcurrentModificationException也是一个线程安全相关的异常。而hasNext方法返回的是当前指针cursor指向的位置
+	是否等于整个链表的长度size。每执行一次next方法同样也会让cursor的值加一;
+		回到代码上，在现象1中, 如果是"1".equals(s), 执行remove时, cursor = 1，size = 1, model - expModel = 1。
+	但是此时循环就已经终止了，所以不会去执行next方法从而不会抛出异常。但是如果改为"2".equals(s), 那么在执行完remove之后,
+	cursor=2, 此时size的值因为remove变为了1，hasNext方法依然返回的是true, 所以会继续执行next方法。在next方法中检测到两个
+	model值不一样抛出异常。同样的如果在"1".equals(s)情况下执行了list.add("3"), 那么此时cursor=1, size=3, hasNext肯定返回的是
+	true。继续执行next方法抛出异常;
+		在现象2中，if之前cursor已经是2, if过后size先变为3然后再变为, 所以hasNext返回false同样不会执行next方法不会抛出异常
 
 2018.02.02
 1. @JobEvent joda
 
 2018.02.07
-1. java -c ���� https://www.cnblogs.com/beautiful-code/p/6424977.html
+1. java -c 命令 https://www.cnblogs.com/beautiful-code/p/6424977.html
 
-2. java��֧�ַ������� https://www.cnblogs.com/scutwang/articles/3735219.html
+2. java不支持泛型数组 https://www.cnblogs.com/scutwang/articles/3735219.html
 
 2018.02.08
 1. SpringMVC
-	1. ��֤ǰ̨���͹����Ĳ����Ƿ�Ϸ�, ����֤���ڽ��ղ�����...Param��
-		1. �����÷�
-			1. ��ʵ����������ϼ���ע�⣬�� @NotNull, @Max(value = 3, message = "info"), @Range�ȡ�controller�ķ����У�����Ҫ
-		����Ĳ���ǰ����� @Validע�⣬ͬʱ�����л���Ҫһ������ΪBindingResult bindingResult�Ĳ������ڽ��մ�����Ϣ�����ǰ̨
-		�������Ĳ���������У�������ôbindingResult.hasErrors()����ֵΪtrue��bindingResult.getAllErrors()����һ��
-		List<ObjectError>, ���������еĴ�����Ϣ��list.get(0).getDefaultMessage()���Եõ�����Ĵ�����Ϣ
+	1. 验证前台传送过来的参数是否合法, 即验证用于接收参数的...Param类
+		1. 基本用法
+			1. 在实体类的属性上加上注解，如 @NotNull, @Max(value = 3, message = "info"), @Range等。controller的方法中，在需要
+		检验的参数前面加上 @Valid注解，同时方法中还需要一个类型为BindingResult bindingResult的参数用于接收错误信息。如果前台
+		传过来的参数不符合校验规则，那么bindingResult.hasErrors()返回值为true。bindingResult.getAllErrors()返回一个
+		List<ObjectError>, 里面有所有的错误信息。list.get(0).getDefaultMessage()可以得到具体的错误信息
 
-			2. ��Ҫע�����, @Validע���Ĳ����������BindingResult���Ͳ�����������ܻᱨ400��������controller�л���·��
-		����, �������Ҫд�� @Validע��Ĳ���ǰ�档��controllerMethod(@PathVariable String type, @Valid requestParam, 
-		BindingReuslt bindReuslt)����Ȼ�ᵼ��У��ʧ���ұ���
+			2. 需要注意的是, @Valid注解后的参数必须紧跟BindingResult类型参数，否则可能会报400错误。例如controller中还有路径
+		参数, 这个参数要写在 @Valid注解的参数前面。如controllerMethod(@PathVariable String type, @Valid requestParam, 
+		BindingReuslt bindReuslt)，不然会导致校验失败且报错
 
-	2. @RequestMappingע��
-		1. value��ʾӳ���ַ, ����һ������, ��value = {"/p1", "/p2"}, ·����Ҳ���Դ���������value = "/path/{param}"
-			1. ��ȡ·���в����ķ���method(@PathVariable String param)��method(@PathVariable(name = "param") String anyParamName)
+	2. @RequestMapping注解
+		1. value表示映射地址, 它是一个数组, 即value = {"/p1", "/p2"}, 路径中也可以带参数，如value = "/path/{param}"
+			1. 获取路径中参数的方法method(@PathVariable String param)或method(@PathVariable(name = "param") String anyParamName)
 			
-			2. ·���п��Ժ����������value = "{p1}/path/{p2}", ��ȡ����method(@PathVariable String p1, @PathVariable
+			2. 路径中可以含多个参数如value = "{p1}/path/{p2}", 获取方法method(@PathVariable String p1, @PathVariable
 		String p2)
 			
-			3. ·������֧���������ʽ
+			3. 路径参数支持正则表达式
 
-		2. method����ʽ, method = {RequestMethod.GET��POST}
+		2. method请求方式, method = {RequestMethod.GET或POST}
 
-	3. ��ȡ�������
+	3. 获取请求参数
 		1. https://www.cnblogs.com/xiaoxi/p/5695783.html
 		2. http://blog.csdn.net/a350204530/article/details/60763379
 
-	2. Spring mvc �Ծ�̬��Դ�Ĵ��� <mvc:resources> ��ǩ
-		1. ��spring��servletת�������ļ�(Ҳ������web.xml�ļ������õ�servlet����г�ʼ������contextConfigLocation���õ��Ǹ�ֵ)�У�Ϊ��ʹ�û���ע��ķ�ʽ������ͨ����������
-	<mvc:annotation-driven/>��ͬʱʹ��<context:component-scan base-package="im.qingtui.*"/>��ɨ�����Ϊ�˱���Ծ�̬��Դ��DispatcherServlet���أ�����ʹ��
-	<mvc:resources mapping="/static/**" location="/static/"/>�������ǩ��ʾ���ж�ӳ��·��/statistic/**���κη��ʶ��ᱻ������̬��Դ������ͬʱ��ӳ�䵽/static/����ļ����¡�
-	��������location������Resources���ͣ���˿���ʹ������"classpath:"�ȵ���Դǰ׺ָ����Դλ�á���ͳWeb�����ľ�̬��Դֻ�ܷ���Web�����ĸ�·���£�<mvc:resources />��ȫ������������ơ�
-	�����������ǽ���̬��Դ��ֹ��jar������
+	2. Spring mvc 对静态资源的处理 <mvc:resources> 标签
+		1. 在spring的servlet转发配置文件(也就是在web.xml文件中配置的servlet入口中初始化参数contextConfigLocation配置的那个值)中，为了使用基于注解的方式，我们通常加上配置
+	<mvc:annotation-driven/>，同时使用<context:component-scan base-package="im.qingtui.*"/>来扫描包。为了避免对静态资源被DispatcherServlet拦截，我们使用
+	<mvc:resources mapping="/static/**" location="/static/"/>。这个标签表示所有对映射路径/statistic/**的任何访问都会被当作静态资源处理，同时被映射到/static/这个文件夹下。
+	而且由于location属性是Resources类型，因此可以使用诸如"classpath:"等的资源前缀指定资源位置。传统Web容器的静态资源只能放在Web容器的根路径下，<mvc:resources />完全打破了这个限制。
+	甚至允许我们将静态资源防止在jar包下面
 		
-		2. ���⣬<mvc:resources />���ݵ�ǰ������Page Speed��YSlow��������Ż�ԭ��Ծ�̬��Դ�ṩ�Ż��������ͨ��cacheSeconds����ָ����̬��Դ��������˵Ļ���ʱ�䡣�������̬��Դʱ��
-	������������ú���Ӧ����ͷ��Expires �� Cache-Controlֵ���û��ڽ��յ���̬��Դ�Ļ�ȡ����ʱ����������ͷ��Last-Modifiedֵ�������̬��Դû�з����仯����ֱ�ӷ���303��Ӧ״̬�룬��ʾ�ͻ���
-	ʹ���������������ݣ����ǽ���̬��Դ������������ͻ��ˣ��Գ�ֽ�ʡ��������߳������ܡ�
+		2. 此外，<mvc:resources />依据当前著名的Page Speed、YSlow等浏览器优化原则对静态资源提供优化。你可以通过cacheSeconds属性指定静态资源在浏览器端的缓存时间。在输出静态资源时，
+	会根据配置设置好响应报文头的Expires 和 Cache-Control值。用户在接收到静态资源的获取请求时，会检查请求头的Last-Modified值，如果静态资源没有发生变化，则直接返回303相应状态码，提示客户端
+	使用浏览器缓存的数据，而非将静态资源的内容输出到客户端，以充分节省带宽，提高程序性能。
 	
-		3. ���ԣ�
-			1. ʹ�úͲ�ʹ��<mvc:resouces>������
-			2. �鿴cacheSeconds�����Ƿ����ã�����ͨ���鿴responseͷ��Ϣ�鿴
+		3. 测试：
+			1. 使用和不使用<mvc:resouces>的区别
+			2. 查看cacheSeconds属性是否有用，可以通过查看response头信息查看
 2018.02.09
-1. javap����
-	1. javap��JDK�Դ��ķ�����������Բ鿴java���������ɵ��ֽ��롣ͨ���������˽�������ڲ�����ô�����ġ����Ļ����÷�����.class
-����Ŀ¼����������: javap -c ClassName, ע�ⲻ��.class
+1. javap命令
+	1. javap是JDK自带的反汇编器，可以查看java编译器生成的字节码。通过它可以了解编译器内部是怎么工作的。它的基本用法是在.class
+所在目录运行命令行: javap -c ClassName, 注意不加.class
 
-	2. �����ֽ������
-		1. iconst_2 ��int�ͳ���2ѹ�������ջ(operand stack)��ջ��
-		2. iload_1 ���ֲ�������(local variables)��λ��1��Ԫ��ѹ�������ջջ��
-		3. istore_1 ��������ջջ��Ԫ�ص�����Ȼ�󱣴浽�ֲ��������е�λ��1��Ҳ���Ǳ���1��ע�����ǴӲ�����ջ�е�����˵�Ԫ�أ�
-	ֻ����������Ԫ�ر��浽�ֲ��������еĲ�ͬλ��
-		4. iinc 1, 1 ���ֲ���������λ��1��Ԫ�ؼ�1---ִ��m += 2���ֲ���ʱ�����ǽ��ֲ��������ж�Ӧλ��Ԫ�ص�ֱֵ�Ӽ�2
-		5. iadd ����������ջջ��������Ԫ�أ��������ǵĺ�Ȼ����ѹ��ջ��---ִ��m = a + b, ����ĳЩ������ֵ����ٸ�ֵʱ�ͻ�Բ�����ջ
-	���в���
-		6. if_icmpge ����������ջջ��������Ԫ�أ��Ƚ����ǵĴ�С
-	ע�⣬�ֲ��������еı���ֵ���Ӳ���������ʵ�ʵ�ֵ�����ˣ���Ϊ�������ǴӲ�����ջջ����ȡ�����ݡ����統����Ҫ�������2��ֵ��
-��������iload_2, ���ֲ�������ֵѹ�������ջ��Ȼ���ٶ�ȡ��������ջ�е�ֵ����ֱ�Ӷ�Ӧĳ������
+	2. 常见字节码解释
+		1. iconst_2 将int型常量2压入操作数栈(operand stack)的栈顶
+		2. iload_1 将局部变量表(local variables)中位置1的元素压入操作数栈栈顶
+		3. istore_1 将操作数栈栈顶元素弹出，然后保存到局部变量表中的位置1，也就是变量1。注意总是从操作数栈中弹出最顶端的元素，
+	只不过弹出的元素保存到局部变量表中的不同位置
+		4. iinc 1, 1 将局部变量表中位置1的元素加1---执行m += 2这种操作时，就是将局部变量表中对应位置元素的值直接加2
+		5. iadd 弹出操作数栈栈顶的两个元素，计算他们的和然后再压入栈顶---执行m = a + b, 即将某些变量的值相加再赋值时就会对操作数栈
+	进行操作
+		6. if_icmpge 弹出操作数栈栈顶的两个元素，比较他们的大小
+	注意，局部变量表中的变量值增加并不代表它实际的值增加了，因为程序总是从操作数栈栈顶中取出数据。例如当我们要输出变量2的值，
+则程序会先iload_2, 将局部变量的值压入操作数栈，然后再读取。操作数栈中的值并不直接对应某个变量
 		
-	�ֲ��������Ͳ�����ջ http://wangwengcn.iteye.com/blog/1622195
+	局部变量表和操作数栈 http://wangwengcn.iteye.com/blog/1622195
 
 2018.02.12
-1. leetcode, ţ����
+1. leetcode, 牛客网
 
 2018.02.24
-1. ����֮��������ݣ���controllerǰ̨���յ��Ĳ���������nameParam�൱��(��-��Ŀ��.frontpv.param.ģ����)����controller���ظ�ǰ
-̨�Ĳ���������nameVo��(��-��Ŀ��.frontpv.vo.ģ����)��mybatis��ӳ���ļ���, parameterType��resultTypeͨ����
-nameEntity(��-��Ŀ��.dao.model.ģ����)��nameDo(��-��Ŀ��.model.ģ����)��facade��������manager�󽫽����װ
-nameDTO(��-��Ŀ��.dto)�࣬Ȼ�󷵻ظ�controller��, Ȼ��controller�㽫��ת��ΪVo�ͷ���ǰ̨
+1. 各层之间参数传递：从controller前台接收到的参数保存在nameParam类当中(包-项目名.frontpv.param.模块名)。从controller返回给前
+台的参数保存在nameVo中(包-项目名.frontpv.vo.模块名)。mybatis的映射文件中, parameterType和resultType通常是
+nameEntity(包-项目名.dao.model.模块名)或nameDo(包-项目名.model.模块名)。facade层的类调用manager后将结果封装
+nameDTO(包-项目名.dto)类，然后返回给controller层, 然后controller层将其转化为Vo型返给前台
 
 2018.03.13
 1. sourcetree
-	1. �������ϲ���֧�Լ������ͻ http://blog.csdn.net/qq_34975710/article/details/74469068
+	1. 创建，合并分支以及解决冲突 http://blog.csdn.net/qq_34975710/article/details/74469068
 
-2. ����javax.email�����ʼ� http://blog.csdn.net/zhouzhimin/article/details/52807512
+2. 利用javax.email发送邮件 http://blog.csdn.net/zhouzhimin/article/details/52807512
 
-3. pom�ļ���ϸ�� http://blog.csdn.net/sunzhenhua0608/article/details/32938533
+3. pom文件详细解 http://blog.csdn.net/sunzhenhua0608/article/details/32938533
 
 2018.03.14
-1. web.xml�ļ���<context-param>��<init-param>���������� http://blog.csdn.net/qgfjeahn/article/details/52768309
+1. web.xml文件中<context-param>和<init-param>参数的区别 http://blog.csdn.net/qgfjeahn/article/details/52768309
 
 2018.03.19
-1. vim�������� http://blog.csdn.net/leely99/article/details/73992069
+1. vim基本操作 http://blog.csdn.net/leely99/article/details/73992069
 https://www.cnblogs.com/RENQIWEI1995/p/7794366.html
 https://zhidao.baidu.com/question/27877332.html
 
 2018.05.04
 	1. Durid
-		1. Druid������Դ���� 
+		1. Druid多数据源配置 
 			1. https://blog.csdn.net/u010310183/article/details/52884909
 
 2018.05.07
-	1. AtomicInteger�����
+	1. AtomicInteger类详解
 		1. https://blog.csdn.net/u012734441/article/details/51619751
 		
-	2. ThreadLocal�����
+	2. ThreadLocal类详解
 		1. https://blog.csdn.net/lufeng20/article/details/24314381
 
 2018.05.09
 	1. amoeba
-		1. Windows��amoeba��װ����д�������� https://blog.csdn.net/bxdxstu/article/details/45843247
+		1. Windows下amoeba安装及读写分离配置 https://blog.csdn.net/bxdxstu/article/details/45843247
 
-		2. �ٷ��ĵ� http://docs.hexnova.com/amoeba/index.html
+		2. 官方文档 http://docs.hexnova.com/amoeba/index.html
 
 2018.05.10
-	1. read�÷�
+	1. read用法
 
 2018.05.15
-	1. ���Լ���orm���jar��
+	1. 将自己的orm打成jar包
 
-	2. jdbc�̳� https://www.yiibai.com/jdbc/
+	2. jdbc教程 https://www.yiibai.com/jdbc/
 
 2018.05.16
-	1. java������� ClassLoader
-		1. ClassLoader ��load������ Class.forName������
-			1. ���߶��Ὣ���.class�������ص�JVM�С���Class.forName(className)��������ִ����Ӧ��class�еľ�̬������еķ�����
-		����ʼ����̬����, load�����򲻻�, �����ٵ���newInstance��������Ҫע�����, ��������һ���������ʼ���ǲ�������侲̬��
-		���ġ�new Class()���ߵ���������ĳһ����̬��������ִ�����еľ�̬�����
+	1. java类加载器 ClassLoader
+		1. ClassLoader 的load方法和 Class.forName的区别
+			1. 两者都会将类的.class方法加载到JVM中。但Class.forName(className)方法还会执行相应的class中的静态代码块中的方法以
+		及初始化静态变量, load方法则不会, 除非再调用newInstance方法。需要注意的是, 仅仅声明一个类而不初始化是不会调用其静态代
+		码块的。new Class()或者调用这个类的某一个静态方法都会执行所有的静态代码块
 
-	�ο�����
+	参考资料
 		1. *** https://blog.csdn.net/jiangwei0910410003/article/details/17733153/
-		2. �ǳ����� https://blog.csdn.net/javazejian/article/details/73413292
+		2. 非常深入 https://blog.csdn.net/javazejian/article/details/73413292
 		3. https://blog.csdn.net/briblue/article/details/54973413
 		4. https://blog.csdn.net/xiaoliuliu2050/article/details/53023734
 
-	2. ��jdbc�����У��Ƿ���forNameҲ�У���Ϊֻ��Ϊ��ִ�о�̬����
+	2. 在jdbc连接中，是否不用forName也行，因为只是为了执行静态方法
 
 2018.05.28
 	https://www.cnblogs.com/langtianya/p/4441206.html
@@ -2592,38 +2595,38 @@ https://zhidao.baidu.com/question/27877332.html
 	https://www.yiibai.com/spring-security/spring-security-hello-world-example.html
 	https://blog.csdn.net/yin380697242/article/details/51921593
 
-2. xml �����ռ� xmlns
-	1. ������Դ
-		xml�����ռ��ṩ����Ԫ�س�ͻ�ķ���, ����a.xml��b.xml�ĵ��ж�����<table>�����ǩ, ��һ����ʾ��������, һ����ʾ���Ǳ���, ������
-	���ĵ���һ��ʹ��ʱ�ͻᷢ����ͻ, xml�������޷���������ʹ��xml�����ռ�Ϳ��Խ���������, ��
+2. xml 命名空间 xmlns
+	1. 问题来源
+		xml命名空间提供避免元素冲突的方法, 比如a.xml和b.xml文档中都含有<table>这个标签, 但一个表示的是桌子, 一个表示的是表格, 当这两
+	个文档被一起使用时就会发生冲突, xml解析器无法处理。但使用xml命名空间就可以解决这个问题, 如
 		<h:table>
 			<h:tr>
 				<h:td><h:/td>
 			<h:/tr>
 		<h:/table> 
-		ע���������е��ӱ�ǩ���涼��Ҫ���������ռ�����Ϊǰ׺
+		注意这里所有的子标签里面都需要加上命名空间名作为前缀
 
-	2. �����ռ�д��
-		1. ��spring�����ļ������ϲ��ǩ��д
+	2. 命名空间写法
+		1. 在spring配置文件的最上层标签中写
 			<bean xmlns:h=".../a.xml" 
 				  xmlns:f="..../b.xml">
 
-		2. ��Ҫʹ��ĳһ�������ռ�ı�ǩ��д
+		2. 在要使用某一个命名空间的标签内写
 			<h:table xmlns:h=".../a.xml">
 				<h:tr><h:td><h:/td><h:/tr>
 			</h:table>
 
-		��ʵ������д������һ���ģ����Ƕ���ʾ�ڸñ�ǩ���ӱ�ǩ�������ʹ����������ռ�, ����spinrg�������ļ�, ���ǳ�����������д��
-			<context:component-scan base-package="im.qingtui.*"/>��<mvc:annotation-driven/>
+		其实这两种写法都是一样的，他们都表示在该标签的子标签下面可以使用这个命名空间, 对于spinrg的配置文件, 我们常常看到这种写法
+			<context:component-scan base-package="im.qingtui.*"/>，<mvc:annotation-driven/>
 
-		���Ǳ�ʾ�ľ���ʹ�������ռ�context��mvc�µ�component-scan��annotation-driven��ǩ
+		它们表示的就是使用命名空间context和mvc下的component-scan和annotation-driven标签
 	
-	2. ��ǩĬ�ϵ������ռ�
-		��ĳ����ǩ��ֱ��дxmlns=""������дxmlns:name=""������д��֮���ʾ�ñ�ǩ�����ӱ�ǩ��Ĭ��������������ռ䡣�������spring
-	�������ļ�
+	2. 标签默认的命名空间
+		在某个标签内直接写xmlns=""而不用写xmlns:name=""。这样写了之后表示该标签及其子标签都默认属于这个命名空间。例如对于spring
+	的配置文件
 		<bean xmlns="http://www.springframework.org/schema/beans">
-		�����������bean��ǩ�µ����б�ǩ��Ĭ������beans-----����bean��ǩ��������ʵ��Ҳֻ��
-	http://www.springframework.org/schema/beans �вŶ�����bean�����ǩ���������������û�н��õ�ַ��ΪĬ�������ռ�
+		它表明了这个bean标签下的所有标签都默认属于beans-----包括bean标签本身。事实上也只有
+	http://www.springframework.org/schema/beans 中才定义了bean这个标签。下面这个例子中没有将该地址作为默认命名空间
 
 		<beans:beans xmlns="http://www.springframework.org/schema/security"
 			xmlns:beans="http://www.springframework.org/schema/beans"
@@ -2643,8 +2646,8 @@ https://zhidao.baidu.com/question/27877332.html
 			  </authentication-provider>
 			</authentication-manager>
 		</beans:beans>
-		�������ļ���Ĭ�������ռ���security������beans, ��security�����ռ�����û��beans�����ǩ��, ���ʹ����beans:beans�����߰���
-	һ��д������
+		该配置文件的默认命名空间是security而不是beans, 而security命名空间中是没有beans这个标签的, 因此使用了beans:beans。或者按另
+	一种写法如下
 		<bean xmlns="" xmlns:security="http://www.springframework.org/schema/security">
 			<security:http auto-config="true">
 				<security:intercept-url pattern="/admin**" access="ROLE_USER" />
@@ -2653,97 +2656,97 @@ https://zhidao.baidu.com/question/27877332.html
 		https://www.cnblogs.com/osttwz/p/6892999.html
 		https://blog.csdn.net/yangyuge1987/article/details/59536964
 
-	3. xsi:schemaLocation������
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ������������xml�ļ���ֱ�۵ģ��������˸������ռ�������Щ��ǩ�Լ���
-	д��ǩ��Щʲô�������ԡ�ע��schemaLocation=""�е��ļ����ǳɶԳ��ֵ�
+	3. xsi:schemaLocation的作用
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 的作用是描述xml文件，直观的，它定义了该命名空间中有哪些标签以及这
+	写标签有些什么样的属性。注意schemaLocation=""中的文件总是成对出现的
 
 2018.6.12
 1. Spring MVC
-	1. ���� contextConfigLocation ����
-		1. д��<context-param> 
-			д��������������ļ�ͨ����Ӧ����ϵͳ�������ã��������÷�Χ������ϵͳ�����ġ��綨ʱ����������ļ��ȶ���������г�ʼ����
-		����Ҫʹ��������ã��������һ����ΪContextLoaderListener�ļ���������������ȷ��������
+	1. 关于 contextConfigLocation 参数
+		1. 写在<context-param> 
+			写在这下面的配置文件通常对应的是系统级的配置，它的作用范围是整个系统上下文。如定时任务的配置文件等都在这里进行初始化。
+		但是要使用这个配置，必须加上一个名为ContextLoaderListener的监听器，否则不能正确加载配置
 
-		2. д��<servlet>��<inint-param>��ǩ��
-			��Щ��������ļ���Ӧ����controller�����������÷�Χ�ǿ��Ʋ������ģ���һ���������servlet��ǩ��Ҳ���Կ��ó���������һ��
-		servlet�������ĳ�ʼ���ʺ�DispatcherServletһ��ģ�������Ӹñ�ǩ������һ��Ĭ��ֵ/WEB-INF/servletName-servlet.xml��
-		����������ò�Ӧ���漰������ת��֮����κ�ʵ�塣������ͼ�Ľ�����ʽ����̬��Դ�ļ��Ĵ��λ�á�controller�ĳ�ʼ����ʽ֮�������
-		����Ӧ�÷��� servlet �����ļ��У�ӦΪ��ֻ���������ת�������ؽ���Ľ����Լ���̬��Դ�ļ��Ľ����������Ķ���ĳ�ʼ����
-		��ʱ����ȣ�����Ӧ�÷ŵ���������ļ��½��й�����
+		2. 写在<servlet>的<inint-param>标签下
+			这些面的配置文件对应的是controller级别，它的作用范围是控制层上下文，这一点从它放在servlet标签下也可以看得出来，它是一个
+		servlet级别。它的初始化适合DispatcherServlet一起的，如果不加该标签，它有一个默认值/WEB-INF/servletName-servlet.xml。
+		它里面的配置不应当涉及到除了转发之外的任何实体。除了视图的解析方式、静态资源文件的存放位置、controller的初始化方式之外的配置
+		都不应该放在 servlet 配置文件中，应为它只负责请求的转发，返回结果的解析以及静态资源文件的解析，其他的对象的初始化，
+		定时任务等，都不应该放到这个配置文件下进行管理。
 	
-	2. ������ interceptor
-		1. �������ӿ�
-			Spring�ڶ��������ӿ���HandlerInterceptorͨ������������������ preHandle, postHandle, afterCompletion�����ӿڡ�
+	2. 拦截器 interceptor
+		1. 拦截器接口
+			Spring众多拦截器接口如HandlerInterceptor通常都有以下三个方法 preHandle, postHandle, afterCompletion三个接口。
 
 			1. preHandle
-				�÷�������������֮ǰ���е��á��÷���������һЩǰ�ó�ʼ���������߽���һЩ�ж������������Ƿ�Ҫ����������ȥ
-			SpringMVC �е�Interceptor����ʽ�ĵ��õ�, ÿ��Interceptor�ĵ��û������ǵ�--˳��--ִ�У������ȵ��õĶ���preHandle������
-			���ǰһ����������preHandle����Ϊfalse, ���һ����������controller�еķ���������ִ�С�
+				该方法将在请求处理之前进行调用。该方法常进行一些前置初始化操作或者进行一些判断来决定请求是否要继续进行下去
+			SpringMVC 中的Interceptor是链式的调用的, 每个Interceptor的调用会依他们的--顺序--执行，且最先调用的都是preHandle方法。
+			如果前一个拦截器的preHandle返回为false, 则后一个拦截器和controller中的方法都不会执行。
 
 			2. postHandle
-				�÷���ֻ����preHandle��������trueʱ��ִ�У�����Controller��������֮��ִ�С�����������DispatcherServlet ������ͼ��
-			����Ⱦ֮ǰ�����ã��������ǿ�������������ж�Controller ����֮���ModelAndView ������в�������ִ��˳���preHandle�෴
-			�ᰴ������������˳����ִ��
+				该方法只有在preHandle方法返回true时才执行，且在Controller方法调用之后执行。但是它会在DispatcherServlet 进行视图返
+			回渲染之前被调用，所以我们可以在这个方法中对Controller 处理之后的ModelAndView 对象进行操作。其执行顺序和preHandle相反
+			会按照拦截器声明顺序倒序执行
 			
 			3. afterCompletion
-				�÷���Ҳֻ����preHandle����trueʱ�Ż�ִ��, ��������DispatcherServlet��Ⱦ����ͼ֮��ִ��, ���postHandle�����ǲ�ͬ�ġ�
+				该方法也只会在preHandle返回true时才会执行, 而且是在DispatcherServlet渲染了视图之后执行, 这和postHandle方法是不同的。
 			
 			https://www.cnblogs.com/hy928302776/articles/6956747.html
 
-		2. ����
-			��spring�������ļ���ͨ��<mvc:interceptors>��ǩ������������, ע����s������
+		2. 配置
+			在spring的配置文件中通过<mvc:interceptors>标签来配置拦截器, 注意有s。例如
 			<mvc:interceptors>
-				**ֱ�Ӷ�����interceptors��ǩ�µ���������������������, class����Ҫʹ�õ���������
+				**直接定义在interceptors标签下的拦截器会拦截所有请求, class表明要使用的拦截器类
 				<bean class="...XXXInterceptor">
 				<mvc:interceptor>
-					**mvc:mapping������Ҫ���ص�����·�ɡ�ע��/**��ƥ�䵽������Ŀ¼/a/b/c, ����/*ֻ��ƥ��һ��, ��/a
+					**mvc:mapping定义需要拦截的请求路由。注意/**能匹配到所有子目录/a/b/c, 但是/*只能匹配一级, 如/a
 					<mvc:mapping path="/**">
-					**mvc:exclud-mapping���岻��Ҫ���ص�����·��
+					**mvc:exclud-mapping定义不需要拦截的请求路由
 					<mvc:exclude-mapping path="">
-					**Ҳ���Զ�����interceptor��ǩ��
+					**也可以定义在interceptor标签下
 					<bean class="...XXXInterceptor">
 				</mvc:interceptor>
 			</mvc:interceptors>
 
-	3. bean ����ע������÷�
-		1. <property> ����ֵд��
-			1. �������ǻ�������ʱ, ����д<property name="" value="" />Ҳ���԰�valueд�ڱ�ǩ��, ��<property><value>ֵ</value></>
-		����ע�ⲻ��ֱ�Ӱ�����ֵд�ڱ�ǩ��, ��<property>ֵ</property>
+	3. bean 依赖注入基本用法
+		1. <property> 属性值写法
+			1. 当属性是基本类型时, 可以写<property name="" value="" />也可以吧value写在标签内, 即<property><value>值</value></>
+		但是注意不能直接把属性值写在标签内, 即<property>值</property>
 			
-			2. ������ֵ������һ����ʱ, ����д<property name="" ref="������д����bean��id��name" />, Ҳ����д
-		<property><ref bean="����bean��id" /></property>
+			2. 当属性值类型是一个类时, 可以写<property name="" ref="这里面写其他bean的id或name" />, 也可以写
+		<property><ref bean="其他bean的id" /></property>
 
-			3. ����ֵ��һ���������List��ʱ
+			3. 属性值是一个数组或者List型时
 				<property name="">
 					<list>
-						<value>ֵ</value>(ʵ���������ǻ�������)����<ref bean="" />(ʵ������������)
+						<value>值</value>(实例化类型是基本类型)或者<ref bean="" />(实例化类型是类)
 					</list>
 				</property>
 			
-			4. ����ֵ��һ��map����ʱ
+			4. 属性值是一个map类型时
 				<property name="">
 					<map>
 						<entry key(key-ref)="" value(value-ref)="">
 					</map>
 				</property>
-		2. ���캯��
-			ʹ��<constructor-arg>��ǩ��Ϊbean�Ĺ��캯������
+		2. 构造函数
+			使用<constructor-arg>标签来为bean的构造函数传参
 
-	5. ʹ�� @Autowierd �� @Resource ע����ж�����Զ�ע��
-		1. ֻ��Ҫ��spring�������ļ��м���<context:component-scan base-package="im.qingtui.*" />����ʵ���Զ�ע�롣ע�Ⲣ���Ǳ���Ҫ�����ϼ���@Autowired
-	ע������ʵ���Զ�ע�룬���һ�����������ļ���������bean����ô��Ҳ���Ա��Զ�ע��
+	5. 使用 @Autowierd 或 @Resource 注解进行对象的自动注入
+		1. 只需要在spring的配置文件中加上<context:component-scan base-package="im.qingtui.*" />就能实现自动注入。注意并不是必须要在类上加上@Autowired
+	注解后才能实现自动注入，如果一个类在配置文件中声明了bean，那么它也可以被自动注入
 	
-		2. ����Զ�ע�����ĳ���ӿڣ���������ӿ��ж��ʵ���࣬��ôָ������Ҫʹ����һ��ʵ����ʱʹ��@Resource(name = "��Сд��")��@Autowired InteName ʵ����Сд��
+		2. 如果自动注入的是某个接口，而且这个接口有多个实现类，那么指定具体要使用哪一个实现类时使用@Resource(name = "类小写名")或@Autowired InteName 实现类小写名
 	
-	4. �ڷ�web��Ŀ��ʹ��spring
-		1. ʹ��Spring�����Ķ����ȡ�����ģ����磺
-			AbstractApplicationContext context = new ClassPathXmlApplicationContext(String... configs(Ҫ���ص������ļ�))��ע�⣬���ǿ���ͨ��
-		context.getBean(String beanName, Class class)����ȡ������Ҫע��Ķ������ֶ������Ҫô��Spring�������ļ�����һ��<bean>, Ҫô��@Component��ע�⡣
-		ע��һ������ǲ���ͨ��getBean�ķ�ʽ��ȡ��ʵ���ġ�
+	4. 在非web项目中使用spring
+		1. 使用Spring上下文对象获取上下文，比如：
+			AbstractApplicationContext context = new ClassPathXmlApplicationContext(String... configs(要加载的配置文件))。注意，我们可以通过
+		context.getBean(String beanName, Class class)来获取我们需要注入的对象。这种对象的类要么在Spring的配置文件中是一个<bean>, 要么有@Component等注解。
+		注意一般的类是不能通过getBean的方式获取其实例的。
 			
-	5. ͨ�� @Value ע������bean������ע��ֵ
-		1. ʹ��Valueʱ����${}��#{}���ַ�ʽ��ע��ֵ��${}�Ǵ������ļ��л�ȡֵ��#{}��������ֱ�Ӵ����л�ȡֵ, �����Դ������ж�ֵ��ע��valueע���������һ��Ҫ�����š�����
-	@Value(${"datasource.url"})����ʵ����bean�������ļ��У�ͬ������ʹ�����ַ�ʽ����bean�����Ը�ֵ������
+	5. 通过 @Value 注解来给bean的属性注入值
+		1. 使用Value时，有${}和#{}两种方式来注入值，${}是从配置文件中获取值，#{}甚至可以直接从类中获取值, 即可以从引用中读值。注意value注解的括号中一定要加引号。比如
+	@Value(${"datasource.url"})。事实上在bean的配置文件中，同样可以使用这种方式来给bean的属性赋值，比如
 				<bean class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close" id="dataSource" init-method="init">
     					<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
     					<property name="url" value="${datasource.url}"/>
@@ -2751,8 +2754,8 @@ https://zhidao.baidu.com/question/27877332.html
     					<property name="password" value="${datasource.password}"/>
   				</bean>
 		
-		2. @Valueע��Ӻδ���ȡ���ã�
-			1. ����Ҫ�������ļ���ȡ���õ�����ʹ��@PropertySourceע�⣬��valueֵ����Ҫ��ȡ�������ļ�������
+		2. @Value注解从何处获取配置？
+			1. 在需要从配置文件读取配置的类上使用@PropertySource注解，其value值表明要读取的配置文件。比如
 				@Data
 @Service
 @PropertySource(value = "classpath:sys2.properties")
@@ -2768,13 +2771,13 @@ public class DataBaseConnector {
     private String special;
 
 }
-			ע����������@Service��ע�������һ��bean��ע�ⷽʽ��ȡ���õ����ȼ��ǵ��������ļ��ж�bean�����õ�
+			注意该类必须有@Service方注解否则不是一个bean。注解方式读取配置的优先级是低于配置文件中对bean的配置的
 				
 
-			2. �������ļ��м�������bean
+			2. 在配置文件中加上如下bean
 				<bean id="propertyConfiguer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"></bean>
-				�����PropertyPlaceholderConfigurerd�����Խ����ʵ��Ľ��ͣ�
-					1. <property name="locations"> �� <property name="location">������Ȼǰ�߿��Զ�ȡ��������ļ�������ֻ�ܶ�ȡһ�������ļ����磺
+				下面对PropertyPlaceholderConfigurerd的属性进行适当的解释：
+					1. <property name="locations"> 或 <property name="location">。很显然前者可以读取多个配置文件，后者只能读取一个配置文件，如：
 						<property name="locations">
       <list>
         <value>classpath:sys2.properties</value>
@@ -2783,19 +2786,19 @@ public class DataBaseConnector {
     </property>
 					
 					
-					2. <property name="order" value="1" />��ʾ���ص�˳���ڽ�ʹ�ø����Ե�����£�order�ϵ͵������ļ������ᱻ���ء�������ĳ������
-				��${propName}���������ȵ��ļ��в����ڣ�����Ŀ�����ᱨ��
+					2. <property name="order" value="1" />表示加载的顺序，在仅使用该属性的情况下，order较低的配置文件将不会被加载。因此如果某个属性
+				如${propName}在配置优先的文件中不存在，则项目启动会报错
 
-					3. <property name="ignoreUnresolvablePlaceholders" value="true" />�����Ƿ���Բ��ɽ�����placeholder���������˶��
-				org.springframework.beans.factory.config.PropertyPlaceholderConfigurerbeanʱ�����Ӵ����Կ���ʹ��Ŀ�Զ�����ĳ�����õ��ļ��м���������ֵ��
-				ע�⣬�������ʹ�õ��������ļ���bean���ԣ����ʹ�õ���locations���ԣ���spring���Զ�����ĳ�����õ��ļ��ж�ȡ����ֵ
+					3. <property name="ignoreUnresolvablePlaceholders" value="true" />设置是否忽略不可解析的placeholder，当配置了多个
+				org.springframework.beans.factory.config.PropertyPlaceholderConfigurerbean时，添加此属性可以使项目自动从有某个配置的文件中加载其属性值。
+				注意，这仅仅对使用单个配置文件的bean而言，如果使用的是locations属性，则spring会自动从有某个配置的文件中读取属性值
 
-			3. �������ļ���ʹ��<content:property-placeholder>Ԫ�أ������÷�����
-				<context:property-placeholder location="sys.properties,sys2.properties" ignore-unresolvable="true" />��������ֵ������
-			���Բο�ǰ��bean���÷�������ļ���˳���location�������ļ���˳��պ��Ƿ��ģ�Ҳ���ǻ����ȶ�ȡsys2.properties�е����á�
-				��idea�����ַ�ʽ���õ�����ͨ��control���������ֱ���ҵ������Ƿ�ʽ2�����ҵ�
+			3. 在配置文件中使用<content:property-placeholder>元素，具体用法如下
+				<context:property-placeholder location="sys.properties,sys2.properties" ignore-unresolvable="true" />各个属性值的意义
+			可以参考前面bean的用法。这里的加载顺序和location中配置文件的顺序刚好是反的，也就是会优先读取sys2.properties中的配置。
+				在idea中这种方式引用的配置通过control加左键不能直接找到，但是方式2可以找到
 
-			4. ����PropertiesFactoryBean bean����
+			4. 配置PropertiesFactoryBean bean，如
 				<bean id="propertiesReader" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <property name="locations">
       <list>
@@ -2805,8 +2808,8 @@ public class DataBaseConnector {
       </list>
     </property>
   </bean>
-			�������ļ�����Ȼͨ��${}��ȡ����ֵ����������������ʹ��@Valueʱ����Ҫ����bean��id,��@Value("#{propertiesReader['datasource.url']}")��ע����#����$����Ȼ
-		Ҳ����ֱ��ʹ��${datasource.url}
+			在配置文件中仍然通过${}获取属性值。但是在类属性上使用@Value时，需要加上bean的id,如@Value("#{propertiesReader['datasource.url']}")。注意是#不是$。当然
+		也可以直接使用${datasource.url}
 	
 		https://www.cnblogs.com/zhouyeqin/p/8072135.html
 
@@ -2814,59 +2817,59 @@ public class DataBaseConnector {
 
 	7. RequestContextHolder
 
-	8. ���������� Aspect
-		1. ���������̾��������һ��������ÿ����������Ҫ������ִ��ʱ�䣬�����ÿ�������ж�ȥд����ʱ��ķ����Ե�ʮ�ַ�������ʱʹ������ͷǳ���ݡ�
+	8. 面向切面编程 Aspect
+		1. 面向切面编程就像横向切一刀。例如每个函数都需要计算期执行时间，如果在每个函数中都去写计算时间的方法显得十分繁琐，此时使用切面就非常便捷。
 		
-		2. ʹ��@Apsectע�����עһ������������Ϊ���ķ�ʽ����Ҫ�����ϻ�һ��Ҫ����@Componentע�⣬����Springɨ�費�������õ���ǿ������
-			1. @Before ǰ����ǿ 
-				�������ڷ���ִ��ǰ��Ч������������ʹ��JoinPoint������JoinPoint�������кܶ෽��������getArgs��ȡ����ǿ�����в�����getSignature()
-			��ȡǩ�������ǩ������ͨ��(Method)pjp.getSignature()ǿ��ת�����ͺ�õ�Method����Method����ͨ��getAnnotation(class)�õ������ϵ�
-			ע�⡣���ַ�ʽ�����������ע���е�@annotaionʹ��
+		2. 使用@Apsect注解类标注一个切面类是最为简洁的方式，主要切面上还一定要加上@Component注解，否则Spring扫描不到。常用的增强处理有
+			1. @Before 前置增强 
+				该切面在方法执行前生效。可以在切面使用JoinPoint参数。JoinPoint对象中有很多方法，比如getArgs获取被增强方法中参数，getSignature()
+			获取签名。这个签名可以通过(Method)pjp.getSignature()强制转换类型后得到Method对象。Method对象通过getAnnotation(class)得到方法上的
+			注解。这种方式可以陪后后面的注解切点@annotaion使用
 
-			2. @AfterReturning ������ǿ
-				�������ڷ������غ���Ч����ע���п���ʹ������returning = "rvt"���ԡ�������Ҫע�⣬���淽����Ҳ������һ��ͬ���Ĳ������ò��������Ϳ���
-			����ָ������������������Ͳ�ΪObject����ֻ�з�������Ϊָ�����͵ķ����Żᱻ��ǿ������
+			2. @AfterReturning 后置增强
+				该切面在方法返回后生效。改注解中可以使用属性returning = "rvt"属性。但是需要注意，切面方法中也必须有一个同名的参数。该参数的类型可以
+			任意指定，但是如果参数类型不为Object，则只有返回类型为指定类型的方法才会被增强，比如
 				@AfterReturning(pointcut = "execution(* *.targetAttribute(..))", returning = "rvt")
     				public void afterReturn(int rvt) {
-        				System.out.println("AfterReturning->����ֵ��" + rvt);
+        				System.out.println("AfterReturning->返回值：" + rvt);
     				}
-				��ô���targetAttribute�������Ͳ�Ϊint���������ᱻ��ǿ
+				那么如果targetAttribute返回类型不为int，则它不会被增强
 
-			3. @Around ������ǿ
-				1. ʹ��˵��
-					ֻ���ڻ�����ǿ�ķ����вſ���ʹ��ProceedingJoinPoint���͵Ĳ�����������ǳ�ǿ�󣬲������Ըı䷽���ķ���ֵ������������
-				�÷����岻ִ�У�����public Object around(ProceedingJoinPoint pjp)
-					�ڸ���ǿ�����У�pjp.proceed()�����ͱ�ʾԭ������ִ�С���ǿ�и÷���ǰ�����������Ӧ�ػ��ڱ���ǿ�ķ���ǰ��ִ�С�������ǿ
-				�ķ���ֵҲ����Ϊ����ǿ�ķ������յķ���ֵ������
+			3. @Around 环绕增强
+				1. 使用说明
+					只有在环绕增强的方法中才可以使用ProceedingJoinPoint类型的参数。该切面非常强大，不仅可以改变方法的返回值，甚至还可以
+				让方法体不执行，对于public Object around(ProceedingJoinPoint pjp)
+					在该增强方法中，pjp.proceed()方法就表示原方法的执行。增强中该方法前后的语句会在相应地会在被增强的方法前后执行。而该增强
+				的返回值也将作为被增强的方法最终的返回值，比如
 					long start = System.nanoTime();
-        				System.out.println("Around->ִ��ǰ��");
-        				//��ʼִ�з��ʽӿ� ִ�з���
+        				System.out.println("Around->执行前！");
+        				//开始执行访问接口 执行方法
         				Object object = pjp.proceed();
-        				System.out.println("ִ�к�");
+        				System.out.println("执行后！");
         				long end = System.nanoTime();
 
-        				System.out.println(methodName + "��ʱ��" + CommonUtil.nanoTime2Second(end - start) + "�룡\n");
+        				System.out.println(methodName + "用时：" + CommonUtil.nanoTime2Second(end - start) + "秒！\n");
 
-        				return 123; // �÷������յķ���ֵ�����123
+        				return 123; // 该方法最终的返回值变成了123
 				
-				2. ���쳣�Ĵ���
-					����˵��pjp.proceed()��ʾ���Ƿ�����ִ�У��÷������п����׳��쳣�ģ����Ը÷�����Ҫ�����쳣�����׳��쳣������ע�⣬�ڱ���ǿ�ķ���
-				�б�������쳣�ǲ������е㱻�����(�൱��û���쳣)��ֻ���ڱ���ǿ�����б��׳����쳣�Żᱻ�е㲶��
+				2. 对异常的处理
+					上面说了pjp.proceed()表示的是方法的执行，该方法是有可能抛出异常的，所以该方法需要捕获异常或者抛出异常。但是注意，在被增强的方法
+				中被捕获的异常是不会在切点被捕获的(相当于没有异常)，只有在被增强方法中被抛出的异常才会被切点捕获。
 
-		3. �е㺯��, ��������value��pointcut��ֵ
-			1. execution����ʽ 
-				* *.*(..) ������*�ֱ��ʾ�������� ���� ������, ������д������ʱ��ʾ����������͡���ʵֻ�뿼�ǲ�������ʱ��Ҳ����д��* *(��ȫ�޶���)��
-			��������һ��*�Ŵ������������е��������ֵķ�����
-				����������һ����Ҫע�⣬����ͼ��ʾĳ���ͻ���������������ʱ������ʹ��+������(com.oldbutcher.SuperClass+)��������ΪSuperClass������ʱ
-			Ҳ��ƥ����е㡣Ҳ���Խ��е�����Ϊ����ĳһ�����ķ�������(com.oldbutcher.SuperClass, ..)��
+		3. 切点函数, 即切面中value或pointcut的值
+			1. execution表达式 
+				* *.*(..) 从左到右*分别表示返回类型 包名 方法名, 括号中写两个点时表示任意参数类型。其实只想考虑参数类型时，也可以写成* *(类全限定名)。
+			即这里用一个*号代替了所有类中的所有名字的方法。
+				参数类型有一点需要注意，当试图表示某类型或其所有子类类型时，可以使用+。比如(com.oldbutcher.SuperClass+)，则类型为SuperClass的子类时
+			也将匹配该切点。也可以将切点设置为包含某一参数的方法，即(com.oldbutcher.SuperClass, ..)。
 			
 
-			2. args() ָ��Ŀ�귽���Ĳ�������
+			2. args() 指定目标方法的参数类型
 
-			3. @annotation ��ĳ��ע��ķ��������ַ�ʽʹ�������ǳ����㣬��
-				@Around(value = "@annotation(im.qingtui.data.adapter.annotation.Console)"), �����б�Consoleע���˵ķ������ᱻ
-			������ǿ
-2. ��ҳ
+			3. @annotation 有某个注解的方法，这种方式使用起来非常方便，如
+				@Around(value = "@annotation(im.qingtui.data.adapter.annotation.Console)"), 则所有被Console注解了的方法都会被
+			环绕增强
+2. 分页
 	https://www.cnblogs.com/lantu1989/p/6403108.html	
 
 2018.06.29
@@ -2875,32 +2878,32 @@ public class DataBaseConnector {
 		https://www.yiibai.com/javafx/
 
 2018.07.02
-	1. �Ż����� https://blog.csdn.net/moonpure/article/details/45216587
+	1. 优化反射 https://blog.csdn.net/moonpure/article/details/45216587
 
 2017.07.25
-	1. Linux ��������
-		1. ���ڼ���Ŀ¼
-			1. ����ʾ��ǰ�û�����Ŀ¼���൱��/User/liqiyuan, /��ʾ��Ŀ¼����ʵ��cd /User/liqiyuan��cd ~��һ���ġ� .. ��ʾ��һ��Ŀ¼
+	1. Linux 基本命令
+		1. 关于几种目录
+			1. ～表示当前用户的主目录，相当于/User/liqiyuan, /表示根目录。事实上cd /User/liqiyuan和cd ~是一样的。 .. 表示上一级目录
 
-			2. ��ʱ�tab��û�в�ȫ�����������Ϊ���ڶ������ƥ����ļ���
+			2. 有时侯按tab见没有补全输入可能是因为存在多个可以匹配的文件名
 
-		2. ������������
-			1. �ı��ļ��༭
+		2. 基本操作命令
+			1. 文本文件编辑
 				1. vim fileName.type
-					���������֮����Ա༭�ı����������������������ļ�����Ҫ�� i ��ʼ�༭�ļ����༭������Ҫ��Esc��Ȼ������ :wq!
-				��ʾ���沢�˳��ı��༭
+					输入该命令之后可以编辑文本，但不能用鼠标操作。打开文件后需要按 i 开始编辑文件，编辑结束后要按Esc键然后输入 :wq!
+				表示保存并退出文本编辑
 
 				2. open -e fileName.type
-					��ʾ�ѱ༭��ģʽ���ı��ļ�����������������	
+					表示已编辑的模式打开文本文件，可以用鼠标操作。	
 
-				3. ͨ��tail -f(-1000) info | grep ���� ���Կ�����־�ļ���ָ��������
+				3. 通过tail -f(-1000) info | grep 文字 可以看到日志文件中指定的内容
 
-		3. ����spring boot��Ŀ
-			ֱ��ͨ��java -jar �����Ϳ�����������con + c����������ڳ��ڲ������ͻ��Զ��رա�Ϊ�˱����������������������&����ʹ��һֱ������
+		3. 启动spring boot项目
+			直接通过java -jar 包名就可以启动。按con + c或者这个窗口长期不动它就会自动关闭。为了避免这种情况可以在最后加上&符号使其一直启动。
 
-		4. �鿴�˿�ռ��
-			��ʱ������Ŀʱ�ᱨ�˿ڱ�ռ������Address already in use�Ĵ�����ʱ�����ͨ��jps����鿴�˿ںű�����ռ�������Ȼ��ͨ��kill ��������ɱ�����̡�
-		������Ϊ���ӵ�����netstat -apn | grep ��Ҫ�鿴�Ķ˿ں��Լ�ps -ef | grep 4438
+		4. 查看端口占用
+			有时启动项目时会报端口被占用例如Address already in use的错误，这时候可以通过jps命令查看端口号被进程占用情况，然后通过kill 进程名来杀掉进程。
+		其他更为复杂的命令netstat -apn | grep 需要查看的端口号以及ps -ef | grep 4438
 
 2018.07.30
 1. Spring boot
@@ -2909,13 +2912,13 @@ public class DataBaseConnector {
 2. contex:tproperty-placeholder location
 
 3. Special skills
-	1. ����ڿ���̨��ӡ��ɫ����
-		1. ����ʹ��Janis������������Ҫע����ǣ�������ڲ�ͬƽ̨�ն˿��ܳ��ֲ���Ԥ֪����ʾ���������mac�ն����ж�����з�
+	1. 如何在控制台打印彩色文字
+		1. 可以使用Janis依赖，但是需要注意的是，打包后在不同平台终端可能出现不可预知的显示结果，例如mac终端上有多个换行符
 
-		2. ͨ��ANSIת�����������������ʽ��������Բο� https://www.cnblogs.com/opangle/p/4082692.html
+		2. 通过ANSI转移序列来控制输出格式，具体可以参考 https://www.cnblogs.com/opangle/p/4082692.html
 	
-	2. maven ���
-		1. ��spring�İ�ʱ�����Ƚ��鷳��ͨ������maven�������˳�����
+	2. maven 打包
+		1. 打spring的包时常常比较麻烦，通过以下maven插件可以顺利打包
 			<plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -2944,36 +2947,36 @@ public class DataBaseConnector {
       </plugin>
 
 2018.08.16
-1. �̳߳�
-	1. https://www.cnblogs.com/dolphin0520/p/3932921.html ���ķǳ�����, �ѿ�
+1. 线程池
+	1. https://www.cnblogs.com/dolphin0520/p/3932921.html 讲的非常深入, 难啃
 2. AQS
-	1. https://www.cnblogs.com/waterystone/p/4920797.html ������, �ѿ�
+	1. https://www.cnblogs.com/waterystone/p/4920797.html 很深入, 难啃
 
-3. Java ��������
-	1. �̳߳�
-		ExecutorService executorService = Executors.newFixedThreadPool(�̶�����)
-		executorService.execute��submit(Thread or Runnable)�������������м�����߳��������ر��̳߳ؼ�
-	executorService.shutDown()֮�����ټ����µ��̵߳��̳߳ص���
+3. Java 并发基础
+	1. 线程池
+		ExecutorService executorService = Executors.newFixedThreadPool(固定数量)
+		executorService.execute或submit(Thread or Runnable)可以让所有所有加入的线程启动。关闭线程池即
+	executorService.shutDown()之后不能再加入新的线程到线程池当中
 		
-	2. ���� CountDownLatch
-		1. �����÷�
+	2. 闭锁 CountDownLatch
+		1. 基本用法
 			CountDownLatch countDownLatch = new CountDownLatch(count)
-			countDownLatch.await()������һֱ������֪��countDownLatch�����еļ���ͨ��countDownLatch.countDown
-		��������0��ʱ����������������Ҫ�ȶ���߳�ִ����Ϻ���ִ��ĳ����������
+			countDownLatch.await()方法会一直阻塞，知道countDownLatch对象中的计数通过countDownLatch.countDown
+		方法降到0的时候。这样可以用于需要等多个线程执行完毕后再执行某个任务，例如
 			for(int i = 0; i < count; I++) {
 				Runnable runnable = new Runnable() {
 					// do something
-					sout(Thread.currentThread.getName() + ������ɲ�������)
+					sout(Thread.currentThread.getName() + “已完成操作！”)
 					countDown.countDown();
 				};
 				executorService.submit(runnable);
 			}
 			executorService.shutDown();
-			sout("�ȴ������߳�ִ����ϣ�")
+			sout("等待所有线程执行完毕！")
 			countDown.await();
-			sout("�����߳̾���ִ�����")
+			sout("所有线程均已执行完毕")
 			
-			����
+			或者
 			ExecutorService executorService = Executors.newFixedThreadPool(count);
         final CountDownLatch players = new CountDownLatch(count);
         final CountDownLatch judge = new CountDownLatch(1);
@@ -2983,9 +2986,9 @@ public class DataBaseConnector {
                 @Override
                 public void run() {
                     try {
-                        System.out.println(Thread.currentThread().getName() + "�ȴ����з�ָ�");
+                        System.out.println(Thread.currentThread().getName() + "等待裁判发指令！");
                         judge.await();
-                        System.out.println(Thread.currentThread().getName() + "�Ѿ������ˣ�");
+                        System.out.println(Thread.currentThread().getName() + "已经出发了！");
                         players.countDown();
                     } catch (Exception e) {
                         System.out.println("Error!");
@@ -2996,15 +2999,15 @@ public class DataBaseConnector {
         }
         executorService.shutdown();
 
-        System.out.println(Thread.currentThread().getName() + "��������ָ�");
+        System.out.println(Thread.currentThread().getName() + "即将发出指令！");
         judge.countDown();
-        System.out.println(Thread.currentThread().getName() + "�Ѿ�����ָ�");
+        System.out.println(Thread.currentThread().getName() + "已经发出指令！");
         players.await();
-        System.out.println("����ѡ�ֶ��Ѿ�������");
+        System.out.println("所有选手都已经触发！");
 
-	3. դ�� CyclicBarrier
-		1. ��CountDownLatch��ͬ���ǣ�CyclicBarrier���õ���countDown������ֻҪ����await()�Ĵ����ﵽcount��
-	await()�����Ͳ���������������
+	3. 栅栏 CyclicBarrier
+		1. 与CountDownLatch不同的是，CyclicBarrier不用调用countDown方法，只要调用await()的次数达到count，
+	await()方法就不会再阻塞，比如
 		inal CyclicBarrier cyclicBarrier = new CyclicBarrier(count);
         ExecutorService executorService = Executors.newFixedThreadPool(count);
 
@@ -3015,10 +3018,10 @@ public class DataBaseConnector {
                     try {
                         Thread.sleep((long) (Math.random() * 500));
 
-                        System.out.println(Thread.currentThread().getName() + "�Ѿ���λ����ʼ�ȴ���");
+                        System.out.println(Thread.currentThread().getName() + "已经到位，开始等待！");
                         cyclicBarrier.await();
 
-                        System.out.println("�˵����ˣ�" + Thread.currentThread().getName() + "��ʼִ���Լ��Ķ�����");
+                        System.out.println("人到齐了，" + Thread.currentThread().getName() + "开始执行自己的动作！");
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -3027,7 +3030,7 @@ public class DataBaseConnector {
                     }
 
                 }
-            }, "��Ա" + i);
+            }, "成员" + i);
 
             executorService.execute(people);
         }
@@ -3035,27 +3038,79 @@ public class DataBaseConnector {
         executorService.shutdown();
 
 2018.10.10
-1. ������tms��������
-	1. �����µ�dubbo��Ŀ
-		1. �ǵ���������ҲҪ����Ŷ
+1. 参与新tms开发感悟
+	1. 发布新的dubbo项目
+		1. 记得配置中心也要发布哦
 		
-		2. ע�⣬�ڹ��ܷ�֧���޸��˴���Ȼ����dev�Ϻϵ�ʱ�򣬲�Ҫ���·�֧�İ汾�ţ���Ӧ���ǽ���֧�ϵ�dev��֮����dev��ȥ�޸İ汾��(���������api�汾�Ļ�)
+		2. 注意，在功能分支上修改了代码然后往dev上合的时候，不要更新分支的版本号，而应该是将分支合到dev上之后在dev再去修改版本号(如果更新了api版本的话)
 
-		3. ���ڱ�����test��ʽ������Ŀ������dubbo����ƽ̨���Կ�������������dubbo��Ŀ����ʱ����ͨ������ѡ������������һ�������޷����������Ϣ�ļ���
+		3. 若在本地以test方式启动项目，则在dubbo服务平台可以看到两个启动的dubbo项目，这时可以通过禁用选项来禁用其中一个。但无法禁用其对消息的监听
 
-		4. ע��server��Ŀ���Լ��༭��ʱ���õ�api�汾�Ǳ��صģ�����compile��ʱ���õ��ǲֿ�����Ӧ�������汾�����Կ��ܳ����ڱ���compile��ʱ�򱨴�
-	�Ҳ���ĳ��������
+		4. 注意server项目在自己编辑的时候用的api版本是本地的，但是compile的时候用的是仓库里相应的依赖版本。所以可能出现在本地compile的时候报错
+	找不到某个方法。
 
-	2. ��ȡapollo����
-		1. ˽�пռ�������Ǹ���appid����ȡ�ġ�����һ��Ҫ�ǵ�����Ŀ������ <apollo:config/>
+	2. 读取apollo配置
+		1. 私有空间的配置是根据appid来读取的。而且一定要记得在项目中添加 <apollo:config/>
 
-	3. ��Ԫ���Ե���������������µ��̣߳��ǵ�sleep����Ȼ���߳̽����˾��޷��������ԡ�����jenkins�Ϲ���ǰ�ǵ�ɾ��sleep���룬��Ȼ�����ܾá�
+	3. 单元测试的内容如果开启了新的线程，记得sleep，不然主线程结束了就无法继续测试。但是jenkins上构建前记得删除sleep代码，不然构建很久。
 
-	4. ����
-		1. Cms dispathcer.xml����ר�����õĹ���������Щ�������еĿ���������罫header�е�domianid��accountid����Ϣ��ȡ����Ȼ��Ž�request����
+	4. 配置
+		1. Cms dispathcer.xml中有专门配置的过滤器，这些过滤器有的可以完成诸如将header中的domianid，accountid等信息提取出来然后放进request里面
 
-	5. ���ڷ�֧
-		1. �����¹���ʱ����master�ϴ�һ����֧��Ȼ��ȡ��Ϊdev-feature, Ȼ�������·�֧��dev�Ϻϲ��ԡ�û�������·�֧��qa�Ϻϡ�ע�ⲻ�ܰ�dev��qa
+	5. 关于分支
+		1. 开发新功能时，从master上打一个分支，然后取名为dev-feature, 然后吧这个新分支往dev上合测试。没问题后把新分支往qa上合。注意不能把dev合qa
 
 2018.10.21
-1.todo->�˽�@ControllerAdvice���÷�
+1.todo->了解@ControllerAdvice的用法
+
+2018.12.26
+1. 类加载时间
+	1. 关于static修饰符
+		在程序中任何变量或者代码都是在编译时由系统自动分配内存来存储的。 static修饰表示静态的，在类加载时JVM会把它放到方法区，被本类以及本类中所
+	有实例所公用。在编译后所分配的内存会在一直存在，直到程序退出内存才会释放这个空间。如果一个被所有实例公用的方法被申明为static，那么就可以节省空间了，不用每个实例
+	初始化的时候都被分配到内存。
+
+	2. 静态块的执行时间
+		当new一个类的对象或者使用一个类的仁义静态变量时，该类的静态块都会执行
+		
+	3. 关于内部类加载
+		1. 在实例化外部内或者调用外部类的静态变量时，静态内部类不会被加载，静态内部类的静态成员也不会被加载
+
+		2. 直接调用静态内部类时，外部类也不会被加载。静态内部类就好像是一个独立的类一样
+
+2019.01.09
+1. 关于spi
+	1.1 spi 即service provider interface，服务提供者接口。Java SPI 实际上是“基于接口的编程＋策略模式＋配置文件”组合实现的动态加载机制
+	
+	2.1 Java spi用法
+		2.1.1. 需要在跟路径或者配置文件(比如maven项目的src/main/resources)的/META-INF/services(注意这里有s)下新建一个文件，这个文件的名字是需要提供
+	实现的接口的名字，例如java.sql.Driver。然后这个文件的内容是该接口的一个或多个实现的全名，例如com.mysql.jdbc.Driver。
+
+		2.2.2. jdk提供了服务实现查找的一个工具类java.util.ServiceLoader,具体使用方法如下
+		ServiceLoader<Driver> loadedDrivers = ServiceLoader.load(Driver.class);
+		因为ServiceLoader实现了Iterable接口，因此可以遍历，即
+		for (Inter inter : loadedDrivers ) {
+			inter.method();
+		}
+			
+2019.01.10
+1. 关于System.getProperty("key")
+	1.1 使用System.getProperty("key")可以获取系统属性，可以通过System.getPropertyNames()来获取所有的系统属性名
+
+	1.2 通过在启动的时候配置参数，比如在ide的vm option中配置-Dkey=value(或通过java -Dkey=value -jar test.jar执行jar包)执行，可以通过getProerty(key)
+获取设置的参数的值
+
+2. java 安全管理器
+	2.1 java 安全管理器会在运行阶段检查需要保护的资源的访问权限及其它规定的操作权限
+
+	2.2 使用
+		2.2.1 可以通过在ide添加运行参数 -Djava.security.manager来启动默认的安全管理器，它使用的策略文件是jre/lib/security/java.policy。可以通过查看这个文件来了解
+	安全策略文件的一些语法。如果要使用自定义的安全策略文件，需要写-Djava.security.manager -Djava.security.policy="文件路径.policy"
+
+		2.2.1 安全策略文件大致的语法
+			grant codebase "file:/Users/liqiyuan/Documents/work/sa-public-outsign/target/classes/*" {
+				permission java.io.FilePermission "/Users/liqiyuan/data.txt", "read";// 读某个文件的权限
+				permission java.util.PropertyPermission "file.encoding", "read";// 读取系统属性权限
+				permission java.util.PropertyPermission "java.ext.dirs", "read";
+			};
+		这个codebase的意思是只有这个目录下的文件才有以下权限，如果不写codebase则都有这个权限。注意这里写法是"file:路径"
