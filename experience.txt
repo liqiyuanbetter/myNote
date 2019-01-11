@@ -3104,7 +3104,7 @@ public class DataBaseConnector {
 	2.1 java 安全管理器会在运行阶段检查需要保护的资源的访问权限及其它规定的操作权限
 
 	2.2 使用
-		2.2.1 可以通过在ide添加运行参数 -Djava.security.manager来启动默认的安全管理器，它使用的策略文件是jre/lib/security/java.policy。可以通过查看这个文件来了解
+		2.2.1 可以通过在ide添加运行参数 -Djava.security.manager来启安全管理器，它使用的是默认策略文件jre/lib/security/java.policy。可以通过查看这个文件来了解
 	安全策略文件的一些语法。如果要使用自定义的安全策略文件，需要写-Djava.security.manager -Djava.security.policy="文件路径.policy"
 
 		2.2.1 安全策略文件大致的语法
