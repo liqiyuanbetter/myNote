@@ -2953,13 +2953,18 @@ public class DataBaseConnector {
 	1. https://www.cnblogs.com/waterystone/p/4920797.html 很深入, 难啃
 
 3. Java 并发基础
-	1. 线程池
-		ExecutorService executorService = Executors.newFixedThreadPool(固定数量)
-		executorService.execute或submit(Thread or Runnable)可以让所有所有加入的线程启动。关闭线程池即
-	executorService.shutDown()之后不能再加入新的线程到线程池当中
+	3.1. 线程池 ThreadPoolExecutor
+		3.1.1 ThreadPoolExecutor和ExecutorService的关系
+			ThreadPoolExecutor->AbstractExecutorService->ExecutorService->Executor
+		因此，ExecutorService是ThreadPoolExecutor的父类的父类。ThreadPoolExecutor提供了比ExecutorService多的多的操作
+
+		3.1.2. Executors(注意有s)类提供了许多ExecutorService的简单实现，比如
+			ExecutorService executorService = Executors.newFixedThreadPool(固定数量)
+			executorService.execute或submit(Thread or Runnable)可以让所有所有加入的线程启动。关闭线程池即
+		executorService.shutDown()之后不能再加入新的线程到线程池当中
 		
-	2. 闭锁 CountDownLatch
-		1. 基本用法
+	3.2. 闭锁 CountDownLatch
+		3.2.1. 基本用法
 			CountDownLatch countDownLatch = new CountDownLatch(count)
 			countDownLatch.await()方法会一直阻塞，知道countDownLatch对象中的计数通过countDownLatch.countDown
 		方法降到0的时候。这样可以用于需要等多个线程执行完毕后再执行某个任务，例如
@@ -3005,8 +3010,8 @@ public class DataBaseConnector {
         players.await();
         System.out.println("所有选手都已经触发！");
 
-	3. 栅栏 CyclicBarrier
-		1. 与CountDownLatch不同的是，CyclicBarrier不用调用countDown方法，只要调用await()的次数达到count，
+	3.2. 栅栏 CyclicBarrier
+		3.2.1. 与CountDownLatch不同的是，CyclicBarrier不用调用countDown方法，只要调用await()的次数达到count，
 	await()方法就不会再阻塞，比如
 		inal CyclicBarrier cyclicBarrier = new CyclicBarrier(count);
         ExecutorService executorService = Executors.newFixedThreadPool(count);
@@ -3036,6 +3041,9 @@ public class DataBaseConnector {
         }
 
         executorService.shutdown();
+	
+	3.3. 发令枪 Semaphore
+		
 
 2018.10.10
 1. 参与新tms开发感悟
