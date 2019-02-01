@@ -1,25 +1,33 @@
 2017.09.06
-关于字节流和字符流
-Object
-	----InputStream，读图像之类的字节流
-		----FileInputStream
-		1. 它的构造函数参数是文件名(String)或文件(File), 很单纯简单
-		----DataInputStream(数据输入流)
-		1. 构造函数的参数是一个字节流(InputStream)
-		2. 数据输入流允许应用程序以与机器无关方式从底层输入流中读取基本 Java 数据类型，用于读取基本数据类型，因此它的
-	方法都是readInt, readLong这种read+基本数据类型的样子
-
-	----Reader，读取数字符号等字符流
-		----BufferedReader
-		1. 从字节输入流中高效的读取文本, 因此其构造函数参数都是字符输入流(Reader)
-		2. Reader的直接子类中, 只有BufferedReader有读取整行的readLine方法
-		----InputStreamReader
-		1. 字节流通向字符流的桥梁：它使用指定的 charset 读取字节并将其解码为字符
-		2. 因此它的构造函数都是含字节输入流的(InputStream), 毕竟是字符流和字节流之间的桥梁
-			----FileReader
+1.关于字节流和字符流
+	Object
+		----InputStream，读图像之类的字节流
+			----FileInputStream
 			1. 它的构造函数参数是文件名(String)或文件(File), 很单纯简单
-	因此可能出现这样一种非常长的声明:
-		Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName))))
+			----DataInputStream(数据输入流)
+			1. 构造函数的参数是一个字节流(InputStream)
+			2. 数据输入流允许应用程序以与机器无关方式从底层输入流中读取基本 Java 数据类型，用于读取基本数据类型，因此它的
+		方法都是readInt, readLong这种read+基本数据类型的样子
+
+		----Reader，读取数字符号等字符流
+			----BufferedReader
+			1. 从字节输入流中高效的读取文本, 因此其构造函数参数都是字符输入流(Reader)
+			2. Reader的直接子类中, 只有BufferedReader有读取整行的readLine方法
+			----InputStreamReader
+			1. 字节流通向字符流的桥梁：它使用指定的 charset 读取字节并将其解码为字符
+			2. 因此它的构造函数都是含字节输入流的(InputStream), 毕竟是字符流和字节流之间的桥梁
+				----FileReader
+				1. 它的构造函数参数是文件名(String)或文件(File), 很单纯简单
+		因此可能出现这样一种非常长的声明:
+			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName))))
+
+	1.1 使用FileInputStream技巧
+		fis的read方法是一个字节一个字节读取，而中文是两个字节，因此输出时可能出现乱码，可以采用以下方式
+			FileInputStream inputStream = new FileInputStream("");
+			int available = inputStream.available();
+			byte[] data = new byte[available];
+			int read = inputStream.read(data);
+			String dataStr = new String(data);
 
 2017.09.07
 1. maven
@@ -2757,20 +2765,20 @@ https://zhidao.baidu.com/question/27877332.html
 		2. @Value注解从何处获取配置？
 			1. 在需要从配置文件读取配置的类上使用@PropertySource注解，其value值表明要读取的配置文件。比如
 				@Data
-@Service
-@PropertySource(value = "classpath:sys2.properties")
-public class DataBaseConnector {
+				@Service
+				@PropertySource(value = "classpath:sys2.properties")
+				public class DataBaseConnector {
 
-    @Value("${user.email}")
-    private String email;
+					@Value("${user.email}")
+					private String email;
 
-    @Value("${user.password}")
-    private String userPassword;
+					@Value("${user.password}")
+					private String userPassword;
 
-    @Value("${special}")
-    private String special;
+					@Value("${special}")
+					private String special;
 
-}
+				}
 			注意该类必须有@Service方注解否则不是一个bean。注解方式读取配置的优先级是低于配置文件中对bean的配置的
 				
 
@@ -2779,11 +2787,11 @@ public class DataBaseConnector {
 				下面对PropertyPlaceholderConfigurerd的属性进行适当的解释：
 					1. <property name="locations"> 或 <property name="location">。很显然前者可以读取多个配置文件，后者只能读取一个配置文件，如：
 						<property name="locations">
-      <list>
-        <value>classpath:sys2.properties</value>
-        <value>classpath:sys.properties</value>
-      </list>
-    </property>
+							<list>
+								<value>classpath:sys2.properties</value>
+								<value>classpath:sys.properties</value>
+							</list>
+						</property>
 					
 					
 					2. <property name="order" value="1" />表示加载的顺序，在仅使用该属性的情况下，order较低的配置文件将不会被加载。因此如果某个属性
@@ -3043,7 +3051,7 @@ public class DataBaseConnector {
         executorService.shutdown();
 	
 	3.3. 发令枪 Semaphore
-		
+
 
 2018.10.10
 1. 参与新tms开发感悟
@@ -3122,3 +3130,6 @@ public class DataBaseConnector {
 				permission java.util.PropertyPermission "java.ext.dirs", "read";
 			};
 		这个codebase的意思是只有这个目录下的文件才有以下权限，如果不写codebase则都有这个权限。注意这里写法是"file:路径"
+
+2019.01.28
+1. 易百网 jenkins
