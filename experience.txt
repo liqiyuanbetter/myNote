@@ -2904,7 +2904,7 @@ https://zhidao.baidu.com/question/27877332.html
 				2. open -e fileName.type
 					表示已编辑的模式打开文本文件，可以用鼠标操作。	
 
-				3. 通过tail -f(-1000) info | grep 文字 可以看到日志文件中指定的内容
+				3. 通过tail -f(-1000) info | grep 文字 可以看到日志文件中指定的内容 如果需要查看多个关键字，使用grep -E '123|abc'
 
 		3. 启动spring boot项目
 			直接通过java -jar 包名就可以启动。按con + c或者这个窗口长期不动它就会自动关闭。为了避免这种情况可以在最后加上&符号使其一直启动。
@@ -3133,3 +3133,19 @@ https://zhidao.baidu.com/question/27877332.html
 
 2019.01.28
 1. 易百网 jenkins
+
+2019.02.28
+1. 关于Arrays.copyOf和System.arraycopy
+	1.1 System.arraycopy用法
+		1.1.1 arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
+		参数依次是源数组，源数组起始位置，目标数组，目标数组起始位置，源数组长度，比如
+		int[] src = new int[] {1, 2, 3};
+        int[] dest = new int[2];
+        System.arraycopy(src, 0, dest, 0, 2);// dest结果为{1, 2}
+		注意length+src/dest pos大于 src/dest 的数组长度时都会报错
+
+		1.1.2 该方法是一个native方法，复制数组的速度非常快。但需要注意的是这是一种浅复制。当数组是对象数组时，改变复制后的
+	对象里的属性值，源对象数组中相应的对象的属性值也会改变
+
+	1.2 Arrays.copyOf也是浅拷贝。但是它只需要两个参数即源数组和长度，然后返回复制后的数组。当长度超过源数组长度，返回一个指定长度
+的数组，但是超出的值为默认值。比如对象数组是null，int就是0
