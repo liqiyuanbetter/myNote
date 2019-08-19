@@ -1184,12 +1184,8 @@ ws连接;
 
 2. java集合源码分析: http://blog.csdn.net/column/details/collection.html
    线程详解: http://blog.csdn.net/ns_code/article/details/17539599
-
-3. 关于线程
-	1. 一个线程在sleep中被打断时，这个线程不会被终止，它会抛出异常然后继续执行catch块里面和后面的内容。一个线程如果没有
-start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false;
 	
-4. 通常都将包装类如HttpServletRequestWrapper的一个子类作为内部类放在过滤器中，然后在过滤器中将request用包装类包装后传递下去;
+3. 通常都将包装类如HttpServletRequestWrapper的一个子类作为内部类放在过滤器中，然后在过滤器中将request用包装类包装后传递下去;
 
 2017.11.15
 1. dns查询 http://tool.chinaz.com/dns
@@ -1369,7 +1365,7 @@ resources下新建了一个和某个包名同名的文件夹，那么编译后�
 	1. http://blog.csdn.net/zdx1515888659/article/details/44593967
 
 2017.11.21
-1. jdk8新特性
+1. jdk8 java8 新特性
 	1.1. 函数接口，又叫SAM, single abstract method interfaces
 		1.1.1 java的函数接口是指只包含一个抽象方法的接口，在jdk1.8中，可以使用 @FunctionalInterface来给接口添加注解。注意，
 	函数接口可以包含多个默认方法, 也可以包含多个静态方法，因为他们都不是抽象方法。静态方法和默认方法都必须在接口中给出实现;
@@ -2895,6 +2891,8 @@ https://zhidao.baidu.com/question/27877332.html
 
 			2. 有时侯按tab见没有补全输入可能是因为存在多个可以匹配的文件名
 
+			3. 查看系统版本 cat /etc/issue
+
 		2. 基本操作命令
 			1. 文本文件编辑
 				1. vim fileName.type
@@ -3149,3 +3147,41 @@ https://zhidao.baidu.com/question/27877332.html
 
 	1.2 Arrays.copyOf也是浅拷贝。但是它只需要两个参数即源数组和长度，然后返回复制后的数组。当长度超过源数组长度，返回一个指定长度
 的数组，但是超出的值为默认值。比如对象数组是null，int就是0
+
+2019.04.24
+1. #线程详解
+	1. 关于sleep()方法
+		1. sleep()是静态方法，它针对于当前正在运行的线程。使用sleep()之后, 当前线程会暂时停止执行，并且将cpu的控制权让出给其他线程。当前线程进入计时等待(阻塞)状态
+	但是如果当前线程被锁住，sleep不会让出锁
+		2. sleep时间结束后线程返回的是可运行状态，即开始等待cpu调度，而不是立即开始运行。因此sleep中指定的是线程不会运行的最短时间，而不是一个精确的时间。
+
+	2. 关于interrupt()
+		1. 执行线程的interrupt()方法并不会终止线程的执行，而是会让该线程在调用isInterrupted()方法的时候返回true。要判断一个线程是否执行完毕应该调用
+	isAlive()方法。isAlive()方法在线程的run方法执行完毕之后返回结果为true
+		2. 但是，需要注意的是，一个线程如果没有start()，则不管是否调用t.interrupt(), 则t.isInterrupted()的结果都为false。而且，如果一个线程已经终止，则
+	isInterrupt()方法总是返回false
+		3. interrupt()可以结合sleep()使用。使用interrupt之后，他会迅速终端计时等待(处于sleep)中的线程，并抛出一个InterruptedException异常。即调用sleep方法时
+	捕获那个异常。比如这个例子
+			run() {
+				try {
+					Thread.sleep(1000000);
+				} catch(InterruptedException e) {
+						sout(Thread.isInterrupted());// 结果为false
+				}
+			}
+		看似该线程要等待1000秒才能终止执行，但只要调用interrupt方法就能让其结束阻塞状态。本来在调用interrupt之后再调用isInterrupted返回的结果是true，但是如果
+	终端异常被捕获，即使调用了interrupt方法，isInterrupt仍然返回false
+
+	2019.07.23
+	1. java基础
+		1.1 try-catch-finally
+			int a = 1;
+			try{
+				a = 2;
+			} catch() {
+				a = 3;
+				return a;// 这里返回路径已经形成，即使finally中a = 4，返回值依然是3。但如果这里返回的是引用类型，比如list.add(1),这里返回值仍然会受到finally中的add影响
+			} finally {
+				a = 4;//会执行，但是不影响catch中的return
+				return 4;// 这里又形成了一个新的返回路径，catch中的return不会生效，最终返回的是赋值后的4
+			}
