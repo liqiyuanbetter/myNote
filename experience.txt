@@ -1387,40 +1387,41 @@ resources下新建了一个和某个包名同名的文件夹，那么编译后�
 
 	1.3. function包
 		1.3.1. Consumer接口，这个接口有一个抽象方法 void accept(T t) 和一个默认方法 Consumer<T> andThen(Consumer<? super T> after)
-	。它通常用在如List接口的forEach(Consumer<T> action)中, 这个forEach方法会将list中的每一个元素传入action中的accept方法并调用
-	accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法会连续执行当前Consumer对象的accept方法和after
-	对象的accept方法;
+		。它通常用在如List接口的forEach(Consumer<T> action)中, 这个forEach方法会将list中的每一个元素传入action中的accept方法并调用
+		accept方法。andThen(Consumer<? super T> after) 方法返回一个Cosumer对象，这个方法会连续执行当前Consumer对象的accept方法和after
+		对象的accept方法;
 		
 		1.3.2. Predicate接口非常适合用于做过滤器, 它只有一个抽象方法boolean test(T t), 和若干默认方法and(), or(), negate(), 
-	isEqual(), 他们的作用和名字一样，例如可以这样使用, 
-		list.stream().filter(con1.and(con2)).forEach(t -> // do some code 这类型是Consumer)，
-		或者list.stream().filter(str -> str.length() <= 4)。也可以在自己的工具类中定义一个filter方法如:
-		public void filter(List<String> list, Predicate condition) {
-			for (String s : list) {
-				if (condition.test(s)) {
-					sysout(s);
+		isEqual(), 他们的作用和名字一样，例如可以这样使用, 
+			list.stream().filter(con1.and(con2)).forEach(t -> // do some code 这类型是Consumer)，
+			或者list.stream().filter(str -> str.length() <= 4)。也可以在自己的工具类中定义一个filter方法如:
+			public void filter(List<String> list, Predicate condition) {
+				for (String s : list) {
+					if (condition.test(s)) {
+						sysout(s);
+					}
 				}
-			}
-		}方法引用的标准形式是：类名::方法名。（注意：只需要写方法名，不需要写括号）
-		filter(list, str -> str.length() <= 4)
+			}方法引用的标准形式是：类名::方法名。（注意：只需要写方法名，不需要写括号）
+			filter(list, str -> str.length() <= 4)
 
 		1.3.3. Function接口中有一个抽象方法apply, 这个接口常用于list.stream().map()中，用于对list进行改造;Function的定义是
-	Function<T, R>, apply的定义方式是R apply(T t)。这里面的T由list.stream()得到的Stream<T>决定，但是这个R是可以自己任意指定的;
+		Function<T, R>, apply的定义方式是R apply(T t)。这里面的T由list.stream()得到的Stream<T>决定，但是这个R是可以自己任意指定的。也就是说
+		返回类型可以随意指定。
 		
 		1.3.4. Supplier<T>接口中有一个抽象方法get, 它没有参数，返回一个T型结果;
 
 		1.3.5. stream()中相关接口方法使用
 			1.3.5.1. list.stream()的返回类型是一个stream流，这个stream的泛型类型是由list的泛型类型决定的, 
-		例如List<String> list, list.stream()返回的是Stream<String>。对这个流所做的任何修改都不会影响到原来的list对象;
+			例如List<String> list, list.stream()返回的是Stream<String>。对这个流所做的任何修改都不会影响到原来的list对象;
 
 			1.3.5.2. list.stream().map的意思是将list中的每个元素都放到map中的Function接口中的apply中改变一次形态, 比如
 		map(x -> x * 2), 那么得到的list中的每个元素都扩大了一倍。map只是对list中的元素的一种加工, 不会改变流中元素的数量;
 				1.3.5.2.1. 不仅可以得到map, 我们还可以通过mapToInt方法来得到一个IntStream, IntStream中的.summaryStatistics
 			方法可以得到一个IntSummaryStatitics对象，这个对象中封装了很多比如求平均值，最大最小值等方法;
 				
-				1.3.5.2.2. map对这个流的改造可能是巨大的。map的返回类型是一个stream流，但是这个stream的泛型类型是
-			由Function接口中的R决定的(Function中的T，也就是apply中的T都是由list.stream()的泛型决定, 根本就是list的
-			泛型类型)。即.map返回的是Stream<R>, 而不再是Stream<T>。而这个R我们可以指定成任意的类型。比如我们可以这样写:
+				1.3.5.2.2. map对这个流的改造可能是巨大的。map的返回类型是一个stream流，但是这个返回的stream的泛型类型是
+			由Function<T, R>接口中的R决定的(传入apply方法中的参数类型是由Function中的T，是由list.stream()的泛型决定, 也就是就是list的泛型类型)。
+			即map返回的是Stream<R>, 而不再是Stream<T>。而这个R我们可以指定成任意的类型。比如我们可以这样写:
 
 				List<String> list = Arrays.asList("Java", "Python");
 				Stream<List<String>> stream 
@@ -1428,6 +1429,7 @@ resources下新建了一个和某个包名同名的文件夹，那么编译后�
 			
 			在这个lambda表达式中，没有显式使用匿名类Function的对象，因此这里的Function<T, R>中的R实际上由lambda表达式
 		中的返回类型来决定了，也就是R为list。这里相当于将Stream<String>转化成了Stream<List<String>>。
+			很明显map通常用于返回的流不是原类型的时候，该方法实现了流的转换。
 
 			1.3.5.3. list.stream().filter字面意思是过滤器，它的参数是一个Predicate，这个接口中有一个返回布尔型变量的函数
 		accept(T t)，list中的每一个元素也都会经过它的检验，只有返回ture的才被保留在stream中。也就是说filter之后元素的
@@ -1454,13 +1456,46 @@ resources下新建了一个和某个包名同名的文件夹，那么编译后�
 			http://www.importnew.com/11908.html#streams
 			http://www.importnew.com/16436.html
 	
-	1.4 
+	1.4 将stream流转换为List或者map
+		注意只有list对象才有.stream()这个方法，因此所有的collect方法都是针对的list中的每个元素。
+
+		1.4.1 转换成List
+			直接调用.collect(Collectors.toList())可以将流转换为相应的list对象
+
+		1.4.2 转换成map
+			转换成map调用.collect(Collectors.toMap)方法.toMap方法主要有两个。分别是
+			toMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends U> valueMapper)和
+			toMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends U> valueMapper, BinaryOperator<U> mergeFunction)
+			这两个方法里的参数都有Function接口,查看代码发现最终调用的也是Function接口的apply方法，因此需要实现该接口，可用lambda表达式实现。
+			
+			注意这里调用前一个方法的时候，如果有相同的key，程序会抛出异常throw new IllegalStateException(String.format("Duplicate key %s", u));
+			查看源码发现，这个两个方法最后都调用了同一个方法，
+			public static <T, K, U, M extends Map<K, U>>
+    		Collector<T, ?, M> toMap(Function<? super T, ? extends K> keyMapper,
+                                Function<? super T, ? extends U> valueMapper,
+                                BinaryOperator<U> mergeFunction,
+                                Supplier<M> mapSupplier) {
+									BiConsumer<M, T> accumulator
+                						= (map, element) -> map.merge(keyMapper.apply(element), valueMapper.apply(element), mergeFunction);
+								}
+			调用方式分别是
+			toMap(keyMapper, valueMapper, throwingMerger(), HashMap::new);和
+			return toMap(keyMapper, valueMapper, mergeFunction, HashMap::new);
+
+			可以看到前者对BinaryOperator的实现是传入了一个throwingMerger()方法, 该方法实现是
+			return (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); };
+			
+			再去查看map的merge方法，比如HashMap的merge方法，会看到这样一段关键代码
+			if (old.value != null)
+                v = remappingFunction.apply(old.value, value);
+			相当于当key值一样时会调用BinaryOperator的apply方法，这时就会直接抛出异常。
+			因此我们可自己重写apply方法，比如我们想要用新的值去覆盖旧的值，就可以这样写(oldValue, newValue)。注意是新值在后面，旧值在前面。
 
 4. 方法引用
 	1. 方法引用用于简写lambda表达式中已经存在的方法，注意方法引用只能用在lambda表达式中;
 
 	2. 它的引用形式是: 类名::静态方法名, 或者对象::实例方法名, 注意方法名不能写括号, 也不能再写参数在里面，例如
-list.forEach(System.out::println)，也不能写s ->等;
+	list.forEach(System.out::println)，也不能写s ->等;
 
 	3. 被引用的方法的参数的类型一定要和接口中方法的参数类型顺序一致
 
