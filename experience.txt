@@ -1485,11 +1485,11 @@ resources下新建了一个和某个包名同名的文件夹，那么编译后�
 			可以看到前者对BinaryOperator的实现是传入了一个throwingMerger()方法, 该方法实现是
 			return (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); };
 			
-			再去查看map的merge方法，比如HashMap的merge方法，会看到这样一段关键代码
+			再去查看map的merge方法，这里因为是HashMap::new，所以查看HashMap的merge方法，会看到这样一段关键代码
 			if (old.value != null)
                 v = remappingFunction.apply(old.value, value);
 			相当于当key值一样时会调用BinaryOperator的apply方法，这时就会直接抛出异常。
-			因此我们可自己重写apply方法，比如我们想要用新的值去覆盖旧的值，就可以这样写(oldValue, newValue)。注意是新值在后面，旧值在前面。
+			因此我们可自己重写apply方法，比如我们想要用新的值去覆盖旧的值，就可以这样写(oldValue, newValue) -> newValue。注意是新值在后面，旧值在前面。
 
 4. 方法引用
 	1. 方法引用用于简写lambda表达式中已经存在的方法，注意方法引用只能用在lambda表达式中;
