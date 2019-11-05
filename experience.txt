@@ -3207,16 +3207,17 @@ https://zhidao.baidu.com/question/27877332.html
 		看似该线程要等待1000秒才能终止执行，但只要调用interrupt方法就能让其结束阻塞状态。本来在调用interrupt之后再调用isInterrupted返回的结果是true，但是如果
 	终端异常被捕获，即使调用了interrupt方法，isInterrupt仍然返回false
 
-	2019.07.23
-	1. java基础
-		1.1 try-catch-finally
-			int a = 1;
-			try{
-				a = 2;
-			} catch() {
-				a = 3;
-				return a;// 这里返回路径已经形成，即使finally中a = 4，返回值依然是3。但如果这里返回的是引用类型，比如list.add(1),这里返回值仍然会受到finally中的add影响
-			} finally {
-				a = 4;//会执行，但是不影响catch中的return
-				return 4;// 这里又形成了一个新的返回路径，catch中的return不会生效，最终返回的是赋值后的4
-			}
+2019.07.23
+1. java基础
+	1.1 try-catch-finally
+		int a = 1;
+		try{
+			a = 2;
+		} catch() {
+			a = 3;
+			return a;// 这里返回路径已经形成，即使finally中a = 4，返回值依然是3。但如果这里返回的是引用类型，比如list.add(1),这里返回值仍然会受到finally中的add影响
+		} finally {
+			a = 4;//会执行，但是不影响catch中的return
+			return 4;// 这里又形成了一个新的返回路径，catch中的return不会生效，最终返回的是赋值后的4
+		}
+
