@@ -2229,6 +2229,7 @@ pom.xml文件的project节点下添加属性
 4. idea 快捷键
 	1. 查找替换 contrl + r
 	2. 清除多余包 c + a + l
+	3. 出现 0% classes, 0% lines -> windows下 alt+ctrl+f6 mac下option+command+f6
 
 5. 关闭重复代码提示 http://blog.csdn.net/ck4438707/article/details/52233968
 
