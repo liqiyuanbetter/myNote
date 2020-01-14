@@ -3222,3 +3222,4 @@ https://zhidao.baidu.com/question/27877332.html
 			return 4;// 这里又形成了一个新的返回路径，catch中的return不会生效，最终返回的是赋值后的4
 		}
 
+2020.01.04
