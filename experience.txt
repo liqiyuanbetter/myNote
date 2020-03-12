@@ -1,7 +1,8 @@
 2017.09.06
 1.关于字节流和字符流
+	输入流
 	Object
-		----InputStream，读图像之类的字节流
+		----InputStream，读图像之类的 字节 流
 			----FileInputStream
 			1. 它的构造函数参数是文件名(String)或文件(File), 很单纯简单
 			----DataInputStream(数据输入流)
@@ -9,7 +10,7 @@
 			2. 数据输入流允许应用程序以与机器无关方式从底层输入流中读取基本 Java 数据类型，用于读取基本数据类型，因此它的
 		方法都是readInt, readLong这种read+基本数据类型的样子
 
-		----Reader，读取数字符号等字符流
+		----Reader，读取数字符号等 字符 流
 			----BufferedReader
 			1. 从字节输入流中高效的读取文本, 因此其构造函数参数都是字符输入流(Reader)
 			2. Reader的直接子类中, 只有BufferedReader有读取整行的readLine方法
@@ -28,6 +29,14 @@
 			byte[] data = new byte[available];
 			int read = inputStream.read(data);
 			String dataStr = new String(data);
+	
+	输出流
+	Object
+		----writer
+			----PrintWriter
+			在使用BufferedReader 的reaeLine()方法时，如果读取到的数据没有换行符吗，则该方法会阻塞。比如在套接字程序中获取输入流信息时。
+			PrintWriter的println方法可以自带一个换行符在里面
+	
 
 2017.09.07
 1. maven
@@ -267,6 +276,13 @@ js变量声明提升
 					4. 基于服务器的优点是不用创建新的关联表时都写出完整的连接地址
 
 	常用操作命令: https://www.cnblogs.com/good_hans/archive/2010/03/29/1700046.html
+
+	6. 基本语法
+		1. 插入数据时避免主键或唯一键或unique索引冲突
+			1. insert ingore  如果有重复就不插入数据
+			2. replace into 如果有重复数据就先删除再插入。执行结果显示收影响行数为2行
+			3. insert into table .... on duplicate key update 在出现重复时，该语法会执行update后的语句。如果有新语句插入，受影响行数为1；如果
+		原有记录被更新，受影响行数为2；如果更新前后没有变化，受影响行数为0
 
 2. spring boot
 	1. http://www.cnblogs.com/larryzeal/p/5799195.html
