@@ -3238,4 +3238,43 @@ https://zhidao.baidu.com/question/27877332.html
 			return 4;// 这里又形成了一个新的返回路径，catch中的return不会生效，最终返回的是赋值后的4
 		}
 
-2020.01.04
+2020.03.25
+1. 序列化
+	1. 方法 注意私有变量要添加getter和setter方法
+		序列化：ObjectOutputStream ows = new ObjectOutputStream(new FileOutputStream("直接写文件名即可，会生成相应文件"))
+		反序列化：
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File("文件名")))
+			Account2 readAccount = (Account2) ois.readObject();
+            System.out.println(readAccount);
+
+	2. ObjectOutputStream和ObjectInputStream实际上就是反序列化和序列化的过程。但是如果被他们操作的对象没有实现Serializable接口，这该操作会抛错
+java.io.NotSerializableException。拿ObjectOutputStream的writeObject()方法会判断被序列化的对象属于哪一种类型，包括且仅包括字符串，数组，枚举，
+Serializable接口的实现类？如果都不满足就会抛错
+
+	3. static 和 transient 修饰的字段不会被序列化。
+		transient 修饰的字段在序列化之后，我们再反序列化，这个时候该字段为空
+		如果含有static 修饰的字段。我们先给static字段赋一个值，然后将其序列化。这时修改代码，将static的值修改，然后在反序列化刚才被序列化的对象，此时
+	发现静态字段变成了我们新修改的值。这说明在序列化的时候没有序列化静态对象。
+
+	4. 序列化接口 Externalizable 注意这是一个接口
+		我们知道serializable接口没有任何方法。Externalizable接口继承了Serializable并且新增了两个方法void writeExternal(ObjectOutput out) throws IOException;
+	和void readExternal(ObjectInput in) throws IOException, ClassNotFoundException;需要序列化的实体类实现这个接口就行了。
+		我们可以在writeExTernal和readExternal中手动指定序列化和反序列化的方式。比如
+		@Override
+		public void writeExternal(ObjectOutput out) throws IOException {
+			out.writeObject(this.getName());
+			// 如果有多个int或者其他类型数据，只要保证read方法里面的顺序跟write顺序一直即可
+			out.writeInt(this.getNumber());
+			out.writeInt(this.getAge());
+		}
+		@Override
+		public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+			this.setName((String) in.readObject());
+			this.setNumber(in.readInt());
+			this.setAge(in.readInt());
+		}
+
+	5. 序列化id private static final long serialVersionUID = -2095916884810199532L 有什么作用？
+		在反序列化时，jvm会把字节流中的serialVersionId与被序列化类中的序列化id进行比较，相同时才会进行反序列化，否则就会抛出序列化版本不一致的异常。
+		总之就是文件中id和被序列化的类中的id要一直，不然就会导致反序列化失败。所以没有特殊需求时就使用seriaVersionUID = 1L就行了。这样就已经可以保证
+		反序列化成功。
