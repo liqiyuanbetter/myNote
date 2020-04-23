@@ -2961,7 +2961,26 @@ https://zhidao.baidu.com/question/27877332.html
 
 		4. 查看端口占用
 			有时启动项目时会报端口被占用例如Address already in use的错误，这时候可以通过jps命令查看端口号被进程占用情况，然后通过kill 进程名来杀掉进程。
-		其他更为复杂的命令netstat -apn | grep 需要查看的端口号以及ps -ef | grep 4438
+		其他更为复杂的命令netstat -apn | grep 需要查看的端口号以及ps -ef | grep 4438 java应用
+
+		5. 删除文件 删除目录用 rm -rf xxx 删除某个具体文件用 rm -f xxx.type
+
+		6. linux解压命令 tar -zxvf xxx.tar.gz 
+			z表示tar包是被gzip压缩过的(后缀是tag.gz), 如果只是.tar则不需要
+
+		7. 如果提示 rz sz 命令找不到，使用 yum -y install lrzsz
+
+		8. 查看环境变量 env
+
+		9. 查看操作系统版本 uname －a 查看位数 getconf LONG_BIT 查看centos版本 rpm -q centos-release
+
+		10. 环境变量配置，linux中用冒号:隔开多个配置。为了增量更新可以写PATH=&JAVA_HOME:$PATH
+
+		11. linux/centos下删除.swp文件
+			用ls -a 可查看遗留的.swp文件 然后用rm -f xxx.type删除文件即可
+
+		12. 查看所有进程 ps -ef 查看某个进程，比如tomcat ps -ef|grep tomcat
+
 
 2018.07.30
 1. Spring boot
