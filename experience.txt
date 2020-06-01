@@ -2981,6 +2981,51 @@ https://zhidao.baidu.com/question/27877332.html
 
 		12. 查看所有进程 ps -ef 查看某个进程，比如tomcat ps -ef|grep tomcat
 
+		13. 查看某应用安装目录 wheris 应用名, 比如 whereis mysql
+
+		14. 查看文件夹中以某个字母或词语开头的文件或文件夹 ls | grep ^XXX
+
+		15. 启动/关闭mysql systemctl start/stop mysqld 查看mysql运行状态 systemctl status mysqld
+		开机启动mysql systemctl enable mysqld
+
+	2. linux上部署项目
+		1. 部署mysql服务注意事项
+			1. 注意安装mysql后首先在/var/log/mysqld.log中查看初试密码，可以通过命令cat /var/log/mysqld.log | grep password查看
+
+			2. 首次登录后需要重新设置密码才能进行一系列的mysql操作，可以通过下面两种方式来修改密码
+				1. alter user 'root'@"localhost" identified by 'newPassword'
+				2. alter user 'root'@'localhost' identified with mysql_native_password by 'newPassword' 
+			方式2用于在某些旧版的navicat。他们使用mysql_native_password加密方式，如果不升级驱动的话，可以将用户登录的加密规则还原成mysql_native_password。
+			mysql8之后采用caching_sha2_password方式加密
+
+			注意，所有用户权限等操作本质都是对mysql这个库中user这张表的修改，这张表中有host字段以及各种权限字段(如插入表，修改表)。我们关注一下host字段，在初始
+			修改用户root的密码之后，可以看到host这个字段的值是localhost。这表示root这个用户只能在本地登录，因此我们需要去修改，授予其远程访问的权限
+			这里有两种做法，一是
+				1. update user set host = '%' where user='root'，这里的百分号的意思是所有的远程地址。这个语句只是一个简单的修改表数据的语句，而前面的identified
+			by 的语句可以看作是一种系统的设置。
+
+				2. 另一种方式是创建一个用户，即
+					create user 'root'%'%' identified with mysql_native_password by '密码';
+					grant all privileges on *.* to 'root'@'%' with grant option;
+					对于上面这个grant语句，前一个*表示数据库，后一个*表示所有的操作权限
+
+				这表示新建一个有所有权限的用户。你可能奇怪user字段重复了，但是查看user表结构发现，他是联合主键user，host。因此理论上你可以给每个远程地址都新建一个名为
+				root的用户，并赋予其不同的权限。对于所有的mysql用户，他都是由host和user两部分组成的。
+
+				3. 删除用户的方法
+					drop user 'use'@'host';
+
+			不管使用的是上面哪一种方式，都需要通过flush privileges命令来使更新生效。
+
+			3. 使用status;命令可以查看数据库的编码。
+
+			4. 使密码过期或者永不过期的方法是
+				alter user 'root'@'host' password exipre; 
+				注意，进行这种设置需要system_user权限，可用语句
+					grant system_user on *.* to 'root';
+				来授予root用户system_user权限。在密码过期后，mysql的连接会马上不可用，不能进行任何查询
+				alter user 'root'@'host' password expire nerver;
+
 
 2018.07.30
 1. Spring boot
