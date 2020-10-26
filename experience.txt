@@ -3342,3 +3342,26 @@ Serializable接口的实现类？如果都不满足就会抛错
 		在反序列化时，jvm会把字节流中的serialVersionId与被序列化类中的序列化id进行比较，相同时才会进行反序列化，否则就会抛出序列化版本不一致的异常。
 		总之就是文件中id和被序列化的类中的id要一直，不然就会导致反序列化失败。所以没有特殊需求时就使用seriaVersionUID = 1L就行了。这样就已经可以保证
 		反序列化成功。
+
+2020.10.26
+1. git教程更新 git版本2.27
+		1. 首先下载项目
+			从github上复制项目链接，右键打开 git bush 使用命令：然后键入git clone url就可以将该项目克隆下来，
+	不需要其他任何指令.例如 git clone https://github.com/liqiyuanbetter/myNote.git。其中liqiyuanbetter是这个用户的用户名,
+	myNote是他的仓库名;
+
+		2. 上传修改步骤
+			1. git add XX.xx 或者 git add * 前者是指定准备要提交某个具体文件，后者是所有有更新的文件；
+			2. git commit -m "注释" 这是将更新提交到版本库中，注意这个注释需要双引号；
+			3. git push origin master 将修改直接推送到某个分钟当中，比如master分支；
+		
+		注意在第三步中，如果是首次安装git后进行推送，界面会提示要指定user.name 和 user.email，这时候通过命令 
+			git config --global user.name "XXX"
+			git config --global user.email "XXX@xx.com"
+		来指定用户名和用户邮箱,然后再执行git push orgin master
+
+		如果是推送到github，界面上会弹出一个github注册窗口，提示输入github的账号名和密码，该账号必须是一个本项目的参与者才能推送。
+		注意，刚才在git config 中对user.name的设置跟这个github的登录是两回事，github的登录可以看作对用户身份的一种认证。推送更新之后，在
+		github上面显示的提交者会是我们设置的这个user.name。
+
+		3. 获取项目更新
