@@ -3362,6 +3362,7 @@ Serializable接口的实现类？如果都不满足就会抛错
 
 		如果是推送到github，界面上会弹出一个github注册窗口，提示输入github的账号名和密码，该账号必须是一个本项目的参与者才能推送。
 		注意，刚才在git config 中对user.name的设置跟这个github的登录是两回事，github的登录可以看作对用户身份的一种认证。推送更新之后，在
-		github上面显示的提交者会是我们设置的这个user.name。
+		github上面显示的提交者会是我们设置的这个user.name。如果你配置的邮箱是github里真实存在的邮箱，则commits里显示的是这个邮箱对应的账号。
+		这个user.name的位置是c://user/当前用户/.gitconfig
 
 		3. 获取项目更新
