@@ -3366,3 +3366,6 @@ Serializable接口的实现类？如果都不满足就会抛错
 		这个user.name的位置是c://user/当前用户/.gitconfig
 
 		3. 获取项目更新
+
+2. 在idea上新建的项目上传到git上
+	VCS -> import into versioncontrol -> create git repository
