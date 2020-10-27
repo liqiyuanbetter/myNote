@@ -3367,5 +3367,5 @@ Serializable接口的实现类？如果都不满足就会抛错
 
 		3. 获取项目更新
 
-2. 在idea上新建的项目上传到git上
+2. 在idea上新建的项目上传到git上2
 	VCS -> import into versioncontrol -> create git repository
