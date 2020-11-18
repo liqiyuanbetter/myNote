@@ -3367,5 +3367,14 @@ Serializable接口的实现类？如果都不满足就会抛错
 
 		3. 获取项目更新
 
-2. 在idea上新建的项目上传到git上2
-	VCS -> import into versioncontrol -> create git repository
+2. 在idea上新建的项目上传到git上
+	方式1:
+		步骤1: 在github上新建一个repository
+		步骤2: idea中, 先将一个.gitignore文件拷贝到项目路径下, 然后VCS -> import into versioncontrol -> create git repository
+		步骤3: vcs -> git commit 然后 push,将刚才github上新建项目的地址拷贝到remote branch中即可
+
+	方式2:
+		在idea中新建项目之后, 直接vcs -> shared on github,这样会自动在github上新建项目,但可能因网速问题不能建立idea与git的连接
+
+2020.11.10
+1. 安装npm环境
