@@ -2973,7 +2973,7 @@ https://zhidao.baidu.com/question/27877332.html
 		8. 查看环境变量 env
 
 		9. 查看操作系统版本 uname －a 查看位数 getconf LONG_BIT 查看centos版本 rpm -q centos-release
-
+firewalld
 		10. 环境变量配置，linux中用冒号:隔开多个配置。为了增量更新可以写PATH=&JAVA_HOME:$PATH
 
 		11. linux/centos下删除.swp文件
@@ -2987,6 +2987,29 @@ https://zhidao.baidu.com/question/27877332.html
 
 		15. 启动/关闭mysql systemctl start/stop mysqld 查看mysql运行状态 systemctl status mysqld
 		开机启动mysql systemctl enable mysqld
+
+		16. 防火墙
+			防火墙自身的所有相关命令的开头都是 firewall-cmd 跟一个空格，然后后面的命令都是两个 --，记得是两个
+			1. 查看状态/版本 
+				firewall-cmd --state/version
+
+			2. 开启/关闭防火墙 这是一个系统命令，用的指令是systemctl
+				systemctl start/stop firewalld
+			注意，在CentOS 7或RHEL 7或Fedora中防火墙由firewalld来管理
+
+			3. 查看所有开放的端口
+				firewalld-cmd --list-ports
+			
+			4. 查询指定端口是否开启
+				firewalld-cmd --query-port=3306/tcp
+			注意mysql使用的是tcp协议，可以通过命令 netstat -antp | grep 3306 查看
+
+			5. 开启/关闭防火墙端口
+				firewall-cmd --zone=public --add/remove-port=3306/tcp --permanent
+			--zone 作用域
+			--permanent 表示永久开启
+			注意，添加端口后，需要重新加载防火墙
+				firewall-cmd --reload
 
 	2. linux上部署项目
 		1. 部署mysql服务注意事项
@@ -3380,6 +3403,10 @@ Serializable接口的实现类？如果都不满足就会抛错
 1. 安装npm环境
 
 2020.11.27
-登录oracle
-sqlplus /nolog
-conn /as sysdba
+oracle相关操作
+	1. 登录oracle
+		sqlplus /nolog
+		conn /as sysdba
+	有时无法登录，此时需要切换用户角色，使用命令 su - oracle
+
+	2. 解锁账号 alter user system account unlock;
