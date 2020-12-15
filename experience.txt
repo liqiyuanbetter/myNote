@@ -231,7 +231,10 @@ js变量声明提升
 				grant 权限(包括insert, update, select, delete或者all privileges) on dbName(*为所有库).tableName(*为所有表) 
 			to newUserName@登录主机(%为允许所有主机, localhost为本机, 注意用户名和主机名两边都要加引号) identified by 
 			'登录密码'。然后可以执行flush privileges刷新系统权限表。修改连接地址等也可以直接在系统自带的mysql库中修改user表，
-			但是一定记得要执行flush privileges命令刷新
+			如果没生效使用flush privileges命令刷新
+				比如：
+					grant all privilleges on *.* to lqy@10.107.20.68 identified by 'chuanE57082' WITH GRANT OPTION;
+				在最后加上WITH GRANT OPTION可以让这个新增的用户也可以给别的用户授权
 
 			2. 收回用户权限
 				与授权命令基本一样，只是把grant换成了revoke.即revoke 权限 on db.tb to userName@host
@@ -239,9 +242,19 @@ js变量声明提升
 			3. 删除用户
 				1. drop user 'userName'@'host'
 				2. mysql中所有用户的信息都存储在mysql.user这张表中，因此也可以通过以下语句来删除用户
-			DELETE FROM user WHERE User='userName' AND Host='localhost'; 
+					DELETE FROM user WHERE User='userName' AND Host='localhost'; 
 
 			4. 修改用户名和连接主机 rename user 'userName'@'host' to 'newUserName'@'newHost'
+	
+	4. 如何将一个表的内容复制到另一个表？
+		insert into t1 select * from t2 where (仍然可以加其他字段) 注意这里不再需要value关键字
+		如果有主键，可以先创建一个临时的表结构一样的表，再插入数据，然后修改数据，然后再插入，比如：
+			create table t1_temp like t1;
+			insert into t1_temp select * from t1;
+			这个时候再去修改t1_temp的某些数据，然后
+			insert into t1 select * from t1_temp
+		这个在上面给新用户授予访问权限时可以用到。比如root用户现在只设置了host为127.0.0.1，现在希望另一个ip也能访问，就可以复制插入127的，保持
+	其他数据不变。
 		
 	4. mysql其他命令
 		1. 进入mysql后用命令行查看版本，select version()
@@ -2972,8 +2985,10 @@ https://zhidao.baidu.com/question/27877332.html
 
 		8. 查看环境变量 env
 
-		9. 查看操作系统版本 uname －a 查看位数 getconf LONG_BIT 查看centos版本 rpm -q centos-release
-firewalld
+		9. 查看操作系统版本 uname －a 
+		   查看位数 getconf LONG_BIT 
+		   查看centos版本 rpm -q centos-release
+
 		10. 环境变量配置，linux中用冒号:隔开多个配置。为了增量更新可以写PATH=&JAVA_HOME:$PATH
 
 		11. linux/centos下删除.swp文件
@@ -3404,9 +3419,18 @@ Serializable接口的实现类？如果都不满足就会抛错
 
 2020.11.27
 oracle相关操作
-	1. 登录oracle
+	1. 登录oracle：
 		sqlplus /nolog
 		conn /as sysdba
 	有时无法登录，此时需要切换用户角色，使用命令 su - oracle
 
-	2. 解锁账号 alter user system account unlock;
+	2. 解锁账号：
+		alter user XXX account unlock;
+
+	3. 修改账号密码:：
+		alter user XXX identified by new_passowrd
+
+	4. 修改账号密码重试次数/失效时间（即多久后需要更换密码）：
+		alter profile default limit FAILED_LOGIN_ATTEMPTS XXX（次数，unlimited为不限次数）
+									PASS_LIFE_TIME 
+		
