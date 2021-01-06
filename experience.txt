@@ -253,8 +253,7 @@ js变量声明提升
 			insert into t1_temp select * from t1;
 			这个时候再去修改t1_temp的某些数据，然后
 			insert into t1 select * from t1_temp
-		这个在上面给新用户授予访问权限时可以用到。比如root用户现在只设置了host为127.0.0.1，现在希望另一个ip也能访问，就可以复制插入127的，保持
-	其他数据不变。
+		这个在上面给新用户授予访问权限时可以用到。比如root用户现在只设置了host为127.0.0.1，现在希望另一个ip也能访问，就可以用上面这种办法。
 		
 	4. mysql其他命令
 		1. 进入mysql后用命令行查看版本，select version()
@@ -3423,6 +3422,7 @@ oracle相关操作
 		sqlplus /nolog
 		conn /as sysdba
 	有时无法登录，此时需要切换用户角色，使用命令 su - oracle
+	注意，这个-符号是在两个空格中间的
 
 	2. 解锁账号：
 		alter user XXX account unlock;
