@@ -3433,4 +3433,8 @@ oracle相关操作
 	4. 修改账号密码重试次数/失效时间（即多久后需要更换密码）：
 		alter profile default limit FAILED_LOGIN_ATTEMPTS XXX（次数，unlimited为不限次数）
 									PASS_LIFE_TIME 
+
+2021.1.25
+1. sql server
+	查看sqlserver版本 select @@version;
 		
