@@ -3434,6 +3434,14 @@ oracle相关操作
 		alter profile default limit FAILED_LOGIN_ATTEMPTS XXX（次数，unlimited为不限次数）
 									PASS_LIFE_TIME 
 
+	5. 备份数据步骤
+		1. 首先创建一个备份数据的文件夹。注意这一步是在oracle内部执行的，进入oracle的方式如1
+			create or replace directory dump_dir as 'D:\XXX'
+		
+		2. 推出oracle，在cmd命令行中执行exp命令
+			C:\Users\Administrator>expdp XNYD/XNYD@orcl directory=dump_dir schemas=XNYD dumpfile=XNYD%U.dmp filesize=400m
+		以上命令是制定了dmp文件的大小，这样做可能会导出成多个数据文件，大小由400m指定。也可以指定服务器地址，具体方法是expdp XNYD/XNYD@192.xx.xx.xx/orcl
+
 2021.1.25
 1. sql server
 	查看sqlserver版本 select @@version;
