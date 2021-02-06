@@ -3444,5 +3444,7 @@ oracle相关操作
 
 2021.1.25
 1. sql server
-	查看sqlserver版本 select @@version;
+	1. 查看sqlserver版本 select @@version;
+	2. 备份数据
+		navicat中选择顶上菜单sql server备份->新建备份.注意这个备份的位置是在数据库所在服务器,不是本地电脑的位置
 		
