@@ -1340,7 +1340,7 @@ ws连接;
 2017.11.16
 1. 火狐早期版本下载 https://ftp.mozilla.org/pub/firefox/releases/56.0/win64/zh-CN/ 
 
-2. 怎么把eclipse项目上传到git
+2. 怎么把eclipse项目上传到git 
 
 3. list可以调用自己的list.sort(Comparator<T>)方法来排序，也可以使用Collections.sort(list, Comparator<T>)方法排序, Collections
 默认自带一个排序器，Collections.sort(list)，注意Comparator接口中只有一个抽象方法compare(T, T)
